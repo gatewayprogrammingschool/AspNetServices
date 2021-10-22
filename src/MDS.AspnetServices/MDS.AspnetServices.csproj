@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<RootNamespace>MDS.AspnetServices</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Faslinq" Version="1.0.5" />
+		<PackageReference Include="Markdig" Version="0.26.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<ProjectReference Include="../../3rdParty/Markdig.SyntaxHighlighting/src/Markdig.SyntaxHighlighting/Markdig.SyntaxHighlighting.csproj" />
+		<ProjectReference Include="..\..\3rdParty\ColorCodePortable\ColorCode\ColorCode.csproj" />
+	</ItemGroup>
+</Project>
