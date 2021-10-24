@@ -1,6 +1,7 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable ConvertToAutoPropertyWhenPossible
 
+using System.ComponentModel;
 using ErrorEventArgs = Newtonsoft.Json.Serialization.ErrorEventArgs;
 
 namespace MDS.AspnetServices.Common;
@@ -10,16 +11,17 @@ internal static class JsonExtensions
     private static readonly JsonSerializerSettings _defaultSettings = new()
     {
         Formatting = Formatting.Indented,
-        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+        ReferenceLoopHandling = ReferenceLoopHandling.Error,
         NullValueHandling = NullValueHandling.Ignore,
         Error = Error,
-        PreserveReferencesHandling = PreserveReferencesHandling.All,
+        PreserveReferencesHandling = PreserveReferencesHandling.None,
         TypeNameHandling = TypeNameHandling.All,
         ContractResolver = new CamelCasePropertyNamesContractResolver()
     };
 
     private static void Error(object? sender, ErrorEventArgs e)
     {
+        e.ErrorContext.Handled = true;
     }
 
     public static JsonSerializerSettings CurrentSettings { get; set; } = _defaultSettings;

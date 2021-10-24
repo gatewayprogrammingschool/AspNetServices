@@ -6,12 +6,14 @@
     <!-- HEAD -->
 </head>
 <body>
-    <aside>$(MarkdownSidebar)</aside>
-    <main>
-        <article>
-            $(MarkdownBody)
-        </article>
-    </main>
-    <footer>&copy; $(copyright)</footer>
+<header md-include="header.md"></header>
+<aside md-include="form.md">
+</aside>
+<main>
+	<article>
+		$(MarkdownBody)
+	</article>
+</main>
+<footer md-include="footer.md"></footer>
 </body>
 </html>

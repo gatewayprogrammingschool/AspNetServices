@@ -6,8 +6,11 @@ view: IIndexView
 a: 1
 b: true
 c: 'false'
-MarkdownSidebar: sidebar.md
+MarkdownSidebar: form.md
 ---
+
+#include(https://raw.githubusercontent.com/MarkdownServer/AspNetServices/main/README.md)
+#include(link1.md)
 
 # Markdown File
 

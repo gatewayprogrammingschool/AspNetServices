@@ -9,15 +9,13 @@ namespace MDS.AspnetServices.Common;
 // ReSharper disable once ClassNeverInstantiated.Global
 public record MarkdownResponse
 {
-    public static MarkdownPipeline Pipeline => _pipeline ??= new MarkdownPipelineBuilder()
-        .UseAdvancedExtensions()
-        .UseSyntaxHighlighting()
-        .Build();
+    public static MarkdownPipeline Pipeline => _pipeline
+        ??= MarkdownServerOptions.Current!.Services.GetService<MarkdownPipeline>()!;
 
 
     public MarkdownDocument Document { get; private set; }
     private string? _layout = null;
-    private static MarkdownPipeline _pipeline;
+    private static MarkdownPipeline? _pipeline;
 
     public MarkdownServerOptions? Options => MarkdownServerOptions.Current;
     public Exception? Error { get; }
@@ -75,21 +73,16 @@ public record MarkdownResponse
         return html;
     }
 
-    public string ToSidebarHtml()
-    {
-        var html = Markdown.ToHtml((string?)Document.GetData("SidebarContent") ?? "", Pipeline);
-
-        return html;
-    }
-
-    public string ToHtmlPage()
+    public async Task<string> ToHtmlPage()
     {
         var html = ToHtml();
 
         var layout = _layout ??= File.ReadAllText(Options?.Value.LayoutFile ?? "./wwwroot/DefaultLayout.html");
-
+        
         var page =
             layout.Replace("$(MarkdownBody)", html);
+
+        page = await MarkdownProcessor.ProcessHtmlIncludes(page);
 
         if (!Document.ContainsData("Variables"))
         {

@@ -11,7 +11,7 @@ public class MarkdownFileMiddleware
         Options = options;
     }
 
-    public Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(HttpContext context)
     {
         try
         {
@@ -23,16 +23,17 @@ public class MarkdownFileMiddleware
 
             if (!(path.Value?.EndsWith(".md", StringComparison.InvariantCultureIgnoreCase) ?? false))
             {
-                return _next.Invoke(context);
+                await _next.Invoke(context);
+                return;
             }
 
-            var result = Options.MarkdownFileExecute(context, path);
-            return result.ExecuteAsync(context);
+            var result = await Options.MarkdownFileExecute(context, path);
+            await result.ExecuteAsync(context);
 
         }
         catch (Exception e)
         {
-            return new MarkdownResponse(e)
+            await new MarkdownResponse(e)
                 .ToMarkdownResult()
                 .ExecuteAsync(context);
         }

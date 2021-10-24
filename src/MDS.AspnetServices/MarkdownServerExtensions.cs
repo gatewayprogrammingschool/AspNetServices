@@ -14,21 +14,30 @@ public static class MarkdownServerExtensions
                     .Get<MarkdownServerConfiguration>())
             .AddSingleton<MarkdownServerOptions>();
 
+        builder.Services.AddSingleton(new MarkdownPipelineBuilder()
+            .UseAdvancedExtensions()
+            .UseSyntaxHighlighting()
+            .Build());
+
+        builder.Services.AddHttpClient();
+
         return builder;
     }
 
     public static WebApplication UseMarkdownServer(this WebApplication app)
     {
         var config = app.Services.GetRequiredService<MarkdownServerConfiguration>();
-        MarkdownServerOptions.Current = new MarkdownServerOptions(config);
+        var options = app.Services.GetRequiredService<MarkdownServerOptions>();
+        //new MarkdownServerOptions(app.Services, config);
+        options.ServerRoot = app.Environment.WebRootPath;
 
         return (WebApplication)app.UseMiddleware<MarkdownFileMiddleware>();
     }
 
-    public static IResult MarkdownFileExecute(this WebApplication app, HttpContext context, string? filename = null) 
+    public static Task<IResult> MarkdownFileExecute(this WebApplication app, HttpContext context, string? filename = null) 
         => MarkdownServerOptions.Current.MarkdownFileExecute(context, filename);
 
-    public static IResult MarkdownFileExecute(this MarkdownServerOptions options, HttpContext context, string? filename = null)
+    public static async Task<IResult> MarkdownFileExecute(this MarkdownServerOptions options, HttpContext context, string? filename = null)
     {
         var rootPath = options.ServerRoot ?? "./wwwroot";
         rootPath = rootPath.Replace("/", "\\");
@@ -41,7 +50,7 @@ public static class MarkdownServerExtensions
         var result = matrix switch
         {
             (null, _) => new MarkdownResponse(HttpStatusCode.NotFound).ToMarkdownResult(),
-            (_, true) => options.ProcessMarkdownFile(markdownFilename!),
+            (_, true) => await options.ProcessMarkdownFile(markdownFilename!),
             _ => options.ProcessFile(filename)
         };
 

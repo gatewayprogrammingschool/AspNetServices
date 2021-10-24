@@ -9,6 +9,7 @@ html[data-theme='dark'] {
 @media (prefers-color-scheme: dark) {
     html {
         --background-color: #121212;
+        --alt-background-color: #454545;
         --text-color-normal: #eee;
         --text-color-light: hsl(210, 15%, 35%);
         --text-color-richer: hsl(210, 50%, 72%);
@@ -28,6 +29,7 @@ body {
     background-color: var(--background-color);
     color: var(--text-color-normal);
     position: relative;
+    margin: 0;
 }
 
 body a {
@@ -35,16 +37,28 @@ body a {
 }
 
 aside {
+    display: flow-root;
+    float: left;
     position: relative;
     width: 350px;
     left: 0;
     bottom: 0;
+    background-color: var(--alt-background-color);
+    padding: 8px;
 }
 
 main {
     position: relative;
+    top: 0;
+    left: 0;
     margin-left: 365px;
     right: 15px;
+    padding: 8px;
+}
+
+header {
+    background-color: var(--alt-background-color);
+    padding: 8px;
 }
 
 footer {
@@ -53,4 +67,5 @@ footer {
     left: 0;
     right: 0;
     text-align: center;
+    padding: 8px;
 }
