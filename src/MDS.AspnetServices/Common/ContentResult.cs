@@ -2,17 +2,22 @@
 
 namespace MDS.AspnetServices.Common;
 
-public class MarkdownResult : IResult
+public class ContentResult : IResult
 {
-    public MarkdownDocument Document { get; }
-    public MarkdownResult()
+    public string Document { get; }
+    public ContentResult()
     {
-        Document = new MarkdownDocument();
+        Document = string.Empty;
     }
 
-    public MarkdownResult(MarkdownDocument document)
+    public ContentResult(string document)
     {
         Document = document;
+    }
+
+    public ContentResult(byte[] document)
+    {
+        Document = Convert.ToBase64String(document);
     }
 
     /// <summary>Write an HTTP response reflecting the result.</summary>
@@ -20,10 +25,9 @@ public class MarkdownResult : IResult
     /// <returns>A task that represents the asynchronous execute operation.</returns>
     public Task ExecuteAsync(HttpContext context)
     {
-        var html = MarkdownResponse.Create(Document).ToHtmlPage();
-        var memory = new ReadOnlyMemory<byte>(Encoding.UTF8.GetBytes(html));
+        var memory = new ReadOnlyMemory<byte>(Encoding.UTF8.GetBytes(Document));
         context.Response.StatusCode = (int)HttpStatusCode.OK;
-        context.Response.ContentType = "text/html";
+        context.Response.ContentType = "text/plain";
         context.Response.ContentLength = memory.Length;
         return context.Response.BodyWriter.WriteAsync(memory).AsTask();
     }

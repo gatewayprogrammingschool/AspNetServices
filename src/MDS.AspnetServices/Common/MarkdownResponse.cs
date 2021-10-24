@@ -1,15 +1,23 @@
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
+using Markdig.Syntax;
+
 namespace MDS.AspnetServices.Common;
 
 #pragma warning disable PH_S025 // Unused Synchronous Task Result
 // ReSharper disable once ClassNeverInstantiated.Global
 public record MarkdownResponse
 {
+    public static MarkdownPipeline Pipeline => _pipeline ??= new MarkdownPipelineBuilder()
+        .UseAdvancedExtensions()
+        .UseSyntaxHighlighting()
+        .Build();
+
+
+    public MarkdownDocument Document { get; private set; }
     private string? _layout = null;
-    private string? _markdown = null;
-    private string? _sidebarMarkdown;
+    private static MarkdownPipeline _pipeline;
 
     public MarkdownServerOptions? Options => MarkdownServerOptions.Current;
     public Exception? Error { get; }
@@ -17,6 +25,13 @@ public record MarkdownResponse
 
     public MarkdownResponse()
     {
+        StatusCode = HttpStatusCode.OK;
+        Document = Markdown.Parse("# Index");
+    }
+
+    public MarkdownResponse(MarkdownDocument document)
+    {
+        Document = document;
         StatusCode = HttpStatusCode.OK;
     }
 
@@ -39,42 +54,30 @@ public record MarkdownResponse
 
     private void SetMarkdown(string markdown)
     {
-        _markdown = markdown;
+        Document = Markdown.Parse(markdown, Pipeline);
     }
 
     private void SetSidebarMarkdown(string? markdown)
     {
-        _sidebarMarkdown = markdown;
+        Document.SetData("SidebarContent", markdown ?? "");
     }
 
-
-
-    public static MarkdownResponse Create(string markdown, string? sidebarMarkdown)
-        => new(markdown, sidebarMarkdown);
+    public static MarkdownResponse Create(MarkdownDocument document)
+        => new(document);
 
     public static MarkdownResponse CreateFromFile(string filename)
         => new(File.ReadAllText(filename), "");
 
     public string ToHtml()
     {
-        var pipeline = new MarkdownPipelineBuilder()
-            .UseAdvancedExtensions()
-            .UseSyntaxHighlighting()
-            .Build();
-
-        var html = Markdown.ToHtml(_markdown ?? "", pipeline);
+        var html = Document.ToHtml(Pipeline);
 
         return html;
     }
 
     public string ToSidebarHtml()
     {
-        var pipeline = new MarkdownPipelineBuilder()
-            .UseAdvancedExtensions()
-            .UseSyntaxHighlighting()
-            .Build();
-
-        var html = Markdown.ToHtml(_sidebarMarkdown ?? "", pipeline);
+        var html = Markdown.ToHtml((string?)Document.GetData("SidebarContent") ?? "", Pipeline);
 
         return html;
     }
@@ -82,20 +85,42 @@ public record MarkdownResponse
     public string ToHtmlPage()
     {
         var html = ToHtml();
-        var sidebarHtml = ToSidebarHtml();
 
-        var layout = _layout ??= File.ReadAllText(Options?.Value.LayoutFile ?? "./wwwroot/Layout.html");
+        var layout = _layout ??= File.ReadAllText(Options?.Value.LayoutFile ?? "./wwwroot/DefaultLayout.html");
 
-        var page = 
-            layout.Replace("!MarkdownBody", html)
-                  .Replace("!MarkdownSidebar", sidebarHtml);
+        var page =
+            layout.Replace("$(MarkdownBody)", html);
+
+        if (!Document.ContainsData("Variables"))
+        {
+            return page;
+        }
+
+        if (Document.GetData("Variables") is not ConcurrentDictionary<string, string> variables)
+        {
+            return page;
+        }
+
+        foreach (var (key, value) in variables)
+        {
+            var toInsert = value;
+            if (value.EndsWith(".md", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (File.Exists(value))
+                {
+                     toInsert = File.ReadAllText(value);
+                }
+            }
+
+            page = page.Replace($"$({key})", toInsert);
+        }
 
         return page;
     }
 
     public MarkdownResult ToMarkdownResult()
     {
-        return new MarkdownResult(_markdown ?? "", "");
+        return new MarkdownResult(Document);
     }
 }
 

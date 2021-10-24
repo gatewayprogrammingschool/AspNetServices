@@ -29,4 +29,5 @@ public class MarkdownServerOptions : IOptions<MarkdownServerConfiguration>
     public MarkdownServerConfiguration Value { get; } = new();
 
     public static MarkdownServerOptions Current { get; internal set; } = new();
+    public string ServerRoot { get; set; }
 }

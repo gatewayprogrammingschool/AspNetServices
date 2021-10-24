@@ -2,5 +2,5 @@
 
 public class MarkdownServerConfiguration
 {
-    public string? LayoutFile { get; set; } = "./wwwroot/Layout.html";
+    public string? LayoutFile { get; set; } = "./wwwroot/DefaultLayout.html";
 }

@@ -1,0 +1,56 @@
+﻿html {
+    --text-color-normal: #0a244d;
+    --text-color-light: #8cabd9;
+    --text-color-highlight: hsl(25, 70%, 45%);
+}
+
+html[data-theme='dark'] {
+}
+@media (prefers-color-scheme: dark) {
+    html {
+        --background-color: #121212;
+        --text-color-normal: #eee;
+        --text-color-light: hsl(210, 15%, 35%);
+        --text-color-richer: hsl(210, 50%, 72%);
+    }
+
+    img {
+        opacity: .75;
+        transition: opacity .5s ease-in-out;
+    }
+
+    img:hover {
+        opacity: 1;
+    }
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color-normal);
+    position: relative;
+}
+
+body a {
+    color: var(--text-color-highlight);
+}
+
+aside {
+    position: relative;
+    width: 350px;
+    left: 0;
+    bottom: 0;
+}
+
+main {
+    position: relative;
+    margin-left: 365px;
+    right: 15px;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
