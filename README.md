@@ -2,10 +2,10 @@
 
 What it is: _Markdown as Markup Application Server_ for ASP.Net.  
 
-Using it is as simple as importing the Nuget package and adding `services.AddMarkdownServer()` to `ConfigureServices` and `app.UseMarkdownServer()` in `Configure`.  Or just place this in Program.cs for C# 10:
+Using it is as simple as importing the Nuget package and adding `builder.AddMarkdownServer()` to `ConfigureServices` and `app.UseMarkdownServer()` in `Configure`.  Or just place this in Program.cs for C# 10:
 
 ```csharp
-builder.Services.AddMarkdownServer();
+builder.AddMarkdownServer();
 
 //....
 
