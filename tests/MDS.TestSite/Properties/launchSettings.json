@@ -11,6 +11,7 @@
     "MDS.TestSite": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl": "https://localhost:7148/index.mdapp",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\MDS.AppFramework\MDS.AppFramework.csproj" />
     <ProjectReference Include="..\..\src\MDS.AspnetServices\MDS.AspnetServices.csproj" />
   </ItemGroup>
 

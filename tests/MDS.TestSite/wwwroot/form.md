@@ -8,7 +8,7 @@ controller: MDS.TestSite.Mvc.FormController
 
 ## Sidebar Form
 
-!form#frmOne({method=post},{action=form.md},{class=form-group})
+!form#frmOne({method=post},{action=form.mdapp},{class=form-group})
 
 !label({for=txtOne}):Search For:
 !input#txtOne({class=form-element}):Default Value
