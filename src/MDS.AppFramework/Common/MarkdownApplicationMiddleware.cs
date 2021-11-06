@@ -24,7 +24,7 @@ namespace MDS.AppFramework.Common
             {
                 var path = context.Request.Path;
 
-                if (!(path.Value?.EndsWith(".mdapp", StringComparison.InvariantCultureIgnoreCase) ?? false))
+                if (!(path.Value?.StartsWith("/mdapp/", StringComparison.InvariantCultureIgnoreCase) ?? false))
                 {
                     await _next.Invoke(context);
                     return;

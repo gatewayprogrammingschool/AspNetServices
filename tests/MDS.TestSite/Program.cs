@@ -4,21 +4,21 @@ using MDS.AppFramework.Common;
 using MDS.TestSite.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.AddMarkdownServer();
 builder.AddMarkdownApplication(map =>
 {
-    map.MapPathController<IndexController>("/index.mdapp");
+    map.MapPathController<IndexController>("/mdapp/");
  
     builder.Services.AddScoped<IndexController>(provider => new IndexController(provider, Guid.NewGuid().ToString()));
     builder.Services.AddScoped<IndexViewMonitor>();
 });
+builder.AddMarkdownServer();
 
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
-app.UseMarkdownServer();
 app.UseMarkdownApplication();
+app.UseMarkdownServer();
 
 app.UseStaticFiles();
 
