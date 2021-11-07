@@ -9,7 +9,7 @@ using NewtonsoftSerializerSettings = Newtonsoft.Json.JsonSerializerSettings;
 
 using ErrorEventArgs = Newtonsoft.Json.Serialization.ErrorEventArgs;
 
-namespace MDS.AppFramework.Common;
+namespace MDS.AspnetServices.Common;
 
 internal static class NewtonsoftExtensions
 {
@@ -44,7 +44,7 @@ internal static class NewtonsoftExtensions
 
     public static TObject? FromNsJson<TObject>(
         this string? json,
-        JsonSerializerSettings? settings = default)
+        NewtonsoftSerializerSettings? settings = default)
         where TObject : new()
         => json is null or ""
             ? new()
@@ -52,7 +52,7 @@ internal static class NewtonsoftExtensions
 
     public static object? FromNsJson(
         this string? json,
-        JsonSerializerSettings? settings = default)
+        NewtonsoftSerializerSettings? settings = default)
         => json is null or ""
             ? new()
             : JsonConvert.DeserializeObject(json, settings ?? CurrentSettings);
@@ -60,7 +60,7 @@ internal static class NewtonsoftExtensions
     public static object? FromNsJson(
         this string? json,
         string typeName,
-        JsonSerializerSettings? settings = default)
+        NewtonsoftSerializerSettings? settings = default)
     {
         if (json is null or "")
         {
@@ -77,7 +77,7 @@ internal static class NewtonsoftExtensions
     public static TObject WithNsJson<TObject>(
         this TObject? instance,
         string? json,
-        JsonSerializerSettings? settings = default)
+        NewtonsoftSerializerSettings? settings = default)
             where TObject : new()
     {
         instance ??= new();

@@ -1,7 +1,8 @@
 global using MDS.AspnetServices;
 using MDS.AppFramework;
 using MDS.AppFramework.Common;
-using MDS.TestSite.Controllers;
+using MDS.TestSite.MdApp.Controllers;
+using MDS.TestSite.MdApp.Views;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddMarkdownApplication(map =>

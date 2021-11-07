@@ -8,6 +8,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Common\JsonExtensions.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Faslinq" Version="1.0.5" />
 		<PackageReference Include="Markdig" Version="0.26.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />

@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System.CodeDom.Compiler;
+using System.Collections.Concurrent;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.WebUtilities;
 
@@ -12,6 +13,7 @@ public abstract record AppControlContainerBase(string Id) : AppControlBase(Id), 
 
     public override async Task InitAsync(HttpContext context)
     {
+        Logger?.LogInformation($"Initializing {Id}. IsPostBack={IsPostBack}");
         foreach (var control in Controls)
         {
             await control.Value.InitAsync(context).ConfigureAwait(false);
@@ -41,12 +43,28 @@ public abstract record AppControlContainerBase(string Id) : AppControlBase(Id), 
         }
     }
     
-    public override async Task RenderAsync(HttpContext context, HttpResponseStreamWriter writer, HtmlEncoder htmlEncoder)
+    public override async Task RenderAsync(HttpContext context, IndentedTextWriter writer, HtmlEncoder htmlEncoder)
     {
+        writer.Indent++;
+        await writer.WriteLineAsync();
+        await writer.WriteLineAsync($"<div id='{Id}'>");
+        writer.Indent++;
+        await writer.WriteLineAsync($"<form id='{Id}_form' action='{context.Request.Path}' method='POST'>");
+        writer.Indent++;
+        await writer.WriteLineAsync($"<input type='hidden' value='{context.Items["ViewKey"]}' id='{Id}_ViewKey' name='{Id}|ViewKey' />");
         foreach (var control in Controls)
         {
             await control.Value.RenderAsync(context, writer, HtmlEncoder.Default).ConfigureAwait(false);
         }
+
+
+        await writer.WriteLineAsync($"<button type='submit' value='submit' id='{Id}_Submit' name='{Id}|Submit'>Submit</button>");
+        writer.Indent--;
+        await writer.WriteLineAsync($"</form>");
+        writer.Indent--;
+        await writer.WriteLineAsync($"</div>");
+        await writer.WriteLineAsync();
+
     }
     
     public override async Task ProcessPageAsync(HttpContext context)

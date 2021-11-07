@@ -10,8 +10,8 @@ public interface IViewMonitor
     
     Task StopAsync(CancellationToken token);
 
-    event Action<IViewWorkflow> ViewCompleted;
-    event Action<IViewWorkflow> ViewNotCompleted;
+    event Func<IViewWorkflow, CancellationToken, Task> ViewCompletedAsync;
+    event Func<IViewWorkflow, AggregateException, CancellationToken, Task> ViewNotCompletedAsync;
 
     Task StartAsync(HttpContext context, CancellationToken token);
 }

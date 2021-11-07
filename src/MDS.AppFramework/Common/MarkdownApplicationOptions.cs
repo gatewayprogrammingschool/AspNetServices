@@ -1,4 +1,4 @@
-﻿
+﻿using MDS.AspnetServices.Common;
 using Microsoft.Extensions.Options;
 
 namespace MDS.AppFramework.Common

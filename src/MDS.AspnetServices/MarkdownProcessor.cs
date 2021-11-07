@@ -20,9 +20,9 @@ internal static class MarkdownProcessor
             ? options.ProcessContentFile(filename)
             : new MarkdownResponse(HttpStatusCode.NotFound).ToMarkdownResult();
 
-    public static async Task<IResult> ProcessMarkdownFile(this MarkdownServerOptions options, string filename)
+    public static async Task<IResult> ProcessMarkdownFile(this MarkdownServerOptions options, string filename, ConcurrentDictionary<string, string>? variables = null)
         => File.Exists(filename)
-            ? (await options.ProcessMarkdown(File.ReadAllText(filename), Path.GetDirectoryName(filename))).ToResult()
+            ? (await options.ProcessMarkdown(File.ReadAllText(filename), Path.GetDirectoryName(filename), variables)).ToResult()
             : new MarkdownResponse(HttpStatusCode.NotFound).ToMarkdownResult();
 
     // <([^>]*)md-include="([^"\n]*)"([^>]*)>
@@ -51,17 +51,22 @@ internal static class MarkdownProcessor
                 continue;
             }
 
+            filename = filename.Replace("/", "\\").Trim('\\');
+
             var root = MarkdownServerOptions.Current!.ServerRoot!;
             filename = Path.Combine(root, filename);
 
-            if (filename is not null or "" && File.Exists(filename))
+            if (filename is not null or "")
             {
-                var md = await MarkdownServerOptions.Current.ProcessMarkdown(File.ReadAllText(filename), root);
+                if (File.Exists(filename))
+                {
+                    var md = await MarkdownServerOptions.Current.ProcessMarkdown(File.ReadAllText(filename), root);
 
-                var nestedHtml = Markdown.ToHtml(md,
-                    MarkdownServerOptions.Current.Services.GetService<MarkdownPipeline>());
+                    var nestedHtml = Markdown.ToHtml(md,
+                        MarkdownServerOptions.Current.Services.GetService<MarkdownPipeline>());
 
-                sb.Insert(insertAt, nestedHtml);
+                    sb.Insert(insertAt, nestedHtml);
+                }
 
                 sb.Remove(capture.Index, capture.Length);
             }
@@ -73,7 +78,8 @@ internal static class MarkdownProcessor
         return sb.ToString();
     }
 
-    public static async Task<(string, ConcurrentDictionary<string, string>)> ProcessMarkdownIncludes(string markdown, MarkdownDocument originalDocument)
+    public static async Task<(string, ConcurrentDictionary<string, string>)>
+        ProcessMarkdownIncludes(string markdown, MarkdownDocument originalDocument)
     {
         var sb = new StringBuilder(markdown);
         var regex = new Regex(
@@ -97,9 +103,7 @@ internal static class MarkdownProcessor
 
             if (filename is not (null or ""))
             {
-
-
-                string md = null;
+                string? md = null;
 
                 var isHttp = filename.StartsWith("http", StringComparison.InvariantCultureIgnoreCase);
 
@@ -155,7 +159,7 @@ internal static class MarkdownProcessor
                 sb.Insert(insertAt, md);
 
                 var nested = await ProcessMarkdownIncludes(sb.ToString(), originalDocument);
-                
+
                 if (nested.Item1 is not (null or ""))
                 {
                     sb.Clear();
@@ -175,202 +179,220 @@ internal static class MarkdownProcessor
         return (sb.ToString(), variables);
     }
 
-public static string ProcessFormTags(string markdown)
-{
-    var sb = new StringBuilder(markdown);
-    var regex = new Regex(
-        @"^(![/]?[^#(:\s)]+){1}((#[\w\d_]+){0,1}(\((,?({[\w\d_-}]+=[^}]+\})){1,}\))(:([^\n]+)){0,1})?",
-        RegexOptions.Multiline);
-
-    var matches = regex.Matches(markdown).Cast<Match>();
-    foreach (var match in matches)
+    public static string ProcessFormTags(string markdown)
     {
-        var toReplace = markdown[match.Index..(match.Index + match.Length)];
+        var sb = new StringBuilder(markdown);
+        var regex = new Regex(
+            @"^(![/]?[^#(:\s)]+){1}((#[\w\d_]+){0,1}(\((,?({[\w\d_-}]+=[^}]+\})){1,}\))(:([^\n]+)){0,1})?",
+            RegexOptions.Multiline);
 
-        var captures1 = match.Groups.Cast<Group>()
-            .SelectMany(g => g.Captures).OfType<Group>()
-            .SelectMany(cc => cc.Captures)
-            .ToList();
+        var matches = regex.Matches(markdown).Cast<Match>();
+        foreach (var match in matches)
+        {
+            var toReplace = markdown[match.Index..(match.Index + match.Length)];
 
-        var captures2 = captures1.OfType<Group>()
-            .SelectMany(g => g.Captures.OfType<Capture>())
-            .ToList();
+            var captures1 = match.Groups.Cast<Group>()
+                .SelectMany(g => g.Captures).OfType<Group>()
+                .SelectMany(cc => cc.Captures)
+                .ToList();
 
-        var captures = captures1.Union(captures2).Distinct().ToList();
+            var captures2 = captures1.OfType<Group>()
+                .SelectMany(g => g.Captures.OfType<Capture>())
+                .ToList();
 
-        var tagType = captures
-            .FirstOrDefault(c =>
-                c.Value.StartsWith("!") &&
-                c.Value.IndexOf("#") == -1 &&
-                c.Value.IndexOf("(") == -1 &&
-                c.Value.IndexOf(":") == -1)?
-            .Value
-            .TrimStart('!');
+            var captures = captures1.Union(captures2).Distinct().ToList();
 
-        var tagId = captures
-            .FirstOrDefault(c =>
-                c.Value.StartsWith("#") &&
-                c.Value.IndexOf("(") == -1 &&
-                c.Value.IndexOf(":") == -1)?
-            .Value
-            .TrimStart('#');
+            var tagType = captures
+                .FirstOrDefault(c =>
+                    c.Value.StartsWith("!") &&
+                    c.Value.IndexOf("#") == -1 &&
+                    c.Value.IndexOf("(") == -1 &&
+                    c.Value.IndexOf(":") == -1)?
+                .Value
+                .TrimStart('!');
 
-        var tagAttributes = captures
-            .Where(c => new Regex(@"^[,]{0,1}\{[^=]+=.*\}").IsMatch(c.Value))
-            .ToList();
+            var tagId = captures
+                .FirstOrDefault(c =>
+                    c.Value.StartsWith("#") &&
+                    c.Value.IndexOf("(") == -1 &&
+                    c.Value.IndexOf(":") == -1)?
+                .Value
+                .TrimStart('#');
 
-        var htmlAttributes = tagAttributes
-            .Select(c =>
-                (name: c.Value
-                    .TrimStart(",{".ToCharArray())
-                    .TrimEnd('}')
-                    .Split('=').First(),
-                value: c.Value
+            var tagAttributes = captures
+                .Where(c => new Regex(@"^[,]{0,1}\{[^=]+=.*\}").IsMatch(c.Value))
+                .ToList();
+
+            var htmlAttributes = tagAttributes
+                .Select(c =>
+                    (name: c.Value
                         .TrimStart(",{".ToCharArray())
                         .TrimEnd('}')
-                        .Split('=').Last()))
-            .Select(t => $"{t.name}='{t.value}'")
-            .Distinct()
-            .ToList();
+                        .Split('=').First(),
+                    value: c.Value
+                            .TrimStart(",{".ToCharArray())
+                            .TrimEnd('}')
+                            .Split('=').Last()))
+                .Select(t => $"{t.name}='{t.value}'")
+                .Distinct()
+                .ToList();
 
-        var tagValue = captures
-            .FirstOrDefault(c =>
-                c.Value.StartsWith(":"))?
-            .Value
-            .TrimStart(':')
-            .Trim();
+            var tagValue = captures
+                .FirstOrDefault(c =>
+                    c.Value.StartsWith(":"))?
+                .Value
+                .TrimStart(':')
+                .Trim();
 
-        var counter = 0;
-        var formTag = tagType switch
-        {
-            "/form" => "</form>",
-            "form" =>
-                $"<form id='{tagId ?? $"form{counter}"}' name='{tagId ?? $"form{counter++}"}' {string.Join(' ', htmlAttributes)}>",
-            "input" =>
-                $"<input id='{tagId ?? $"input{counter}"}' name='{tagId ?? $"input{counter++}"}' {string.Join(' ', htmlAttributes)} value='{tagValue}'></input>",
-            "button" =>
-                $"<button id='{tagId ?? $"input{counter}"}' name='{tagId ?? $"input{counter++}"}' {string.Join(' ', htmlAttributes)} value='{tagValue}'>{tagValue}</button>",
-            _ =>
-                $"<{tagType} id='{tagId ?? $"input{counter}"}' name='{tagId ?? $"input{counter++}"}' {string.Join(' ', htmlAttributes)} value='{tagValue}'>{tagValue}</{tagType}>"
-        };
+            var counter = 0;
+            var formTag = tagType switch
+            {
+                "/form" => "</form>",
+                "form" =>
+                    $"<form id='{tagId ?? $"form{counter}"}' name='{tagId ?? $"form{counter++}"}' {string.Join(' ', htmlAttributes)}>",
+                "input" =>
+                    $"<input id='{tagId ?? $"input{counter}"}' name='{tagId ?? $"input{counter++}"}' {string.Join(' ', htmlAttributes)} value='{tagValue}'></input>",
+                "button" =>
+                    $"<button id='{tagId ?? $"input{counter}"}' name='{tagId ?? $"input{counter++}"}' {string.Join(' ', htmlAttributes)} value='{tagValue}'>{tagValue}</button>",
+                _ =>
+                    $"<{tagType} id='{tagId ?? $"input{counter}"}' name='{tagId ?? $"input{counter++}"}' {string.Join(' ', htmlAttributes)} value='{tagValue}'>{tagValue}</{tagType}>"
+            };
 
-        sb.Replace(toReplace, formTag);
-    }
-
-    return sb.ToString();
-}
-
-public static async Task<MarkdownDocument> ProcessMarkdown(this MarkdownServerOptions options, string markdown, string myRoot)
-{
-    var variables = new ConcurrentDictionary<string, string>();
-    var document = Markdig.Markdown.Parse(markdown, MarkdownResponse.Pipeline);
-
-    markdown = ProcessFormTags(markdown);
-    var (md, vars) = await ProcessMarkdownIncludes(markdown, document);
-    markdown = md;
-
-    foreach (var (k, v) in vars)
-    {
-        variables.AddOrUpdate(k, v, (_, _) => v);
-    }
-
-    var targetDocument = Markdig.Markdown.Parse(markdown, MarkdownResponse.Pipeline);
-
-    for (var i = 0; i < document.Count; ++i)
-    {
-        var block = document[i];
-
-        if (i is not 0 || block is not ThematicBreakBlock tbb)
-        {
-            continue;
+            sb.Replace(toReplace, formTag);
         }
 
-        ++i;
+        return sb.ToString();
+    }
 
-        var frontMatter = markdown[document[i].Span.Start..document[i].Span.End]
-            .Split(Environment.NewLine);
-
-        if (frontMatter.Length == 1)
+    public static async Task<MarkdownDocument> ProcessMarkdown(this MarkdownServerOptions options, string markdown, string myRoot, ConcurrentDictionary<string, string>? variables = null)
+    {
+        if (variables is null)
         {
-            frontMatter = frontMatter[0].Split('\n');
+            variables = new ConcurrentDictionary<string, string>();
         }
 
-        // YAML Front Matter
-        foreach (var line in frontMatter)
-        {
-            var linestring = line.ToString();
+        var document = Markdig.Markdown.Parse(markdown, MarkdownResponse.Pipeline);
 
-            if (linestring.IndexOf(":", StringComparison.OrdinalIgnoreCase) <= -1)
+        markdown = ProcessFormTags(markdown);
+        var (md, vars) = await ProcessMarkdownIncludes(markdown, document);
+        markdown = md;
+
+        foreach (var (k, v) in vars)
+        {
+            variables.AddOrUpdate(k, v, (_, _) => v);
+        }
+
+        var targetDocument = Markdig.Markdown.Parse(markdown, MarkdownResponse.Pipeline);
+
+        for (var i = 0; i < document.Count; ++i)
+        {
+            var block = document[i];
+
+            if (i is not 0 || block is not ThematicBreakBlock tbb)
             {
                 continue;
             }
 
-            var name = linestring.Split(':').First().Trim();
-            var value = linestring.Split(':').Last().Trim();
+            ++i;
 
-            variables.AddOrUpdate(name, value, (_, _) => value);
-        }
+            var frontMatter = markdown[document[i].Span.Start..document[i].Span.End]
+                .Split(Environment.NewLine);
 
-        markdown = markdown.Remove(0, document[i].Span.End);
-
-        foreach (var (key, value) in variables)
-        {
-            switch (value)
+            if (frontMatter.Length == 1)
             {
-                case string sv when (sv.EndsWith(".md", StringComparison.InvariantCultureIgnoreCase)):
-                    sv = Path.GetFullPath(Path.Combine(myRoot, sv));
-                    var nestedMarkdown = await options.ProcessNestedMarkdownFile(targetDocument, sv);
-                    var text =
-                            nestedMarkdown.OfType<LeafBlock>()?
-                                .FirstOrDefault()?
-                                .Inline?
-                                .OfType<LiteralInline>()?
-                                .FirstOrDefault()?
-                                .Content
-                                .Text
-                            ?? value
-                                ;
-
-                    var nestedHtml = nestedMarkdown.ToHtml(options.Services.GetService<MarkdownPipeline>());
-
-                    variables.AddOrUpdate(key, nestedHtml, (_, _) => nestedHtml);
-
-                    var nestedVariables =
-                        nestedMarkdown.GetData("Variables") as ConcurrentDictionary<string, string>;
-
-                    if (nestedVariables is not null)
-                    {
-                        foreach (var (nkey, nvalue) in nestedVariables)
-                        {
-                            variables.AddOrUpdate($"{key}_{nkey}", nvalue, (_, _) => nvalue);
-                        }
-                    }
-
-                    markdown = markdown.Replace($"$({key})", text);
-                    break;
-
-                default:
-                    markdown = markdown.Replace($"$({key})", value);
-                    break;
+                frontMatter = frontMatter[0].Split('\n');
             }
+
+            // YAML Front Matter
+            foreach (var line in frontMatter)
+            {
+                var linestring = line.ToString();
+
+                if (linestring.IndexOf(":", StringComparison.OrdinalIgnoreCase) <= -1)
+                {
+                    continue;
+                }
+
+                var name = linestring.Split(':').First().Trim();
+                var value = linestring.Split(':').Last().Trim();
+
+                if (name == "ViewModel")
+                {
+                    continue;
+                }
+
+                if (name.Equals("Layout", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    if (File.Exists(value))
+                    {
+                        value = await File.ReadAllTextAsync(value);
+                        document.SetData(name, value);
+                    }
+                }
+
+                variables.AddOrUpdate(name, value, (_, _) => value);
+            }
+
+            markdown = markdown.Remove(0, document[i].Span.End);
+
+            foreach (var (key, value) in variables)
+            {
+                switch (value)
+                {
+                    case string sv when (sv.EndsWith(".md", StringComparison.InvariantCultureIgnoreCase)):
+                        sv = Path.GetFullPath(Path.Combine(myRoot, sv));
+                        var nestedMarkdown = await options.ProcessNestedMarkdownFile(targetDocument, sv);
+                        var text =
+                                nestedMarkdown.OfType<LeafBlock>()?
+                                    .FirstOrDefault()?
+                                    .Inline?
+                                    .OfType<LiteralInline>()?
+                                    .FirstOrDefault()?
+                                    .Content
+                                    .Text
+                                ?? value
+                                    ;
+
+                        var nestedHtml = nestedMarkdown.ToHtml(options.Services.GetService<MarkdownPipeline>());
+
+                        variables.AddOrUpdate(key, nestedHtml, (_, _) => nestedHtml);
+
+                        var nestedVariables =
+                            nestedMarkdown.GetData("Variables") as ConcurrentDictionary<string, string>;
+
+                        if (nestedVariables is not null)
+                        {
+                            foreach (var (nkey, nvalue) in nestedVariables)
+                            {
+                                variables.AddOrUpdate($"{key}_{nkey}", nvalue, (_, _) => nvalue);
+                            }
+                        }
+
+                        markdown = markdown.Replace($"$({key})", text);
+                        break;
+
+                    default:
+                        markdown = markdown.Replace($"$({key})", value);
+                        break;
+                }
+            }
+
+            targetDocument = Markdown.Parse(markdown, MarkdownResponse.Pipeline);
         }
 
-        targetDocument = Markdown.Parse(markdown, MarkdownResponse.Pipeline);
+        targetDocument.SetData("Variables", variables);
+
+        return targetDocument;
     }
 
-    targetDocument.SetData("Variables", variables);
+    internal static Task<MarkdownDocument> ProcessNestedMarkdownFile(this MarkdownServerOptions options, MarkdownDocument parent,
+        string filename)
+        => File.Exists(filename)
+            ? options.ProcessMarkdown(File.ReadAllText(filename), Path.GetDirectoryName(filename)!)
+            : throw new FileNotFoundException("Could not located nested file.", filename);
 
-    return targetDocument;
-}
-
-internal static Task<MarkdownDocument> ProcessNestedMarkdownFile(this MarkdownServerOptions options, MarkdownDocument parent,
-    string filename)
-    => File.Exists(filename)
-        ? options.ProcessMarkdown(File.ReadAllText(filename), Path.GetDirectoryName(filename)!)
-        : throw new FileNotFoundException("Could not located nested file.", filename);
-
-public static MarkdownResult ToResult(this MarkdownDocument document)
-{
-    return new MarkdownResult(document);
-}
+    public static MarkdownResult ToResult(this MarkdownDocument document)
+    {
+        return new MarkdownResult(document);
+    }
 }

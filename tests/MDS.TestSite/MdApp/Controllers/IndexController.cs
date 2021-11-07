@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 using MDS.AppFramework;
+using MDS.TestSite.MdApp.Views;
 
-namespace MDS.TestSite.Controllers
+namespace MDS.TestSite.MdApp.Controllers
 {
     public record IndexController(IServiceProvider Services, string Id) : AppController(Services)
     {

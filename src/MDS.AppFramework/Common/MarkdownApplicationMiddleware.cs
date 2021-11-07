@@ -1,4 +1,9 @@
-﻿using MDS.AspnetServices.Common;
+﻿using System.Collections.Concurrent;
+using System.Reflection;
+
+using MDS.AppFramework.Controls;
+using MDS.AspnetServices;
+using MDS.AspnetServices.Common;
 
 namespace MDS.AppFramework.Common
 {
@@ -34,7 +39,7 @@ namespace MDS.AppFramework.Common
 
                 Type? controllerType = map.GetControllerType(path);
 
-                if(controllerType == null)
+                if (controllerType == null)
                 {
                     _logger.LogWarning($"No controller found for {path}");
                     await _next.Invoke(context);
@@ -45,15 +50,15 @@ namespace MDS.AppFramework.Common
 
                 var viewMonitor = controller.GetViewMonitor(path);
 
-                viewMonitor.ViewCompleted -= ViewMonitor_ViewCompleted;
-                viewMonitor.ViewCompleted += ViewMonitor_ViewCompleted;
+                viewMonitor.ViewCompletedAsync -= ViewMonitor_ViewCompleted;
+                viewMonitor.ViewCompletedAsync += ViewMonitor_ViewCompleted;
 
-                viewMonitor.ViewNotCompleted -= ViewMonitor_ViewNotCompleted;
-                viewMonitor.ViewNotCompleted += ViewMonitor_ViewNotCompleted;
+                viewMonitor.ViewNotCompletedAsync -= ViewMonitor_ViewNotCompleted;
+                viewMonitor.ViewNotCompletedAsync += ViewMonitor_ViewNotCompleted;
 
                 await viewMonitor.StartAsync(context, controller.CancellationTokenSource.Token);
 
-                if(mre.Wait(TimeSpan.FromMinutes(5)))
+                if (mre.Wait(TimeSpan.FromMinutes(5)))
                 {
                     _logger.LogInformation($"Session {context.Session.Id} call to {path} completed successfully in {GetType().Name}.");
                     return;
@@ -61,26 +66,63 @@ namespace MDS.AppFramework.Common
 
                 _logger.LogWarning($"Session {context.Session.Id} call to {path} timed out in {GetType().Name}.");
 
-                void ViewMonitor_ViewNotCompleted(Controls.IViewWorkflow obj)
+                Task ViewMonitor_ViewNotCompleted(Controls.IViewWorkflow obj, AggregateException ae, CancellationToken token)
                 {
-                    if(obj.Exceptions?.InnerExceptions.Any() ?? false)
+                    if (ae is not null and { InnerExceptions.Count: > 0 })
                     {
-                        _logger.LogError(obj.Exceptions, "Workflow returned exceptions.");
-                        throw obj.Exceptions;
+                        _logger.LogError(ae, "Workflow returned exceptions.");
+                        throw ae;
                     }
 
                     _logger.LogWarning($"Session {context.Session.Id} call to {path} did not complete.");
 
                     mre.Set();
+
+                    return Task.CompletedTask;
                 }
 
-                void ViewMonitor_ViewCompleted(Controls.IViewWorkflow obj)
+                async Task ViewMonitor_ViewCompleted(Controls.IViewWorkflow workflow, CancellationToken token)
                 {
-                    if(obj.Exceptions?.InnerExceptions.Any() ?? false)
+                    if (workflow.Exceptions?.InnerExceptions.Any() ?? false)
                     {
-                        _logger.LogError(obj.Exceptions, "Workflow returned exceptions.");
-                        throw obj.Exceptions;
+                        _logger.LogError(workflow.Exceptions, "Workflow returned exceptions.");
+                        throw workflow.Exceptions;
                     }
+
+                    var stream = workflow.Renderer;
+
+                    if(stream is null)
+                    {
+                        throw new ApplicationException("Workflow provides no RenderStream.");
+                    }
+
+                    var response = workflow.StringBuilder.ToString();
+
+                    // Get the Markdown file for the view
+                    string viewName = workflow.GetType().FullName!;
+                    var index = viewName.IndexOf(".mdapp.", StringComparison.OrdinalIgnoreCase);
+                    if (index > -1)
+                    {
+                        index++;
+                        var mdappName = viewName[index..].Replace(".", "\\") + ".md";
+
+                        if(File.Exists(mdappName))
+                        {
+                            var filename = new FileInfo(mdappName).FullName;
+                            ConcurrentDictionary<string, string> variables = new ();
+                            variables.TryAdd(nameof(workflow.ViewKey), workflow.ViewKey);
+                            variables.TryAdd($"ViewBody:{workflow.ViewKey}", response);
+                            variables.TryAdd(nameof(viewName), viewName);
+                            if(workflow.ViewModel is not null)
+                            {
+                                ProcessViewModel(workflow.ViewModel, variables);
+                            }
+                            var options = Options.Services.GetRequiredService<MarkdownServerOptions>();
+                            var result = await options.MarkdownFileExecute(context, filename, variables);
+                            await result.ExecuteAsync(context);
+                        }
+                    }
+
 
                     _logger.LogInformation($"Session {context.Session.Id} call to {path} completed.");
 
@@ -94,6 +136,19 @@ namespace MDS.AppFramework.Common
                     .ToMarkdownResult()
                     .ExecuteAsync(context);
             }
+        }
+
+        private void ProcessViewModel(ControlViewModel viewModel, ConcurrentDictionary<string, string> variables)
+        {
+            foreach(PropertyInfo pi in viewModel.GetType().GetProperties(System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.Public))
+            {
+                var name = $"ViewModel.{pi.Name}";
+                var value = pi.GetValue(viewModel) as string ?? pi.GetValue(viewModel)?.ToString() ?? String.Empty;
+
+                variables.AddOrUpdate(name, value, (_,_)=>value);
+            }
+
+            variables.AddOrUpdate("ViewModel", viewModel.ToString(), (_,_)=>viewModel.ToString());
         }
 
         public MarkdownApplicationConfiguration Value { get; } = new();

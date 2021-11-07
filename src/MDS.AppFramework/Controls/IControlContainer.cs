@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System.CodeDom.Compiler;
+using System.Collections.Concurrent;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.WebUtilities;
 
@@ -10,7 +11,7 @@ public interface IControlContainer
     Task BuildControlsAsync(HttpContext context);
     Task ProcessPageAsync(HttpContext context);
     Task PreRenderAsync(HttpContext context);
-    Task RenderAsync(HttpContext context, HttpResponseStreamWriter writer, HtmlEncoder htmlEncoder);
+    Task RenderAsync(HttpContext context, IndentedTextWriter writer, HtmlEncoder htmlEncoder);
 
     Task<IControl> CreateControl<TControl>(HttpContext context, IControlContainer parent, IViewState view);
 }

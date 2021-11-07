@@ -8,12 +8,12 @@ public record ViewMonitor(IViewWorkflow View, ILogger Logger) : IViewMonitor
 
     private readonly CancellationTokenSource _tokenSource = new();
 
-    public event Action<IViewWorkflow>? ViewCompleted;
-    public event Action<IViewWorkflow>? ViewNotCompleted;
+    public event Func<IViewWorkflow, CancellationToken, Task> ViewCompletedAsync;
+    public event Func<IViewWorkflow, AggregateException, CancellationToken, Task> ViewNotCompletedAsync;
 
     public string Path { get; set; }
 
-    public Task StartAsync(HttpContext context, CancellationToken token = default)
+    public async Task StartAsync(HttpContext context, CancellationToken token = default)
     {
         Token = token;
 
@@ -24,6 +24,7 @@ public record ViewMonitor(IViewWorkflow View, ILogger Logger) : IViewMonitor
         try
         {
             Logger.LogInformation($"{GetType().Name}: Starting {View.GetType().Name}::{View.ViewKey}");
+            context.Items.Add(nameof(View.ViewKey), View.ViewKey);
             result = View.StartAsync(context, _tokenSource.Token);
         }
         catch (Exception ex)
@@ -43,14 +44,22 @@ public record ViewMonitor(IViewWorkflow View, ILogger Logger) : IViewMonitor
         if(ae.InnerExceptions.Count > 0)
         {
             result = Task.FromException(ae);
-            ViewNotCompleted?.Invoke(View);
+
+            if(ViewNotCompletedAsync is not null)
+            {
+                await ViewNotCompletedAsync(View, ae, token);
+            }
         }
 
-        ViewCompleted?.Invoke(View);
-        return result;
+        if(ViewCompletedAsync is not null)
+        {
+            await ViewCompletedAsync(View, token);
+        }
+        
+        await result;
     }
 
-    public Task StopAsync(CancellationToken token)
+    public async Task StopAsync(CancellationToken token)
     {
         token.Register(() => _tokenSource.Cancel());
 
@@ -61,7 +70,7 @@ public record ViewMonitor(IViewWorkflow View, ILogger Logger) : IViewMonitor
             Logger.LogInformation($"{GetType().Name}: Stopping {View.GetType().Name}::{View.ViewKey}");
             _tokenSource.Cancel();
 
-            return Task.CompletedTask;
+            return;
         }
         catch (Exception ex)
         {
@@ -73,26 +82,16 @@ public record ViewMonitor(IViewWorkflow View, ILogger Logger) : IViewMonitor
             Logger.LogInformation($"{GetType().Name}: Stopped {View.GetType().Name}::{View.ViewKey}");
             if (View.IsCompleted)
             {
-                try
+                if(ViewCompletedAsync is not null)
                 {
-                    ViewCompleted?.Invoke(View);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex, $"{GetType().Name}: Handled {View.GetType().Name}::{View.ViewKey}{Environment.NewLine}{ex}");
-                    ae.InnerExceptions.Append(ex);
+                    await ViewCompletedAsync(View, token);
                 }
             }
             else
             {
-                try
+                if(ViewNotCompletedAsync is not null)
                 {
-                    ViewNotCompleted?.Invoke(View);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex, $"{GetType().Name}: Handled {View.GetType().Name}::{View.ViewKey}{Environment.NewLine}{ex}");
-                    ae.InnerExceptions.Append(ex);
+                    await ViewNotCompletedAsync(View, ae, token);
                 }
             }
         }
@@ -102,6 +101,6 @@ public record ViewMonitor(IViewWorkflow View, ILogger Logger) : IViewMonitor
             result = Task.FromException(ae);
         }
 
-        return result;
+        await result;
     }
 }

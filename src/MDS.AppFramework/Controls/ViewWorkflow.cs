@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System.CodeDom.Compiler;
+using System.Collections.Concurrent;
 using System.Text;
 using System.Text.Encodings.Web;
 
@@ -10,16 +11,21 @@ namespace MDS.AppFramework.Controls;
 
 public abstract record ViewWorkflow(string Id) : AppControlContainerBase(Id), IViewWorkflow
 {
-    public string ViewKey => Id;
+    public string ViewKey {get;set; } = Guid.NewGuid().ToString();
 
-    public bool IsPostBack { get; private set; }
     public bool IsCompleted { get; }
 
-    public ControlViewModel? ViewModel {get;set;}
+    public virtual ControlViewModel? ViewModel {get;set;}
 
     public AggregateException? Exceptions { get; private set; }
 
+    public StringBuilder StringBuilder { get; } = new StringBuilder();
+    public IndentedTextWriter Renderer => _renderer ??= 
+        new IndentedTextWriter(new StringWriter(StringBuilder), "\t");
+
     private bool _isDisposed = false;
+    private IndentedTextWriter _renderer;
+
     public override async ValueTask DisposeAsync()
     {
         if(!_isDisposed)
@@ -43,6 +49,14 @@ public abstract record ViewWorkflow(string Id) : AppControlContainerBase(Id), IV
     {
         try
         {
+            Logger = MarkdownApplicationOptions.Current!.Services.GetRequiredService<ILogger<ViewWorkflow>>();
+
+            if(context.Request.Method == HttpMethod.Post.ToString())
+            {
+                IsPostBack = true;
+                ViewKey = context.Request.Form[$"{Id}_ViewKey"];
+            }
+
             await BuildControlsAsync(context).ConfigureAwait(false);
             await InitializePageStateAsync(context).ConfigureAwait(false);
             await InitAsync(context).ConfigureAwait(false);
@@ -52,8 +66,7 @@ public abstract record ViewWorkflow(string Id) : AppControlContainerBase(Id), IV
 
             await PreRenderAsync(context).ConfigureAwait(false);
 
-            var writer = new HttpResponseStreamWriter(context.Response.BodyWriter.AsStream(true), Encoding.UTF8);
-            await RenderAsync(context, writer, HtmlEncoder.Default).ConfigureAwait(false);
+            await RenderAsync(context, Renderer, HtmlEncoder.Default).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -82,12 +95,12 @@ public abstract record ViewWorkflow(string Id) : AppControlContainerBase(Id), IV
     {
         if (context.Request.HasFormContentType)
         {
-            Id = context.Request.Form[nameof(ViewKey)];
+            ViewKey = context.Request.Form[nameof(ViewKey)];
             IsPostBack = true;
         }
         else
         {
-            Id = Guid.NewGuid().ToString();
+            ViewKey = Guid.NewGuid().ToString();
             IsPostBack = false;
         }
 

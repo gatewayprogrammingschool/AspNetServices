@@ -37,7 +37,11 @@ public static class MarkdownServerExtensions
     public static Task<IResult> MarkdownFileExecute(this WebApplication app, HttpContext context, string? filename = null) 
         => MarkdownServerOptions.Current.MarkdownFileExecute(context, filename);
 
-    public static async Task<IResult> MarkdownFileExecute(this MarkdownServerOptions options, HttpContext context, string? filename = null)
+    public static async Task<IResult> MarkdownFileExecute(
+        this MarkdownServerOptions options, 
+        HttpContext context, 
+        string? filename = null, 
+        ConcurrentDictionary<string, string>? vars = null)
     {
         var rootPath = options.ServerRoot ?? "./wwwroot";
         rootPath = rootPath.Replace("/", "\\");
@@ -50,7 +54,7 @@ public static class MarkdownServerExtensions
         var result = matrix switch
         {
             (null, _) => new MarkdownResponse(HttpStatusCode.NotFound).ToMarkdownResult(),
-            (_, true) => await options.ProcessMarkdownFile(markdownFilename!),
+            (_, true) => await options.ProcessMarkdownFile(markdownFilename!, vars),
             _ => options.ProcessFile(filename)
         };
 

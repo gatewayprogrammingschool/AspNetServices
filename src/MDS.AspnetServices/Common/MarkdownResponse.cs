@@ -77,10 +77,15 @@ public record MarkdownResponse
     {
         var html = ToHtml();
 
-        var layout = _layout ??= File.ReadAllText(Options?.Value.LayoutFile ?? "./wwwroot/DefaultLayout.html");
-        
+        var variables = Document.GetData("Variables") as ConcurrentDictionary<string, string>;
+
+        if(!variables!.TryGetValue("Layout", out var layout))
+        {
+            layout = _layout ??= File.ReadAllText(Options?.Value.LayoutFile ?? "./wwwroot/DefaultLayout.html");
+        }
+            
         var page =
-            layout.Replace("$(MarkdownBody)", html);
+            layout!.Replace("$(MarkdownBody)", html);
 
         page = await MarkdownProcessor.ProcessHtmlIncludes(page);
 
@@ -89,15 +94,10 @@ public record MarkdownResponse
             return page;
         }
 
-        if (Document.GetData("Variables") is not ConcurrentDictionary<string, string> variables)
-        {
-            return page;
-        }
-
         foreach (var (key, value) in variables)
         {
             var toInsert = value;
-            if (value.EndsWith(".md", StringComparison.InvariantCultureIgnoreCase))
+            if (value?.EndsWith(".md", StringComparison.InvariantCultureIgnoreCase) ?? false)
             {
                 if (File.Exists(value))
                 {

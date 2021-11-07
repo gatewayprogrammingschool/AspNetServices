@@ -2,13 +2,13 @@
 using MDS.AppFramework;
 using MDS.AppFramework.Controls;
 
-namespace MDS.TestSite.Controllers
+namespace MDS.TestSite.MdApp.Views
 {
     internal record IndexViewMonitor(IViewWorkflow View, ILogger Logger) :
         ViewMonitor(View, Logger)
     {
-        public IndexViewMonitor(ILogger<IndexViewMonitor> logger) : 
-            this(new IndexViewWorkflow(Guid.NewGuid().ToString()), logger)
+        public IndexViewMonitor(ILogger<IndexViewMonitor> logger) :
+            this(new IndexView(typeof(IndexView).Name), logger)
         {
         }
     }

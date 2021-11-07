@@ -2,20 +2,24 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace MDS.AppFramework.Common;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
-internal static class JsonUtility
+namespace MDS.AspnetServices.Common;
+
+public static class JsonUtility
 {
     private static JsonSerializerOptions _defaultSettings =
         new JsonSerializerOptions(JsonSerializerDefaults.General)
         {
             AllowTrailingCommas = true,
-            DefaultIgnoreCondition = JsonIgnoreCondition.Never,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             IncludeFields = false,
             DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             UnknownTypeHandling = JsonUnknownTypeHandling.JsonElement,
-            WriteIndented = true
+            WriteIndented = true,
+            ReferenceHandler = ReferenceHandler.Preserve,
+            
         };
 
     public static JsonSerializerOptions CurrentSettings { get; set; } = _defaultSettings;
@@ -34,7 +38,7 @@ internal static class JsonUtility
     public static Task SerializeAsync(this Stream stream,
                                       object toSerialize,
                                       JsonSerializerOptions? settings = default,
-                                      CancellationToken token = default) 
+                                      CancellationToken token = default)
         => JsonSerializer.SerializeAsync(stream,
                                          toSerialize,
                                          settings ?? CurrentSettings,
@@ -93,7 +97,7 @@ internal static class JsonUtility
 
         var deserialized = JsonSerializer.Deserialize(json, instance.GetType(), settings ?? CurrentSettings);
 
-        deserialized?.PopulateInto(instance, BindingFlags.Instance|BindingFlags.Public);
+        deserialized?.PopulateInto(instance, BindingFlags.Instance | BindingFlags.Public);
 
         return instance;
     }
@@ -139,8 +143,8 @@ internal static class JsonUtility
                 {
                     object? originalValue;
                     object? value = originalValue = source.GetValue<object>(pi.Name, flags);
-                    
-                    if(originalValue is null && value is null)
+
+                    if (originalValue is null && value is null)
                     {
                         continue;
                     }
