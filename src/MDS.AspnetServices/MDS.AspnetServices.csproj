@@ -13,6 +13,10 @@
 
 	<ItemGroup>
 		<PackageReference Include="Faslinq" Version="1.0.5" />
+		<PackageReference Include="GitVersion.MsBuild" Version="5.8.1">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="Markdig" Version="0.26.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	</ItemGroup>
