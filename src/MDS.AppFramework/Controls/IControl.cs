@@ -16,7 +16,7 @@ public interface IControl : IViewState, IAsyncDisposable
     Task ProcessPageAsync(HttpContext context);
     Task PreRenderAsync(HttpContext context);
     
-    Task RenderAsync(HttpContext context, IndentedTextWriter writer, HtmlEncoder htmlEncoder);
+    Task RenderAsync(HttpContext context, HttpResponseStreamWriter writer, HtmlEncoder htmlEncoder);
 }
 
 public interface IControlWithModel<TViewModel> : IControl

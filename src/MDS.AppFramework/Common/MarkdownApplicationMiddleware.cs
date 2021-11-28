@@ -91,7 +91,7 @@ namespace MDS.AppFramework.Common
 
                     var stream = workflow.Renderer;
 
-                    if(stream is null)
+                    if (stream is null)
                     {
                         throw new ApplicationException("Workflow provides no RenderStream.");
                     }
@@ -106,16 +106,16 @@ namespace MDS.AppFramework.Common
                         index++;
                         var mdappName = viewName[index..].Replace(".", "\\") + ".md";
 
-                        if(File.Exists(mdappName))
+                        if (File.Exists(mdappName))
                         {
                             var filename = new FileInfo(mdappName).FullName;
-                            ConcurrentDictionary<string, string> variables = new ();
+                            ConcurrentDictionary<string, string> variables = new();
                             variables.TryAdd(nameof(workflow.ViewKey), workflow.ViewKey);
                             variables.TryAdd($"ViewBody:{workflow.ViewKey}", response);
                             variables.TryAdd(nameof(viewName), viewName);
-                            if(workflow.ViewModel is not null)
+                            if (workflow.ViewModel is not null)
                             {
-                                ProcessViewModel(workflow.ViewModel, variables);
+                                ProcessViewModelAsync(workflow, variables);
                             }
                             var options = Options.Services.GetRequiredService<MarkdownServerOptions>();
                             var result = await options.MarkdownFileExecute(context, filename, variables);
@@ -138,17 +138,23 @@ namespace MDS.AppFramework.Common
             }
         }
 
-        private void ProcessViewModel(ControlViewModel viewModel, ConcurrentDictionary<string, string> variables)
+        private async Task ProcessViewModelAsync(IViewState viewState, ConcurrentDictionary<string, string> variables)
         {
-            foreach(PropertyInfo pi in viewModel.GetType().GetProperties(System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.Public))
+            var lazy = viewState.ViewState.GetValueOrDefault(nameof(IAppView.ViewModel));
+            var viewModel = lazy is not null ? await lazy.GetLazyDataAsync<ControlViewModel>() : null;
+
+            if (viewModel is not null)
             {
-                var name = $"ViewModel.{pi.Name}";
-                var value = pi.GetValue(viewModel) as string ?? pi.GetValue(viewModel)?.ToString() ?? String.Empty;
+                foreach (PropertyInfo pi in viewModel?.GetType().GetProperties(BindingFlags.Instance | System.Reflection.BindingFlags.Public) ?? Array.Empty<PropertyInfo>())
+                {
+                    var name = $"ViewModel.{pi.Name}";
+                    var value = pi.GetValue(viewModel) as string ?? pi.GetValue(viewModel)?.ToString() ?? String.Empty;
 
-                variables.AddOrUpdate(name, value, (_,_)=>value);
+                    variables.AddOrUpdate(name, value, (_, _) => value);
+                }
+
+                variables.AddOrUpdate("ViewModel", viewModel.ToString(), (_, _) => viewModel.ToString());
             }
-
-            variables.AddOrUpdate("ViewModel", viewModel.ToString(), (_,_)=>viewModel.ToString());
         }
 
         public MarkdownApplicationConfiguration Value { get; } = new();

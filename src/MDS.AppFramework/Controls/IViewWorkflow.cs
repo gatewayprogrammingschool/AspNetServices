@@ -1,6 +1,8 @@
 ﻿using System.CodeDom.Compiler;
 using System.Text;
 
+using Microsoft.AspNetCore.WebUtilities;
+
 namespace MDS.AppFramework.Controls;
 
 public interface IViewWorkflow : IAppView, IViewState, IAsyncDisposable
@@ -8,7 +10,7 @@ public interface IViewWorkflow : IAppView, IViewState, IAsyncDisposable
     bool IsCompleted {get;}
 
     AggregateException? Exceptions { get; }
-    IndentedTextWriter Renderer {get;}
+    HttpResponseStreamWriter Renderer {get;}
     string Id { get; }
     string Name { get; }
     StringBuilder StringBuilder { get; }

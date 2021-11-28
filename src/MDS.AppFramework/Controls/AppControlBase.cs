@@ -52,5 +52,5 @@ public abstract record AppControlBase(string Id) : IControl
         return Task.CompletedTask;
     }
 
-    public abstract Task RenderAsync(HttpContext context, IndentedTextWriter writer, HtmlEncoder htmlEncoder);
+    public abstract Task RenderAsync(HttpContext context, HttpResponseStreamWriter writer, HtmlEncoder htmlEncoder);
 }

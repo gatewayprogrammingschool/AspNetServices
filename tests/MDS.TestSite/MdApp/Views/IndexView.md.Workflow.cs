@@ -1,4 +1,5 @@
-﻿using MDS.AppFramework.Controls;
+﻿using MDS.AppFramework.Common;
+using MDS.AppFramework.Controls;
 using MDS.TestSite.MdApp.ViewModels;
 
 namespace MDS.TestSite.MdApp.Views
@@ -9,7 +10,11 @@ namespace MDS.TestSite.MdApp.Views
         {
         }
 
-        public override ControlViewModel? ViewModel {get;set;} = new IndexViewModel();
+        public new IndexViewModel? ViewModel
+        {
+            get => base.ViewModel as IndexViewModel;
+            set => base.ViewModel = value;
+        }
 
         public override Task BuildControlsAsync(HttpContext context)
         {
@@ -19,6 +24,8 @@ namespace MDS.TestSite.MdApp.Views
 
         public override Task InitAsync(HttpContext context)
         {
+            ViewModel = new IndexViewModel();
+
             return base.InitAsync(context);
         }
     }

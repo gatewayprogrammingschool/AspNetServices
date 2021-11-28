@@ -9,6 +9,8 @@ namespace MDS.TestSite.MdApp.ViewModels
 
         public List<string>? Names { get; set;}
 
+        public string q {get;set;}
+
         internal void LoadNames()
         {
             Names = new List<string>()

@@ -11,25 +11,37 @@ namespace MDS.AppFramework.Controls;
 
 public abstract record ViewWorkflow(string Id) : AppControlContainerBase(Id), IViewWorkflow
 {
-    public string ViewKey {get;set; } = Guid.NewGuid().ToString();
+    public string ViewKey { get; set; } = Guid.NewGuid().ToString();
 
     public bool IsCompleted { get; }
 
-    public virtual ControlViewModel? ViewModel {get;set;}
+    public ControlViewModel? ViewModel
+    {
+        get => ViewState.TryGetValue(nameof(ViewModel), out var value) ? value.GetLazyDataAsync<ControlViewModel>().GetAwaiter().GetResult() : default;
+        set => ViewState.AddOrUpdate(nameof(ViewModel), MakeLazy(value!).GetAwaiter().GetResult(), (_,_)=>MakeLazy(value!).GetAwaiter().GetResult());
+    }
+
+    private Task<LazyContainer> MakeLazy(ControlViewModel viewModel)
+    {
+        Func<ControlViewModel> func = () => viewModel;
+        return LazyContainer.CreateLazyContainerAsync<ControlViewModel>(func, viewModel);
+    }
 
     public AggregateException? Exceptions { get; private set; }
 
     public StringBuilder StringBuilder { get; } = new StringBuilder();
-    public IndentedTextWriter Renderer => _renderer ??= 
-        new IndentedTextWriter(new StringWriter(StringBuilder), "\t");
+    public HttpResponseStreamWriter Renderer => _renderer ??=
+        new HttpResponseStreamWriter(Context.Response.BodyWriter.AsStream(), Encoding.UTF8);
+
+    public HttpContext Context { get; private set; }
 
     private bool _isDisposed = false;
-    private IndentedTextWriter _renderer;
+    private HttpResponseStreamWriter _renderer;
 
     public override async ValueTask DisposeAsync()
     {
-        if(!_isDisposed)
-        { 
+        if (!_isDisposed)
+        {
             try
             {
                 await base.DisposeAsync();
@@ -51,11 +63,13 @@ public abstract record ViewWorkflow(string Id) : AppControlContainerBase(Id), IV
         {
             Logger = MarkdownApplicationOptions.Current!.Services.GetRequiredService<ILogger<ViewWorkflow>>();
 
-            if(context.Request.Method == HttpMethod.Post.ToString())
+            if (context.Request.Method == HttpMethod.Post.ToString())
             {
                 IsPostBack = true;
                 ViewKey = context.Request.Form[$"{Id}_ViewKey"];
             }
+
+            Context = context;
 
             await BuildControlsAsync(context).ConfigureAwait(false);
             await InitializePageStateAsync(context).ConfigureAwait(false);

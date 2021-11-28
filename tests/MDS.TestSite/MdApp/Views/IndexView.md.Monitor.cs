@@ -10,6 +10,7 @@ namespace MDS.TestSite.MdApp.Views
         public IndexViewMonitor(ILogger<IndexViewMonitor> logger) :
             this(new IndexView(typeof(IndexView).Name), logger)
         {
+
         }
     }
 }

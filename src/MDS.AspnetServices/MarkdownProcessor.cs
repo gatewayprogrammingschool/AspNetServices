@@ -183,7 +183,7 @@ internal static class MarkdownProcessor
     {
         var sb = new StringBuilder(markdown);
         var regex = new Regex(
-            @"^(![/]?[^#(:\s)]+){1}((#[\w\d_]+){0,1}(\((,?({[\w\d_-}]+=[^}]+\})){1,}\))(:([^\n]+)){0,1})?",
+            @"^(![/]?[^#(:\s)]+){1}((#[\w\d_]+){0,1}(\((,?({[\w\d_-}]+=[^}]+\})){1,}\))?(:([^\n]+)){0,1})?",
             RegexOptions.Multiline);
 
         var matches = regex.Matches(markdown).Cast<Match>();
@@ -211,6 +211,13 @@ internal static class MarkdownProcessor
                 .Value
                 .TrimStart('!');
 
+            var classes = new List<string>();
+
+            if((tagType?.IndexOf(".", StringComparison.OrdinalIgnoreCase) ?? -1) > -1)
+            {
+                classes.AddRange(tagType.Split('.').Skip(1));
+            }
+
             var tagId = captures
                 .FirstOrDefault(c =>
                     c.Value.StartsWith("#") &&
@@ -237,6 +244,17 @@ internal static class MarkdownProcessor
                 .Distinct()
                 .ToList();
 
+            var classAttribute = htmlAttributes.Find(
+                s => s.StartsWith("class=", StringComparison.InvariantCultureIgnoreCase));
+            
+            classAttribute ??= "class=''";
+
+            classAttribute = classAttribute[0..^1];
+
+            classAttribute += $"{string.Join(" ", classes)}'";
+
+            tagType = tagType?.Split('.').First();
+
             var tagValue = captures
                 .FirstOrDefault(c =>
                     c.Value.StartsWith(":"))?
@@ -249,13 +267,13 @@ internal static class MarkdownProcessor
             {
                 "/form" => "</form>",
                 "form" =>
-                    $"<form id='{tagId ?? $"form{counter}"}' name='{tagId ?? $"form{counter++}"}' {string.Join(' ', htmlAttributes)}>",
+                    $"<form id='{tagId ?? $"form{counter}"}' {classAttribute} name='{tagId ?? $"form{counter++}"}' {string.Join(' ', htmlAttributes)}>",
                 "input" =>
-                    $"<input id='{tagId ?? $"input{counter}"}' name='{tagId ?? $"input{counter++}"}' {string.Join(' ', htmlAttributes)} value='{tagValue}'></input>",
+                    $"<input id='{tagId ?? $"input{counter}"}' {classAttribute} name='{tagId ?? $"input{counter++}"}' {string.Join(' ', htmlAttributes)} value='{tagValue}'></input>",
                 "button" =>
-                    $"<button id='{tagId ?? $"input{counter}"}' name='{tagId ?? $"input{counter++}"}' {string.Join(' ', htmlAttributes)} value='{tagValue}'>{tagValue}</button>",
+                    $"<button id='{tagId ?? $"button{counter}"}' {classAttribute} name='{tagId ?? $"button{counter++}"}' {string.Join(' ', htmlAttributes)} value='{tagValue}'>{tagValue}</button>",
                 _ =>
-                    $"<{tagType} id='{tagId ?? $"input{counter}"}' name='{tagId ?? $"input{counter++}"}' {string.Join(' ', htmlAttributes)} value='{tagValue}'>{tagValue}</{tagType}>"
+                    $"<{tagType} id='{tagId ?? $"input{counter}"}' {classAttribute} name='{tagId ?? $"input{counter++}"}' {string.Join(' ', htmlAttributes)} value='{tagValue}'>{tagValue}</{tagType}>"
             };
 
             sb.Replace(toReplace, formTag);
