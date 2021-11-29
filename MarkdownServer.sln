@@ -19,7 +19,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColorCode", "3rdParty\Color
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MDS.TestSite", "tests\MDS.TestSite\MDS.TestSite.csproj", "{D24C70A5-4564-40EA-87FA-B5D68B235B5D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MDS.AppFramework", "src\MDS.AppFramework\MDS.AppFramework.csproj", "{A17AB27C-111A-47F6-971C-ACBB83A1BB1C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MDS.AppFramework", "src\MDS.AppFramework\MDS.AppFramework.csproj", "{A17AB27C-111A-47F6-971C-ACBB83A1BB1C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C04FEC82-E662-4F79-90F9-E0697015649D}"
+	ProjectSection(SolutionItems) = preProject
+		.github\FUNDING.yml = .github\FUNDING.yml
+		.github\workflows\main.yml = .github\workflows\main.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

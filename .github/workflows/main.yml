@@ -44,6 +44,7 @@ jobs:
     - name: Build Debug
       if: ${{ github.event_name != 'release' }}
       run: |
+        git submodule update --init --recursive
         set-location ${{ github.workspace }}src\MDS.AspnetServices
         msbuild /t:Rebuild /p:Configuration=Debug,Platform=x64 .\MDS.AspnetServices.csproj
     - name: Build Release
