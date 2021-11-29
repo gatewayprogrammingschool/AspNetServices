@@ -90,7 +90,7 @@ jobs:
 #         set-location ${{ github.workspace }}\src\CommunityToolkit.Extensions.Hosting.WindowsAppSdk
 #         dotnet test -c Release --no-build
 
-    - name: GitHub Packages
+    - name: GitHub Packages - App Server
       if: ${{ github.event_name != 'release' }}
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
@@ -105,7 +105,7 @@ jobs:
         # skip publishing duplicated package(s)
         skip-duplicate: true
         
-    - name: GitHub Packages
+    - name: GitHub Packages - App Server Symbols
       if: ${{ github.event_name != 'release' }}
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
@@ -120,12 +120,12 @@ jobs:
         # skip publishing duplicated package(s)
         skip-duplicate: true
         
-    - name: GitHub Packages
+    - name: GitHub Packages - App Framework
       if: ${{ github.event_name != 'release' }}
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}\src\MDS.AppFramework\bin\x64\Debug\MarkdownServer.AppFramework.${{ env.GitVersion_SemVer }}.nupkg
+        nupkg-path: ${{ github.workspace }}\src\MDS.AppFramework\bin\x64\Debug\MarkdownServer.ApplicationFramework.${{ env.GitVersion_SemVer }}.nupkg
         # package repository owner
         repo-owner: sharpninja
         # user account
@@ -135,12 +135,12 @@ jobs:
         # skip publishing duplicated package(s)
         skip-duplicate: true
         
-    - name: GitHub Packages
+    - name: GitHub Packages - App Framework Symbols
       if: ${{ github.event_name != 'release' }}
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}\src\MDS.AppFramework\bin\x64\Debug\MarkdownServer.AppFramework.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        nupkg-path: ${{ github.workspace }}\src\MDS.AppFramework\bin\x64\Debug\MarkdownServer.ApplicationFramework.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # package repository owner
         repo-owner: sharpninja
         # user account
