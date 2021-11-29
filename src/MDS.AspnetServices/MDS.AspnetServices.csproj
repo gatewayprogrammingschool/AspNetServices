@@ -9,7 +9,7 @@
     <PropertyGroup>
         <IncludeReferencedProjects>True</IncludeReferencedProjects>
         <IsPackable>True</IsPackable>
-        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
         <RepositoryUrl>https://github.com/MarkdownServer/AspNetServices</RepositoryUrl>
         <Description>MarkdownServer Middleware for ASPNet Core</Description>
         <Copyright>2021 - Gateway Prgramming School, Inc.</Copyright>

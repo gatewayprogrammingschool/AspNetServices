@@ -9,8 +9,8 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<IsPackable>true</IsPackable>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<IsPackable>True</IsPackable>
+		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
 		<RepositoryUrl>https://github.com/MarkdownServer/AspNetServices</RepositoryUrl>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Description>MarkdownServer Application Framework Middleware for ASPNet Core</Description>
