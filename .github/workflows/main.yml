@@ -45,17 +45,23 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
-    - name: Build Debug
+    - name: Build ASP.Net Services Debug
       if: ${{ github.event_name != 'release' }}
       run: |
         $ws = "${{ github.workspace }}"
         set-location $ws\src\MDS.AspnetServices
         dotnet build -c Debug /property:Platform=x64 --no-restore
         dotnet pack -c Debug --no-restore --include-source /property:Platform=x64 
+
+    - name: Build App Framework Debug
+      if: ${{ github.event_name != 'release' }}
+      run: |
+        $ws = "${{ github.workspace }}"
         set-location $ws\src\MDS.AppFramework
         dotnet build -c Debug /property:Platform=x64 --no-restore
         dotnet pack -c Debug --no-restore --include-source /property:Platform=x64
-    - name: Build Release
+
+    - name: Build ASP.Net Services Release
       if: ${{ github.event_name == 'release' }}
       run: |
         $ws = "${{ github.workspace }}"
@@ -63,6 +69,12 @@ jobs:
         set-location $ws\MDS.AspnetServices
         dotnet build -c Release /property:Platform=x64 --no-restore
         dotnet pack -c Release --no-restore /property:Platform=x64
+
+    - name: Build App Framework Release
+      if: ${{ github.event_name == 'release' }}
+      run: |
+        $ws = "${{ github.workspace }}"
+        $outPath = (Join-Path . -Child packages)
         set-location $ws\MDS.AppFramework
         dotnet build -c Release /property:Platform=x64 --no-restore 
         dotnet pack -c Release --no-restore /property:Platform=x64
