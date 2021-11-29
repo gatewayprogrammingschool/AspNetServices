@@ -50,11 +50,15 @@ jobs:
       run: |
         set-location ${{ github.workspace }}\src\MDS.AspnetServices
         dotnet build .\MDS.AspnetServices.csproj --configuration Debug --no-restore
+        set-location ${{ github.workspace }}\src\MDS.AppFramework
+        dotnet build .\MDS.AppFramework.csproj --configuration Debug --no-restore
     - name: Build Release
       if: ${{ github.event_name == 'release' }}
       run: |
         set-location ${{ github.workspace }}\src\MDS.AspnetServices
         dotnet build .\MDS.AspnetServices.csproj --configuration Release --no-restore 
+        set-location ${{ github.workspace }}\src\MDS.AppFramework
+        dotnet build .\MDS.AppFramework.csproj --configuration Release --no-restore 
         if(Test-File bin\x64\Debug\MDS.AspnetServices*.nupkg) {
           $pkg = Get-ChildItem bin\x64\Debug\MDS.AspnetServices*.nupkg
         }
@@ -85,11 +89,28 @@ jobs:
         # skip publishing duplicated package(s)
         skip-duplicate: true
         
+    - name: GitHub Packages
+      if: ${{ github.event_name != 'release' }}
+      uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
+      with:
+        # Path of NuPkg
+        nupkg-path: ${{ github.workspace }}\src\MDS.AppFramework\bin\Debug\MarkdownServer.AppFramework.${{ env.GitVersion_SemVer }}.nupkg
+        # package repository owner
+        repo-owner: sharpninja
+        # user account
+        gh-user: sharpninja
+        # access token
+        token: ${{ secrets.GITHUB_TOKEN }}
+        # skip publishing duplicated package(s)
+        skip-duplicate: true
+        
     - name: Nuget Publish
       if: ${{ github.event_name == 'release' }}
       run: | 
         $outPath = (Join-Path . -Child packages)
         set-location ${{ github.workspace }}\MDS.AspnetServices
+        dotnet pack -c Release -a x64 --include-source -o $outPath 
+        set-location ${{ github.workspace }}\MDS.AppFramework
         dotnet pack -c Release -a x64 --include-source -o $outPath 
         
         gci $outPath\*.nupkg -ErrorAction Stop
