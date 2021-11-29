@@ -42,16 +42,17 @@ jobs:
         
     - name: Restore dependencies
       run: dotnet restore
+
     - name: Build Debug
       if: ${{ github.event_name != 'release' }}
       run: |
         set-location ${{ github.workspace }}\src\MDS.AspnetServices
-        msbuild /t:Rebuild /p:Configuration=Debug,Platform=x64 .\MDS.AspnetServices.csproj
+        dotnet build .\MDS.AspnetServices.csproj --Configuration Debug --no-restore
     - name: Build Release
       if: ${{ github.event_name == 'release' }}
       run: |
         set-location ${{ github.workspace }}\src\MDS.AspnetServices
-        msbuild /t:Rebuild /p:Configuration=Release,Platform=x64 .\MDS.AspnetServices.csproj
+        dotnet build .\MDS.AspnetServices.csproj --configuration Release --no-restore 
         if(Test-File bin\x64\Debug\MDS.AspnetServices*.nupkg) {
           $pkg = Get-ChildItem bin\x64\Debug\MDS.AspnetServices*.nupkg
         }
