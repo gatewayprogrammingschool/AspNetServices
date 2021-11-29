@@ -266,6 +266,9 @@ internal static class MarkdownProcessor
             var formTag = tagType switch
             {
                 "/form" => "</form>",
+                "/nav" => "</nav>",
+                "nav" =>
+                    $"<nav id='{tagId ?? $"nav{counter}"}' {classAttribute} name='{tagId ?? $"nav{counter++}"}' {string.Join(' ', htmlAttributes)}>",
                 "form" =>
                     $"<form id='{tagId ?? $"form{counter}"}' {classAttribute} name='{tagId ?? $"form{counter++}"}' {string.Join(' ', htmlAttributes)}>",
                 "input" =>
@@ -273,7 +276,7 @@ internal static class MarkdownProcessor
                 "button" =>
                     $"<button id='{tagId ?? $"button{counter}"}' {classAttribute} name='{tagId ?? $"button{counter++}"}' {string.Join(' ', htmlAttributes)} value='{tagValue}'>{tagValue}</button>",
                 _ =>
-                    $"<{tagType} id='{tagId ?? $"input{counter}"}' {classAttribute} name='{tagId ?? $"input{counter++}"}' {string.Join(' ', htmlAttributes)} value='{tagValue}'>{tagValue}</{tagType}>"
+                    $"<{tagType} id='{tagId ?? $"{tagType}{counter}"}' {classAttribute} name='{tagId ?? $"{tagType}{counter++}"}' {string.Join(' ', htmlAttributes)} value='{tagValue}'>{tagValue}</{tagType}>"
             };
 
             sb.Replace(toReplace, formTag);
