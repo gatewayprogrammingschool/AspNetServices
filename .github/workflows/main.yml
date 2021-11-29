@@ -90,20 +90,20 @@ jobs:
 #         set-location ${{ github.workspace }}\src\CommunityToolkit.Extensions.Hosting.WindowsAppSdk
 #         dotnet test -c Release --no-build
 
-    - name: GitHub Packages - App Server
-      if: ${{ github.event_name != 'release' }}
-      uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
-      with:
-        # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}\src\MDS.AspnetServices\bin\x64\Debug\MarkdownServer.${{ env.GitVersion_SemVer }}.nupkg
-        # package repository owner
-        repo-owner: sharpninja
-        # user account
-        gh-user: sharpninja
-        # access token
-        token: ${{ secrets.GITHUB_TOKEN }}
-        # skip publishing duplicated package(s)
-        skip-duplicate: true
+    # - name: GitHub Packages - App Server
+    #   if: ${{ github.event_name != 'release' }}
+    #   uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
+    #   with:
+    #     # Path of NuPkg
+    #     nupkg-path: ${{ github.workspace }}\src\MDS.AspnetServices\bin\x64\Debug\MarkdownServer.${{ env.GitVersion_SemVer }}.nupkg
+    #     # package repository owner
+    #     repo-owner: sharpninja
+    #     # user account
+    #     gh-user: sharpninja
+    #     # access token
+    #     token: ${{ secrets.GITHUB_TOKEN }}
+    #     # skip publishing duplicated package(s)
+    #     skip-duplicate: true
         
     - name: GitHub Packages - App Server Symbols
       if: ${{ github.event_name != 'release' }}
@@ -120,20 +120,20 @@ jobs:
         # skip publishing duplicated package(s)
         skip-duplicate: true
         
-    - name: GitHub Packages - App Framework
-      if: ${{ github.event_name != 'release' }}
-      uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
-      with:
-        # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}\src\MDS.AppFramework\bin\x64\Debug\MarkdownServer.ApplicationFramework.${{ env.GitVersion_SemVer }}.nupkg
-        # package repository owner
-        repo-owner: sharpninja
-        # user account
-        gh-user: sharpninja
-        # access token
-        token: ${{ secrets.GITHUB_TOKEN }}
-        # skip publishing duplicated package(s)
-        skip-duplicate: true
+    # - name: GitHub Packages - App Framework
+    #   if: ${{ github.event_name != 'release' }}
+    #   uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
+    #   with:
+    #     # Path of NuPkg
+    #     nupkg-path: ${{ github.workspace }}\src\MDS.AppFramework\bin\x64\Debug\MarkdownServer.ApplicationFramework.${{ env.GitVersion_SemVer }}.nupkg
+    #     # package repository owner
+    #     repo-owner: sharpninja
+    #     # user account
+    #     gh-user: sharpninja
+    #     # access token
+    #     token: ${{ secrets.GITHUB_TOKEN }}
+    #     # skip publishing duplicated package(s)
+    #     skip-duplicate: true
         
     - name: GitHub Packages - App Framework Symbols
       if: ${{ github.event_name != 'release' }}
