@@ -50,18 +50,22 @@ jobs:
       run: |
         $ws = "${{ github.workspace }}"
         set-location $ws\src\MDS.AspnetServices
-        dotnet build -c Debug /property:Platform=x64; dotnet pack -c Debug --no-build --no-restore --include-source /property:Platform=x64 
+        dotnet build -c Debug /property:Platform=x64 --no-restore
+        dotnet pack -c Debug --no-build --no-restore --include-source /property:Platform=x64 
         set-location $ws\src\MDS.AppFramework
-        dotnet build -c Debug /property:Platform=x64; dotnet pack -c Debug --no-build --no-restore --include-source /property:Platform=x64
+        dotnet build -c Debug /property:Platform=x64 --no-restore
+        dotnet pack -c Debug --no-build --no-restore --include-source /property:Platform=x64
     - name: Build Release
       if: ${{ github.event_name == 'release' }}
       run: |
         $ws = "${{ github.workspace }}"
         $outPath = (Join-Path . -Child packages)
         set-location $ws\MDS.AspnetServices
-        dotnet build -c Release /property:Platform=x64; dotnet pack -c Release --no-build --no-restore /property:Platform=x64
+        dotnet build -c Release /property:Platform=x64 --no-restore
+        dotnet pack -c Release --no-build --no-restore /property:Platform=x64
         set-location $ws\MDS.AppFramework
-        dotnet build -c Release /property:Platform=x64; dotnet pack -c Release --no-build --no-restore /property:Platform=x64
+        dotnet build -c Release /property:Platform=x64 --no-restore 
+        dotnet pack -c Release --no-build --no-restore /property:Platform=x64
 
 #     - name: Dotnet Debug Tests
 #       if: ${{ github.event_name != 'release' }}
