@@ -37,7 +37,7 @@ jobs:
         
     - name: Setup Scoop
       run: |
-        git submodule update --init --recursive
+        # git submodule update --init --recursive
         iwr -useb get.scoop.sh | iex
         scoop install gitversion
         GitVersion
