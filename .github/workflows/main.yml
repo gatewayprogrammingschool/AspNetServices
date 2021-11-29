@@ -47,12 +47,12 @@ jobs:
       if: ${{ github.event_name != 'release' }}
       run: |
         set-location ${{ github.workspace }}\src\MDS.AspnetServices
-        dotnet build .\MDS.AspnetServices.csproj --Configuration Debug --no-restore
+        dotnet build .\MDS.AspnetServices.csproj --configuration Debug --arch x64 --no-restore
     - name: Build Release
       if: ${{ github.event_name == 'release' }}
       run: |
         set-location ${{ github.workspace }}\src\MDS.AspnetServices
-        dotnet build .\MDS.AspnetServices.csproj --configuration Release --no-restore 
+        dotnet build .\MDS.AspnetServices.csproj --configuration Release --arch x64 --no-restore 
         if(Test-File bin\x64\Debug\MDS.AspnetServices*.nupkg) {
           $pkg = Get-ChildItem bin\x64\Debug\MDS.AspnetServices*.nupkg
         }
@@ -88,7 +88,7 @@ jobs:
       run: | 
         $outPath = (Join-Path . -Child packages)
         set-location ${{ github.workspace }}\MDS.AspnetServices
-        dotnet pack -c Release --no-build --include-source -o $outPath 
+        dotnet pack -c Release --no-build --include-source --arch x64 -o $outPath 
         
         gci $outPath\*.nupkg -ErrorAction Stop
         gci $outPath\*.snupkg -ErrorAction Stop
