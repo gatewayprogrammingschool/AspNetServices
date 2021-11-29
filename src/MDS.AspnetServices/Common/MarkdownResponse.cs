@@ -79,13 +79,17 @@ public record MarkdownResponse
 
         var variables = Document.GetData("Variables") as ConcurrentDictionary<string, string>;
 
-        if(!variables!.TryGetValue("Layout", out var layout))
+        if(!(variables?.TryGetValue("Layout", out var layout) ?? true))
         {
-            layout = _layout ??= File.ReadAllText(Options?.Value.LayoutFile ?? "./wwwroot/DefaultLayout.html");
+            layout = _layout ??= await File.ReadAllTextAsync(Options?.Value.LayoutFile ?? "./wwwroot/DefaultLayout.html");
+        }
+        else
+        {
+            layout = _layout;
         }
             
         var page =
-            layout!.Replace("$(MarkdownBody)", html);
+            layout?.Replace("$(MarkdownBody)", html) ?? "$(MarkdownBody)";
 
         page = await MarkdownProcessor.ProcessHtmlIncludes(page, variables);
 
@@ -94,14 +98,14 @@ public record MarkdownResponse
             return page;
         }
 
-        foreach (var (key, value) in variables)
+        foreach (var (key, value) in variables?.ToArray() ?? Array.Empty<KeyValuePair<string,string>>())
         {
             var toInsert = value;
             if (value?.EndsWith(".md", StringComparison.InvariantCultureIgnoreCase) ?? false)
             {
                 if (File.Exists(value))
                 {
-                     toInsert = File.ReadAllText(value);
+                     toInsert = await File.ReadAllTextAsync(value);
                 }
             }
 
