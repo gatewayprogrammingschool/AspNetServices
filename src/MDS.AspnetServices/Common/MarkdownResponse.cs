@@ -87,7 +87,7 @@ public record MarkdownResponse
         var page =
             layout!.Replace("$(MarkdownBody)", html);
 
-        page = await MarkdownProcessor.ProcessHtmlIncludes(page);
+        page = await MarkdownProcessor.ProcessHtmlIncludes(page, variables);
 
         if (!Document.ContainsData("Variables"))
         {

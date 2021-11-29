@@ -26,7 +26,7 @@ internal static class MarkdownProcessor
             : new MarkdownResponse(HttpStatusCode.NotFound).ToMarkdownResult();
 
     // <([^>]*)md-include="([^"\n]*)"([^>]*)>
-    public static async Task<string> ProcessHtmlIncludes(string html)
+    public static async Task<string> ProcessHtmlIncludes(string html, ConcurrentDictionary<string, string>? variables=null)
     {
         var sb = new StringBuilder(html);
         var regex = new Regex(
@@ -60,7 +60,8 @@ internal static class MarkdownProcessor
             {
                 if (File.Exists(filename))
                 {
-                    var md = await MarkdownServerOptions.Current.ProcessMarkdown(File.ReadAllText(filename), root);
+                    var md = await MarkdownServerOptions.Current.ProcessMarkdown(
+                        await File.ReadAllTextAsync(filename), root, variables);
 
                     var nestedHtml = Markdown.ToHtml(md,
                         MarkdownServerOptions.Current.Services.GetService<MarkdownPipeline>());
