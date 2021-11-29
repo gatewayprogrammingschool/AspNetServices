@@ -1,0 +1,6 @@
+[submodule "submodules/ColorCodePortable"]
+	path = submodules/ColorCodePortable
+	url = https://github.com/MarkdownServer/ColorCodePortable
+[submodule "submodules/Markdig.SyntaxHighlighting"]
+	path = submodules/Markdig.SyntaxHighlighting
+	url = https://github.com/MarkdownServer/Markdig.SyntaxHighlighting
