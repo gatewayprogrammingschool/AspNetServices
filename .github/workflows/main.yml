@@ -75,7 +75,7 @@ jobs:
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}src\MDS.AspnetServices\bin\Debug\MDS.AspnetServices.${{ env.GitVersion_SemVer }}.nupkg
+        nupkg-path: ${{ github.workspace }}\src\MDS.AspnetServices\bin\Debug\MarkdownServer.${{ env.GitVersion_SemVer }}.nupkg
         # package repository owner
         repo-owner: sharpninja
         # user account
@@ -90,7 +90,7 @@ jobs:
       run: | 
         $outPath = (Join-Path . -Child packages)
         set-location ${{ github.workspace }}\MDS.AspnetServices
-        dotnet pack -c Release --no-build --include-source -o $outPath 
+        dotnet pack -c Release -a x64 --include-source -o $outPath 
         
         gci $outPath\*.nupkg -ErrorAction Stop
         gci $outPath\*.snupkg -ErrorAction Stop
