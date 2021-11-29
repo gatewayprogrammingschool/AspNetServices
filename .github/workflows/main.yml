@@ -45,12 +45,12 @@ jobs:
     - name: Build Debug
       if: ${{ github.event_name != 'release' }}
       run: |
-        set-location ${{ github.workspace }}src\MDS.AspnetServices
+        set-location ${{ github.workspace }}\src\MDS.AspnetServices
         msbuild /t:Rebuild /p:Configuration=Debug,Platform=x64 .\MDS.AspnetServices.csproj
     - name: Build Release
       if: ${{ github.event_name == 'release' }}
       run: |
-        set-location ${{ github.workspace }}src\MDS.AspnetServices
+        set-location ${{ github.workspace }}\src\MDS.AspnetServices
         msbuild /t:Rebuild /p:Configuration=Release,Platform=x64 .\MDS.AspnetServices.csproj
         if(Test-File bin\x64\Debug\MDS.AspnetServices*.nupkg) {
           $pkg = Get-ChildItem bin\x64\Debug\MDS.AspnetServices*.nupkg
