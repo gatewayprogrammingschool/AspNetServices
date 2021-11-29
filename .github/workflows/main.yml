@@ -41,7 +41,7 @@ jobs:
         GitVersion
         
     - name: Restore dependencies
-      run: dotnet restore --arch x64
+      run: dotnet restore
 
     - name: Build Debug
       if: ${{ github.event_name != 'release' }}
