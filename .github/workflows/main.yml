@@ -94,7 +94,7 @@ jobs:
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}\src\MDS.AppFramework\bin\Debug\MarkdownServer.AppFramework.${{ env.GitVersion_SemVer }}.nupkg
+        nupkg-path: ${{ github.workspace }}\src\MDS.AppFramework\bin\Debug\MarkdownServer.ApplicationServer.${{ env.GitVersion_SemVer }}.nupkg
         # package repository owner
         repo-owner: sharpninja
         # user account
