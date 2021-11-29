@@ -48,20 +48,20 @@ jobs:
     - name: Build Debug
       if: ${{ github.event_name != 'release' }}
       run: |
-        set-location ${{ github.workspace }}\src\MDS.AspnetServices
-        dotnet build .\MDS.AspnetServices.csproj --configuration Debug --no-restore
-        set-location ${{ github.workspace }}\src\MDS.AppFramework
-        dotnet build .\MDS.AppFramework.csproj --configuration Debug --no-restore
+        $ws = ${{ github.workspace }}
+        set-location $ws\src\MDS.AspnetServices
+        dotnet build -c Debug /property:Platform=x64; dotnet pack -c Debug --no-build --no-restore --include-source /property:Platform=x64 
+        set-location $ws\src\MDS.AppFramework
+        dotnet build -c Debug /property:Platform=x64; dotnet pack -c Debug --no-build --no-restore --include-source /property:Platform=x64
     - name: Build Release
       if: ${{ github.event_name == 'release' }}
       run: |
-        set-location ${{ github.workspace }}\src\MDS.AspnetServices
-        dotnet build .\MDS.AspnetServices.csproj --configuration Release --no-restore 
-        set-location ${{ github.workspace }}\src\MDS.AppFramework
-        dotnet build .\MDS.AppFramework.csproj --configuration Release --no-restore 
-        if(Test-File bin\x64\Debug\MDS.AspnetServices*.nupkg) {
-          $pkg = Get-ChildItem bin\x64\Debug\MDS.AspnetServices*.nupkg
-        }
+        $ws = ${{ github.workspace }}
+        $outPath = (Join-Path . -Child packages)
+        set-location $ws\MDS.AspnetServices
+        dotnet build -c Release /property:Platform=x64; dotnet pack -c Release --no-build --no-restore /property:Platform=x64
+        set-location $ws\MDS.AppFramework
+        dotnet build -c Release /property:Platform=x64; dotnet pack -c Release --no-build --no-restore /property:Platform=x64
 
 #     - name: Dotnet Debug Tests
 #       if: ${{ github.event_name != 'release' }}
@@ -79,7 +79,7 @@ jobs:
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}\src\MDS.AspnetServices\bin\Debug\MarkdownServer.${{ env.GitVersion_SemVer }}.nupkg
+        nupkg-path: ${{ github.workspace }}\src\MDS.AspnetServices\bin\x64\Debug\MarkdownServer.${{ env.GitVersion_SemVer }}.nupkg
         # package repository owner
         repo-owner: sharpninja
         # user account
@@ -94,7 +94,37 @@ jobs:
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}\src\MDS.AppFramework\bin\Debug\MarkdownServer.AppFramework.${{ env.GitVersion_SemVer }}.nupkg
+        nupkg-path: ${{ github.workspace }}\src\MDS.AspnetServices\bin\x64\Debug\MarkdownServer.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        # package repository owner
+        repo-owner: sharpninja
+        # user account
+        gh-user: sharpninja
+        # access token
+        token: ${{ secrets.GITHUB_TOKEN }}
+        # skip publishing duplicated package(s)
+        skip-duplicate: true
+        
+    - name: GitHub Packages
+      if: ${{ github.event_name != 'release' }}
+      uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
+      with:
+        # Path of NuPkg
+        nupkg-path: ${{ github.workspace }}\src\MDS.AppFramework\bin\x64\Debug\MarkdownServer.AppFramework.${{ env.GitVersion_SemVer }}.nupkg
+        # package repository owner
+        repo-owner: sharpninja
+        # user account
+        gh-user: sharpninja
+        # access token
+        token: ${{ secrets.GITHUB_TOKEN }}
+        # skip publishing duplicated package(s)
+        skip-duplicate: true
+        
+    - name: GitHub Packages
+      if: ${{ github.event_name != 'release' }}
+      uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
+      with:
+        # Path of NuPkg
+        nupkg-path: ${{ github.workspace }}\src\MDS.AppFramework\bin\x64\Debug\MarkdownServer.AppFramework.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # package repository owner
         repo-owner: sharpninja
         # user account
@@ -108,18 +138,10 @@ jobs:
       if: ${{ github.event_name == 'release' }}
       run: | 
         $outPath = (Join-Path . -Child packages)
-        set-location ${{ github.workspace }}\MDS.AspnetServices
-        dotnet pack -c Release -a x64 --include-source -o $outPath 
-        set-location ${{ github.workspace }}\MDS.AppFramework
-        dotnet pack -c Release -a x64 --include-source -o $outPath 
         
         gci $outPath\*.nupkg -ErrorAction Stop
-        gci $outPath\*.snupkg -ErrorAction Stop
         
         gci $outPath\*.nupkg | forEach-Object -process {
-          dotnet nuget push $_ -k "${{ secrets.NUGET_KEY }}" -s https://api.nuget.org/v3/index.json --skip-duplicate
-        }
-        gci $outPath\*.snupkg | forEach-Object -process {
           dotnet nuget push $_ -k "${{ secrets.NUGET_KEY }}" -s https://api.nuget.org/v3/index.json --skip-duplicate
         }
         
