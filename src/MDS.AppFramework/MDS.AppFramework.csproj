@@ -17,9 +17,9 @@
 		<Copyright>2021 - Gateway Prgramming School, Inc.</Copyright>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-		<PackageId>MarkdownServer.ApplicationServer</PackageId>
+		<PackageId>MarkdownServer.ApplicationFramework</PackageId>
 		<Authors>Gateway Programming School, Inc.</Authors>
-		<Product>MarkdownServer.ApplicationServer</Product>
+		<Product>MarkdownServer.ApplicationFramework</Product>
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Remove="ViewModels\ControlViewModel.cs" />
