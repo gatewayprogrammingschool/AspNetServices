@@ -49,7 +49,7 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<ProjectReference Include="../../3rdParty/Markdig.SyntaxHighlighting/src/Markdig.SyntaxHighlighting/Markdig.SyntaxHighlighting.csproj" />
-		<ProjectReference Include="..\..\3rdParty\ColorCodePortable\ColorCode\ColorCode.csproj" />
+		<ProjectReference Include="../../submodules/Markdig.SyntaxHighlighting/src/Markdig.SyntaxHighlighting/Markdig.SyntaxHighlighting.csproj" />
+		<ProjectReference Include="..\..\submodules\ColorCodePortable\ColorCode\ColorCode.csproj" />
 	</ItemGroup>
 </Project>

@@ -7,15 +7,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AA8D4BF9-901
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MDS.AspnetServices", "src\MDS.AspnetServices\MDS.AspnetServices.csproj", "{7C7C75E8-35F1-4153-BFD7-91E119B807A2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Markdig.SyntaxHighlighting.Tests", "3rdParty\Markdig.SyntaxHighlighting\src\Markdig.SyntaxHighlighting.Tests\Markdig.SyntaxHighlighting.Tests.csproj", "{B0696B7B-33C0-49B3-B8B2-DE07A7FCFBE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Markdig.SyntaxHighlighting.Tests", "submodules\Markdig.SyntaxHighlighting\src\Markdig.SyntaxHighlighting.Tests\Markdig.SyntaxHighlighting.Tests.csproj", "{B0696B7B-33C0-49B3-B8B2-DE07A7FCFBE9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Markdig.SyntaxHighlighting", "3rdParty\Markdig.SyntaxHighlighting\src\Markdig.SyntaxHighlighting\Markdig.SyntaxHighlighting.csproj", "{5D1E4E89-83A2-4B14-BB11-DEB3C69665F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Markdig.SyntaxHighlighting", "submodules\Markdig.SyntaxHighlighting\src\Markdig.SyntaxHighlighting\Markdig.SyntaxHighlighting.csproj", "{5D1E4E89-83A2-4B14-BB11-DEB3C69665F0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{063A4721-8CF4-45E1-8C31-1063205BC075}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MDS.AspnetServices.Tests", "tests\MDS.AspnetServices.Tests\MDS.AspnetServices.Tests.csproj", "{2009E285-78D6-4EC4-8082-5FC798C50BFF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColorCode", "3rdParty\ColorCodePortable\ColorCode\ColorCode.csproj", "{DC3DF40C-0423-415B-8D29-AD2AE062C34D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColorCode", "submodules\ColorCodePortable\ColorCode\ColorCode.csproj", "{DC3DF40C-0423-415B-8D29-AD2AE062C34D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MDS.TestSite", "tests\MDS.TestSite\MDS.TestSite.csproj", "{D24C70A5-4564-40EA-87FA-B5D68B235B5D}"
 EndProject
