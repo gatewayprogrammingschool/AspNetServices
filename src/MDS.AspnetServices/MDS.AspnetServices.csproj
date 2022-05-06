@@ -9,10 +9,10 @@
     <PropertyGroup>
         <IncludeReferencedProjects>True</IncludeReferencedProjects>
         <IsPackable>True</IsPackable>
-        <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <RepositoryUrl>https://github.com/MarkdownServer/AspNetServices</RepositoryUrl>
         <Description>MarkdownServer Middleware for ASPNet Core</Description>
-        <Copyright>2021 - Gateway Prgramming School, Inc.</Copyright>
+        <Copyright>2022 - Gateway Prgramming School, Inc.</Copyright>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
@@ -35,11 +35,11 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Faslinq" Version="1.0.5" />
-        <PackageReference Include="GitVersion.MsBuild" Version="5.8.1">
+        <PackageReference Include="GitVersion.MsBuild" Version="5.10.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Markdig" Version="0.26.0" />
+        <PackageReference Include="Markdig" Version="0.30.2" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     </ItemGroup>
     <ItemGroup>

@@ -21,8 +21,12 @@
 		<Authors>Gateway Programming School, Inc.</Authors>
 		<Product>MarkdownServer.ApplicationFramework</Product>
 	</PropertyGroup>
+
 	<ItemGroup>
-		<Compile Remove="ViewModels\ControlViewModel.cs" />
+	  <Compile Remove="ViewModels\**" />
+	  <Content Remove="ViewModels\**" />
+	  <EmbeddedResource Remove="ViewModels\**" />
+	  <None Remove="ViewModels\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -30,11 +34,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="ViewModels\" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="GitVersion.MsBuild" Version="5.8.1">
+		<PackageReference Include="GitVersion.MsBuild" Version="5.10.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

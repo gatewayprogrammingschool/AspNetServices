@@ -96,6 +96,8 @@ namespace MDS.AppFramework.Common
                         throw new ApplicationException("Workflow provides no RenderStream.");
                     }
 
+                    await stream.FlushAsync().ConfigureAwait(false);
+
                     var response = workflow.StringBuilder.ToString();
 
                     // Get the Markdown file for the view
