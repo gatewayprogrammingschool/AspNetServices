@@ -12,7 +12,7 @@ on:
 jobs:
   build:
     env:
-      PLATFORM: ${{ env.PLATFORM }}
+      PLATFORM: x64
 
     runs-on: windows-2022
 
