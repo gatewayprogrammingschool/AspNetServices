@@ -26,11 +26,6 @@ jobs:
       with:
         submodules: true
 
-#     - name: Setup .NET
-#       uses: actions/setup-dotnet@v1
-#       with:
-#         dotnet-version: 6.0.x
-
     - name: Setup GitVersion
       run: |
         dotnet tool install gitversion.tool -g
@@ -43,9 +38,9 @@ jobs:
       if: ${{ github.event_name != 'release' }}
       run: |
         $ws = "${{ github.workspace }}"
-        set-location $ws\submodules\ColorCodePortable
+        set-location $ws\submodules\ColorCodePortable\ColorCode
         dotnet pack -c Debug /property:Platform=${{ env.PLATFORM }} --no-restore
-        set-location $ws\submodules\Markdig.SyntaxHighlighting
+        set-location $ws\submodules\Markdig.SyntaxHighlighting\src\Markdig.SyntaxHighlighting
         dotnet pack -c Debug /property:Platform=${{ env.PLATFORM }} --no-restore
         set-location $ws\src\MDS.AspnetServices
         dotnet pack -c Debug /property:Platform=${{ env.PLATFORM }} --no-restore
@@ -57,9 +52,9 @@ jobs:
       run: |
         $ws = "${{ github.workspace }}"
         $outPath = (Join-Path . -Child packages)
-        set-location $ws\submodules\ColorCodePortable
+        set-location $ws\submodules\ColorCodePortable\ColorCode
         dotnet pack -c Release /property:Platform=${{ env.PLATFORM }} --no-restore
-        set-location $ws\submodules\Markdig.SyntaxHighlighting
+        set-location $ws\submodules\Markdig.SyntaxHighlighting\src\Markdig.SyntaxHighlighting
         dotnet pack -c Release /property:Platform=${{ env.PLATFORM }} --no-restore
         set-location $ws\src\MDS.AspnetServices
         dotnet pack -c Release /property:Platform=${{ env.PLATFORM }} --no-restore
