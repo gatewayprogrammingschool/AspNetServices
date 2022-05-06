@@ -35,12 +35,13 @@ jobs:
 #         vs-prerelease: true
 #         vs-version: 17
         
-    - name: Setup Scoop
+    - name: Setup GitVersion
       run: |
         # git submodule update --init --recursive
-        iwr -useb get.scoop.sh | iex
-        scoop install gitversion
-        GitVersion
+        # iwr -useb get.scoop.sh | iex
+        # scoop install gitversion
+        dotnet tool install gitversion.tool -g
+        dotnet-GitVersion
         
     - name: Restore dependencies
       run: dotnet restore
