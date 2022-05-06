@@ -26,10 +26,10 @@ jobs:
       with:
         submodules: true
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 6.0.x
+#     - name: Setup .NET
+#       uses: actions/setup-dotnet@v1
+#       with:
+#         dotnet-version: 6.0.x
 
     - name: Setup GitVersion
       run: |
@@ -43,13 +43,12 @@ jobs:
       if: ${{ github.event_name != 'release' }}
       run: |
         $ws = "${{ github.workspace }}"
+        set-location $ws\submodules\ColorCodePortable
+        dotnet pack -c Debug /property:Platform=${{ env.PLATFORM }} --no-restore
+        set-location $ws\submodules\Markdig.SyntaxHighlighting
+        dotnet pack -c Debug /property:Platform=${{ env.PLATFORM }} --no-restore
         set-location $ws\src\MDS.AspnetServices
-        dotnet build -c Debug /property:Platform=${{ env.PLATFORM }} --no-restore
-
-    - name: Build App Framework Debug
-      if: ${{ github.event_name != 'release' }}
-      run: |
-        $ws = "${{ github.workspace }}"
+        dotnet pack -c Debug /property:Platform=${{ env.PLATFORM }} --no-restore
         set-location $ws\src\MDS.AppFramework
         dotnet build -c Debug /property:Platform=${{ env.PLATFORM }} --no-restore
 
@@ -58,16 +57,15 @@ jobs:
       run: |
         $ws = "${{ github.workspace }}"
         $outPath = (Join-Path . -Child packages)
+        set-location $ws\submodules\ColorCodePortable
+        dotnet pack -c Release /property:Platform=${{ env.PLATFORM }} --no-restore
+        set-location $ws\submodules\Markdig.SyntaxHighlighting
+        dotnet pack -c Release /property:Platform=${{ env.PLATFORM }} --no-restore
         set-location $ws\src\MDS.AspnetServices
-        dotnet build -c Release /property:Platform=${{ env.PLATFORM }} --no-restore
-
-    - name: Build App Framework Release
-      if: ${{ github.event_name == 'release' }}
-      run: |
-        $ws = "${{ github.workspace }}"
-        $outPath = (Join-Path . -Child packages)
+        dotnet pack -c Release /property:Platform=${{ env.PLATFORM }} --no-restore
         set-location $ws\src\MDS.AppFramework
         dotnet build -c Release /property:Platform=${{ env.PLATFORM }} --no-restore
+        Copy-Item *.symbols.nupkg -Destination $outPath -Recurse -Force
 
 #     - name: Dotnet Debug Tests
 #       if: ${{ github.event_name != 'release' }}
@@ -80,21 +78,6 @@ jobs:
 #         set-location ${{ github.workspace }}\src\CommunityToolkit.Extensions.Hosting.WindowsAppSdk
 #         dotnet test -c Release --no-build
 
-    # - name: GitHub Packages - App Server
-    #   if: ${{ github.event_name != 'release' }}
-    #   uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
-    #   with:
-    #     # Path of NuPkg
-    #     nupkg-path: ${{ github.workspace }}\src\MDS.AspnetServices\bin\${{ env.PLATFORM }}\Debug\MarkdownServer.${{ env.GitVersion_SemVer }}.nupkg
-    #     # package repository owner
-    #     repo-owner: sharpninja
-    #     # user account
-    #     gh-user: sharpninja
-    #     # access token
-    #     token: ${{ secrets.GITHUB_TOKEN }}
-    #     # skip publishing duplicated package(s)
-    #     skip-duplicate: true
-
     - name: GitHub Packages - ColorCode Symbols
       if: ${{ github.event_name != 'release' }}
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
@@ -102,7 +85,7 @@ jobs:
         # Path of NuPkg
         nupkg-path: ${{ github.workspace }}\submodules\ColorCodePortable\bin\${{ env.PLATFORM }}\Debug\ColorCodePortable.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # package repository owner
-        repo-owner: sharpninja
+        repo-owner: MarkdownServer
         # user account
         gh-user: sharpninja
         # access token
@@ -117,7 +100,7 @@ jobs:
         # Path of NuPkg
         nupkg-path: ${{ github.workspace }}\submodules\MDS.AspnetServices\bin\${{ env.PLATFORM }}\Debug\Markdig.SyntaxHighlighting.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # package repository owner
-        repo-owner: sharpninja
+        repo-owner: MarkdownServer
         # user account
         gh-user: sharpninja
         # access token
@@ -132,7 +115,7 @@ jobs:
         # Path of NuPkg
         nupkg-path: ${{ github.workspace }}\src\MDS.AspnetServices\bin\${{ env.PLATFORM }}\Debug\MarkdownServer.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # package repository owner
-        repo-owner: sharpninja
+        repo-owner: MarkdownServer
         # user account
         gh-user: sharpninja
         # access token
@@ -147,7 +130,7 @@ jobs:
         # Path of NuPkg
         nupkg-path: ${{ github.workspace }}\src\MDS.AppFramework\bin\${{ env.PLATFORM }}\Debug\MarkdownServer.ApplicationFramework.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # package repository owner
-        repo-owner: sharpninja
+        repo-owner: MarkdownServer
         # user account
         gh-user: sharpninja
         # access token
