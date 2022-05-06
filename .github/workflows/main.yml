@@ -11,37 +11,31 @@ on:
 
 jobs:
   build:
+    env:
+      PLATFORM: ${{ env.PLATFORM }}
 
     runs-on: windows-2022
 
     steps:
     - name: Event
-      env:       
+      env:
         event_name: ${{ github.event_name }}
       run: echo "event_name $env:event_name"
     - name: Checkout
       uses: actions/checkout@v1
       with:
         submodules: true
-      
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 6.0.x
-        
-#     - name: Setup MSBuild.exe
-#       uses: microsoft/setup-msbuild@master
-#       with:
-#         vs-prerelease: true
-#         vs-version: 17
-        
-    - name: Setup Scoop
+
+    - name: Setup GitVersion
       run: |
-        # git submodule update --init --recursive
-        iwr -useb get.scoop.sh | iex
-        scoop install gitversion
-        GitVersion
-        
+        dotnet tool install gitversion.tool -g
+        dotnet-GitVersion
+
     - name: Restore dependencies
       run: dotnet restore
 
@@ -50,34 +44,30 @@ jobs:
       run: |
         $ws = "${{ github.workspace }}"
         set-location $ws\src\MDS.AspnetServices
-        dotnet build -c Debug /property:Platform=x64 --no-restore
-        dotnet pack -c Debug --no-restore --include-source /property:Platform=x64 
+        dotnet build -c Debug /property:Platform=${{ env.PLATFORM }} --no-restore
 
     - name: Build App Framework Debug
       if: ${{ github.event_name != 'release' }}
       run: |
         $ws = "${{ github.workspace }}"
         set-location $ws\src\MDS.AppFramework
-        dotnet build -c Debug /property:Platform=x64 --no-restore
-        dotnet pack -c Debug --no-restore --include-source /property:Platform=x64
+        dotnet build -c Debug /property:Platform=${{ env.PLATFORM }} --no-restore
 
     - name: Build ASP.Net Services Release
       if: ${{ github.event_name == 'release' }}
       run: |
         $ws = "${{ github.workspace }}"
         $outPath = (Join-Path . -Child packages)
-        set-location $ws\MDS.AspnetServices
-        dotnet build -c Release /property:Platform=x64 --no-restore
-        dotnet pack -c Release --no-restore /property:Platform=x64
+        set-location $ws\src\MDS.AspnetServices
+        dotnet build -c Release /property:Platform=${{ env.PLATFORM }} --no-restore
 
     - name: Build App Framework Release
       if: ${{ github.event_name == 'release' }}
       run: |
         $ws = "${{ github.workspace }}"
         $outPath = (Join-Path . -Child packages)
-        set-location $ws\MDS.AppFramework
-        dotnet build -c Release /property:Platform=x64 --no-restore 
-        dotnet pack -c Release --no-restore /property:Platform=x64
+        set-location $ws\src\MDS.AppFramework
+        dotnet build -c Release /property:Platform=${{ env.PLATFORM }} --no-restore
 
 #     - name: Dotnet Debug Tests
 #       if: ${{ github.event_name != 'release' }}
@@ -95,7 +85,7 @@ jobs:
     #   uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
     #   with:
     #     # Path of NuPkg
-    #     nupkg-path: ${{ github.workspace }}\src\MDS.AspnetServices\bin\x64\Debug\MarkdownServer.${{ env.GitVersion_SemVer }}.nupkg
+    #     nupkg-path: ${{ github.workspace }}\src\MDS.AspnetServices\bin\${{ env.PLATFORM }}\Debug\MarkdownServer.${{ env.GitVersion_SemVer }}.nupkg
     #     # package repository owner
     #     repo-owner: sharpninja
     #     # user account
@@ -104,13 +94,43 @@ jobs:
     #     token: ${{ secrets.GITHUB_TOKEN }}
     #     # skip publishing duplicated package(s)
     #     skip-duplicate: true
-        
+
+    - name: GitHub Packages - ColorCode Symbols
+      if: ${{ github.event_name != 'release' }}
+      uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
+      with:
+        # Path of NuPkg
+        nupkg-path: ${{ github.workspace }}\submodules\ColorCodePortable\bin\${{ env.PLATFORM }}\Debug\ColorCodePortable.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        # package repository owner
+        repo-owner: sharpninja
+        # user account
+        gh-user: sharpninja
+        # access token
+        token: ${{ secrets.GITHUB_TOKEN }}
+        # skip publishing duplicated package(s)
+        skip-duplicate: true
+
+    - name: GitHub Packages - Markdig.SyntaxHighlighting Symbols
+      if: ${{ github.event_name != 'release' }}
+      uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
+      with:
+        # Path of NuPkg
+        nupkg-path: ${{ github.workspace }}\submodules\MDS.AspnetServices\bin\${{ env.PLATFORM }}\Debug\Markdig.SyntaxHighlighting.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        # package repository owner
+        repo-owner: sharpninja
+        # user account
+        gh-user: sharpninja
+        # access token
+        token: ${{ secrets.GITHUB_TOKEN }}
+        # skip publishing duplicated package(s)
+        skip-duplicate: true
+
     - name: GitHub Packages - App Server Symbols
       if: ${{ github.event_name != 'release' }}
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}\src\MDS.AspnetServices\bin\x64\Debug\MarkdownServer.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        nupkg-path: ${{ github.workspace }}\src\MDS.AspnetServices\bin\${{ env.PLATFORM }}\Debug\MarkdownServer.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # package repository owner
         repo-owner: sharpninja
         # user account
@@ -119,28 +139,13 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         # skip publishing duplicated package(s)
         skip-duplicate: true
-        
-    # - name: GitHub Packages - App Framework
-    #   if: ${{ github.event_name != 'release' }}
-    #   uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
-    #   with:
-    #     # Path of NuPkg
-    #     nupkg-path: ${{ github.workspace }}\src\MDS.AppFramework\bin\x64\Debug\MarkdownServer.ApplicationFramework.${{ env.GitVersion_SemVer }}.nupkg
-    #     # package repository owner
-    #     repo-owner: sharpninja
-    #     # user account
-    #     gh-user: sharpninja
-    #     # access token
-    #     token: ${{ secrets.GITHUB_TOKEN }}
-    #     # skip publishing duplicated package(s)
-    #     skip-duplicate: true
-        
+
     - name: GitHub Packages - App Framework Symbols
       if: ${{ github.event_name != 'release' }}
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}\src\MDS.AppFramework\bin\x64\Debug\MarkdownServer.ApplicationFramework.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        nupkg-path: ${{ github.workspace }}\src\MDS.AppFramework\bin\${{ env.PLATFORM }}\Debug\MarkdownServer.ApplicationFramework.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # package repository owner
         repo-owner: sharpninja
         # user account
@@ -149,15 +154,13 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         # skip publishing duplicated package(s)
         skip-duplicate: true
-        
+
     - name: Nuget Publish
       if: ${{ github.event_name == 'release' }}
-      run: | 
-        $outPath = (Join-Path . -Child packages)
-        
-        gci $outPath\*.nupkg -ErrorAction Stop
-        
-        gci $outPath\*.nupkg | forEach-Object -process {
+      run: |
+        $symbolPackages = gci ${{ github.workspace }}\*.${{ env.GitVersion_SemVer }}.symbols.nupkg -ErrorAction Stop
+
+        $symbolPackages | forEach-Object -process {
           dotnet nuget push $_ -k "${{ secrets.NUGET_KEY }}" -s https://api.nuget.org/v3/index.json --skip-duplicate
         }
-        
+
