@@ -1,47 +1,48 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-		<OutputType>Library</OutputType>
-		<Platforms>AnyCPU;x64</Platforms>
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFrameworks>net6.0</TargetFrameworks>
+    <Platforms>AnyCPU;x64;x86</Platforms>
+    <LangVersion>10</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
 
-	<PropertyGroup>
-		<IsPackable>True</IsPackable>
-		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-		<RepositoryUrl>https://github.com/MarkdownServer/AspNetServices</RepositoryUrl>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<Description>MarkdownServer Application Framework Middleware for ASPNet Core</Description>
-		<Copyright>2021 - Gateway Prgramming School, Inc.</Copyright>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-		<PackageId>MarkdownServer.ApplicationFramework</PackageId>
-		<Authors>Gateway Programming School, Inc.</Authors>
-		<Product>MarkdownServer.ApplicationFramework</Product>
-	</PropertyGroup>
+  <PropertyGroup>
+    <IsPackable>True</IsPackable>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <RepositoryUrl>https://github.com/MarkdownServer/AspNetServices</RepositoryUrl>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Description>MarkdownServer Application Framework Middleware for ASPNet Core</Description>
+    <Copyright>2021 - Gateway Prgramming School, Inc.</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <PackageId>MarkdownServer.ApplicationFramework</PackageId>
+    <Authors>Gateway Programming School, Inc.</Authors>
+    <Product>MarkdownServer.ApplicationFramework</Product>
+  </PropertyGroup>
 
-	<ItemGroup>
-	  <Compile Remove="ViewModels\**" />
-	  <Content Remove="ViewModels\**" />
-	  <EmbeddedResource Remove="ViewModels\**" />
-	  <None Remove="ViewModels\**" />
-	</ItemGroup>
+  <ItemGroup>
+    <Compile Remove="ViewModels\**" />
+    <Content Remove="ViewModels\**" />
+    <EmbeddedResource Remove="ViewModels\**" />
+    <None Remove="ViewModels\**" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<None Include="Controls\ControlViewModel.cs" />
-	</ItemGroup>
+  <ItemGroup>
+    <None Include="Controls\ControlViewModel.cs" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="GitVersion.MsBuild" Version="5.10.1">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="GitVersion.MsBuild" Version="5.10.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\MDS.AspnetServices\MDS.AspnetServices.csproj" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MDS.AspnetServices\MDS.AspnetServices.csproj" />
+  </ItemGroup>
 
 </Project>
