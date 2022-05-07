@@ -10,8 +10,8 @@
   <PropertyGroup>
     <!-- <IncludeReferencedProjects>True</IncludeReferencedProjects> -->
     <IsPackable>True</IsPackable>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <RepositoryUrl>https://github.com/MarkdownServer/AspNetServices</RepositoryUrl>
     <Description>MarkdownServer Middleware for ASPNet Core</Description>
     <Copyright>2022 - Gateway Prgramming School, Inc.</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -37,6 +37,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference> -->
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
     <PackageReference Include="Faslinq" Version="1.0.5" />
     <PackageReference Include="GitVersion.MsBuild" Version="5.10.1">
       <PrivateAssets>all</PrivateAssets>
