@@ -56,11 +56,6 @@ jobs:
             rm $outPath -r -f;
         fi;
         mkdir $outPath;
-        echo "${PWD}"
-        ls -al ${ws}
-        ls -al ${ws}/submodules
-        ls -al ${ws}/submodules/ColorCodePortable
-        ls -al ${ws}/submodules/ColorCodePortable/MarkdownServer.ColorCodePortable
 
         cd ${ws}/submodules/ColorCodePortable/MarkdownServer.ColorCodePortable
         rm "./bin" -r -f

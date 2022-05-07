@@ -47,6 +47,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\submodules\Markdig.SyntaxHighlighting\src\MarkdownServer.Markdig.SyntaxHighlighting\MarkdownServer.Markdig.SyntaxHighlighting.csproj" PrivateAssets="all" />
-    <ProjectReference Include="..\..\submodules\ColorCodePortable\MarkdownServer.ColorCode\MarkdownServer.ColorCodePortable.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\..\submodules\ColorCodePortable\MarkdownServer.ColorCodePortable\MarkdownServer.ColorCodePortable.csproj" />
   </ItemGroup>
 </Project>
