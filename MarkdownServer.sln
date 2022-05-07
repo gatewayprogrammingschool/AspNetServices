@@ -9,13 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MDS.AspnetServices", "src\M
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Markdig.SyntaxHighlighting.Tests", "submodules\Markdig.SyntaxHighlighting\src\Markdig.SyntaxHighlighting.Tests\Markdig.SyntaxHighlighting.Tests.csproj", "{B0696B7B-33C0-49B3-B8B2-DE07A7FCFBE9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Markdig.SyntaxHighlighting", "submodules\Markdig.SyntaxHighlighting\src\Markdig.SyntaxHighlighting\Markdig.SyntaxHighlighting.csproj", "{5D1E4E89-83A2-4B14-BB11-DEB3C69665F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkdownServer.Markdig.SyntaxHighlighting", "submodules\Markdig.SyntaxHighlighting\src\Markdig.SyntaxHighlighting\MarkdownServer.Markdig.SyntaxHighlighting.csproj", "{5D1E4E89-83A2-4B14-BB11-DEB3C69665F0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{063A4721-8CF4-45E1-8C31-1063205BC075}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MDS.AspnetServices.Tests", "tests\MDS.AspnetServices.Tests\MDS.AspnetServices.Tests.csproj", "{2009E285-78D6-4EC4-8082-5FC798C50BFF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColorCode", "submodules\ColorCodePortable\ColorCode\ColorCode.csproj", "{DC3DF40C-0423-415B-8D29-AD2AE062C34D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkdownServer.ColorCodePortable", "submodules\ColorCodePortable\ColorCode\MarkdownServer.ColorCodePortable.csproj", "{DC3DF40C-0423-415B-8D29-AD2AE062C34D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MDS.TestSite", "tests\MDS.TestSite\MDS.TestSite.csproj", "{D24C70A5-4564-40EA-87FA-B5D68B235B5D}"
 EndProject
@@ -25,7 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.github\FUNDING.yml = .github\FUNDING.yml
-		src\GitVersion.yml = src\GitVersion.yml
+		GitVersion.yml = GitVersion.yml
 		global.json = global.json
 		.github\workflows\main.yml = .github\workflows\main.yml
 	EndProjectSection
