@@ -56,33 +56,42 @@ jobs:
             rm $outPath -r -f;
         fi;
         mkdir $outPath;
-        cd "${ws}/submodules/ColorCodePortable/MarkdownServer.ColorCodePortable/"
+        echo "${PWD}"
+        ls -al ${ws}
+        ls -al ${ws}/submodules
+        ls -al ${ws}/submodules/ColorCodePortable
+        ls -al ${ws}/submodules/ColorCodePortable/MarkdownServer.ColorCodePortable
+
+        cd ${ws}/submodules/ColorCodePortable/MarkdownServer.ColorCodePortable
         rm "./bin" -r -f
         dotnet restore --source "https://api.nuget.org/v3/index.json";
         dotnet build -c Debug /property:Platform=${{ env.PLATFORM }} --no-restore
         dotnet pack -c Debug /property:Platform=${{ env.PLATFORM }} --no-build --include-source --include-symbols --force
-        cd "./bin/${{ env.PLATFORM }}/Debug/"
+        cd "./bin/${{ env.PLATFORM }}/Debug"
         cp -r *.symbols.nupkg $outPath
-        cd "${ws}/submodules/Markdig.SyntaxHighlighting/src/MarkdownServer.Markdig.SyntaxHighlighting/"
+
+        cd "${ws}/submodules/Markdig.SyntaxHighlighting/src/MarkdownServer.Markdig.SyntaxHighlighting"
         rm "./bin" -r -f
         dotnet restore --source "https://api.nuget.org/v3/index.json";
         dotnet build -c Debug /property:Platform=${{ env.PLATFORM }} --no-restore
         dotnet pack -c Debug /property:Platform=${{ env.PLATFORM }} --no-build --include-source --include-symbols --force
-        cd "./bin/${{ env.PLATFORM }}/Debug/"
+        cd "./bin/${{ env.PLATFORM }}/Debug"
         cp -r *.symbols.nupkg $outPath
-        cd "${ws}/src/MDS.AspnetServices/"
+
+        cd "${ws}/src/MDS.AspnetServices"
         rm "./bin" -r -f
         dotnet restore --source "https://api.nuget.org/v3/index.json";
         dotnet build -c Debug /property:Platform=${{ env.PLATFORM }} --no-restore
         dotnet pack -c Debug /property:Platform=${{ env.PLATFORM }} --no-build --include-source --include-symbols --force
-        cd "./bin/${{ env.PLATFORM }}/Debug/"
+        cd "./bin/${{ env.PLATFORM }}/Debug"
         cp -r *.symbols.nupkg $outPath
+
         cd "${ws}/src/MDS.AppFramework/"
         rm "./bin" -r -f
         dotnet restore --source "https://api.nuget.org/v3/index.json";
         dotnet build -c Debug /property:Platform=${{ env.PLATFORM }} --no-restore
         dotnet pack -c Debug /property:Platform=${{ env.PLATFORM }} --no-build --include-source --include-symbols --force
-        cd "./bin/${{ env.PLATFORM }}/Debug/"
+        cd "./bin/${{ env.PLATFORM }}/Debug"
         cp -r *.symbols.nupkg $outPath
         ls -al $outPath
 
@@ -96,33 +105,33 @@ jobs:
             rm $outPath -r -f;
         fi;
         mkdir $outPath;
-        cd "${ws}/submodules/ColorCodePortable/MarkdownServer.ColorCodePortable/"
+        cd "${ws}/submodules/ColorCodePortable/MarkdownServer.ColorCodePortable"
         dotnet clean;
         dotnet restore --source "https://api.nuget.org/v3/index.json";
         dotnet build -c Release /property:Platform=${{ env.PLATFORM }} --no-restore
         dotnet pack -c Release /property:Platform=${{ env.PLATFORM }} --no-build --include-source --include-symbols --force
-        cd "./bin/${{ env.PLATFORM }}/Release/"
+        cd "./bin/${{ env.PLATFORM }}/Release"
         cp -r *.symbols.nupkg $outPath
-        cd "${ws}/submodules/Markdig.SyntaxHighlighting/src/MarkdownServer.Markdig.SyntaxHighlighting/"
+        cd "${ws}/submodules/Markdig.SyntaxHighlighting/src/MarkdownServer.Markdig.SyntaxHighlighting"
         dotnet clean;
         dotnet restore --source "https://api.nuget.org/v3/index.json";
         dotnet build -c Release /property:Platform=${{ env.PLATFORM }} --no-restore
         dotnet pack -c Release /property:Platform=${{ env.PLATFORM }} --no-build --include-source --include-symbols --force
-        cd "./bin/${{ env.PLATFORM }}/Release/"
+        cd "./bin/${{ env.PLATFORM }}/Release"
         cp -r *.symbols.nupkg $outPath
-        cd "${ws}/src/MDS.AspnetServices/"
+        cd "${ws}/src/MDS.AspnetServices"
         dotnet clean;
         dotnet restore --source "https://api.nuget.org/v3/index.json";
         dotnet build -c Release /property:Platform=${{ env.PLATFORM }} --no-restore
         dotnet pack -c Release /property:Platform=${{ env.PLATFORM }} --no-build --include-source --include-symbols --force
-        cd "./bin/${{ env.PLATFORM }}/Release/"
+        cd "./bin/${{ env.PLATFORM }}/Release"
         cp -r *.symbols.nupkg $outPath
-        cd "${ws}/src/MDS.AppFramework/"
+        cd "${ws}/src/MDS.AppFramework"
         dotnet clean;
         dotnet restore --source "https://api.nuget.org/v3/index.json";
         dotnet build -c Release /property:Platform=${{ env.PLATFORM }} --no-restore
         dotnet pack -c Release /property:Platform=${{ env.PLATFORM }} --no-build --include-source --include-symbols --force
-        cd "./bin/${{ env.PLATFORM }}/Release/"
+        cd "./bin/${{ env.PLATFORM }}/Release"
         cp -r *.symbols.nupkg $outPath
 
 #     - name: Dotnet Debug Tests
