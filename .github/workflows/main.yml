@@ -34,16 +34,16 @@ jobs:
 
     - name: Setup GitVersion
       run: |
-        export PATH="${PATH}:/root/.dotnet/tools/"
-        #if [ ! -f /root/.dotnet/tools/pwsh ]; then
+        export PATH="${PATH}:$HOME/.dotnet/tools/"
+        #if [ ! -f $HOME/.dotnet/tools/pwsh ]; then
         #    echo 'Installing PowerShell'
         #    dotnet tool install powershell -g;
         #fi;
-        if [ ! -f /root/.dotnet/tools/dotnet-gitversion ]; then
+        if [ ! -f $HOME/.dotnet/tools/dotnet-gitversion ]; then
             echo 'Installing GitVersion'
             dotnet tool install gitversion.tool -g;
         fi;
-        /root/.dotnet/tools/dotnet-gitversion;
+        $HOME/.dotnet/tools/dotnet-gitversion;
 
     - name: Build ASP.Net Services Debug
       if: ${{ github.event_name != 'release' }}
