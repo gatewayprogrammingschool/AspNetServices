@@ -20,6 +20,7 @@
     <PackageId>MarkdownServer</PackageId>
     <Authors>Gateway Programming School, Inc.</Authors>
     <Product>MarkdownServer</Product>
+    <IncludeSourceFilesProjectOutputGroup>True</IncludeSourceFilesProjectOutputGroup>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Common\JsonExtensions.cs" />

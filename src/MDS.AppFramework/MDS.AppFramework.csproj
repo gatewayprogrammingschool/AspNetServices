@@ -21,6 +21,7 @@
     <PackageId>MarkdownServer.ApplicationFramework</PackageId>
     <Authors>Gateway Programming School, Inc.</Authors>
     <Product>MarkdownServer.ApplicationFramework</Product>
+    <IncludeSourceFilesProjectOutputGroup>True</IncludeSourceFilesProjectOutputGroup>
   </PropertyGroup>
 
   <ItemGroup>
