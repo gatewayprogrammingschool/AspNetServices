@@ -26,21 +26,19 @@ public static class MarkdownServerExtensions
 
     public static WebApplication UseMarkdownServer(this WebApplication app)
     {
-        var config = app.Services.GetRequiredService<MarkdownServerConfiguration>();
         var options = app.Services.GetRequiredService<MarkdownServerOptions>();
-        //new MarkdownServerOptions(app.Services, config);
         options.ServerRoot = app.Environment.WebRootPath;
 
         return (WebApplication)app.UseMiddleware<MarkdownFileMiddleware>();
     }
 
-    public static Task<IResult> MarkdownFileExecute(this WebApplication app, HttpContext context, string? filename = null) 
+    public static Task<IResult> MarkdownFileExecute(this WebApplication app, HttpContext context, string? filename = null)
         => MarkdownServerOptions.Current.MarkdownFileExecute(context, filename);
 
     public static async Task<IResult> MarkdownFileExecute(
-        this MarkdownServerOptions options, 
-        HttpContext context, 
-        string? filename = null, 
+        this MarkdownServerOptions options,
+        HttpContext context,
+        string? filename = null,
         ConcurrentDictionary<string, string>? vars = null)
     {
         var rootPath = options.ServerRoot ?? "./wwwroot";
