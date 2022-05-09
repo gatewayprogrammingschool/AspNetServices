@@ -13,7 +13,7 @@ global using System.Text;
 global using System.Threading.Tasks;
 global using Faslinq;
 global using Markdig;
-global using MarkdownServer.Markdig.SyntaxHighlighting;
+global using MDS.Markdig.SyntaxHighlighting;
 
 global using MDS.AspnetServices;
 global using MDS.AspnetServices.Common;

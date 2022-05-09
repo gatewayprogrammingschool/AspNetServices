@@ -73,7 +73,7 @@ public record MarkdownResponse
         return html;
     }
 
-    public async Task<string> ToHtmlPage()
+    public async Task<byte[]> ToHtmlPage()
     {
         var html = ToHtml();
 
@@ -87,7 +87,7 @@ public record MarkdownResponse
         {
             layout = _layout;
         }
-            
+
         var page =
             layout?.Replace("$(MarkdownBody)", html) ?? "$(MarkdownBody)";
 
@@ -95,7 +95,7 @@ public record MarkdownResponse
 
         if (!Document.ContainsData("Variables"))
         {
-            return page;
+            return page.ToUtf8Bytes();
         }
 
         foreach (var (key, value) in variables?.ToArray() ?? Array.Empty<KeyValuePair<string,string>>())
@@ -112,7 +112,7 @@ public record MarkdownResponse
             page = page.Replace($"$({key})", toInsert);
         }
 
-        return page;
+        return page.ToUtf8Bytes();
     }
 
     public MarkdownResult ToMarkdownResult()

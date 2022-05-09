@@ -26,17 +26,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "submodules", "submodules", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ColorCodePortable", "ColorCodePortable", "{727F8265-13ED-4955-80CF-001A7F90545A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkdownServer.ColorCodePortable", "submodules\ColorCodePortable\MarkdownServer.ColorCodePortable\MarkdownServer.ColorCodePortable.csproj", "{14202759-CD0A-4CD0-BFB4-87D08808DF73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MDS.ColorCodePortable", "submodules\ColorCodePortable\MDS.ColorCodePortable\MDS.ColorCodePortable.csproj", "{14202759-CD0A-4CD0-BFB4-87D08808DF73}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Markdig.SyntaxHighlighting", "Markdig.SyntaxHighlighting", "{42278AC9-02CE-4B2E-9BC8-3669D65E4ED8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2F8E6916-1369-44DC-A4CE-320108B7ACD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkdownServer.Markdig.SyntaxHighlighting", "submodules\Markdig.SyntaxHighlighting\src\MarkdownServer.Markdig.SyntaxHighlighting\MarkdownServer.Markdig.SyntaxHighlighting.csproj", "{E050EAEE-5228-4FEA-A941-C7CCABCE356C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MDS.Markdig.SyntaxHighlighting", "submodules\Markdig.SyntaxHighlighting\src\MDS.Markdig.SyntaxHighlighting\MDS.Markdig.SyntaxHighlighting.csproj", "{E050EAEE-5228-4FEA-A941-C7CCABCE356C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MDS.AspnetServices", "src\MDS.AspnetServices\MDS.AspnetServices.csproj", "{571E9CA9-E784-4527-8E29-92E50883365F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MDS.AspnetServices", "src\MDS.AspnetServices\MDS.AspnetServices.csproj", "{571E9CA9-E784-4527-8E29-92E50883365F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MDS.AppFramework", "src\MDS.AppFramework\MDS.AppFramework.csproj", "{B0B70DE9-A2E1-49AE-AD12-626CE104166C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MDS.AppFramework", "src\MDS.AppFramework\MDS.AppFramework.csproj", "{B0B70DE9-A2E1-49AE-AD12-626CE104166C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

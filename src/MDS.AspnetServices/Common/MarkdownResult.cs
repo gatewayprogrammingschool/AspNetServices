@@ -21,7 +21,7 @@ public class MarkdownResult : IResult
     public async Task ExecuteAsync(HttpContext context)
     {
         var html = await MarkdownResponse.Create(Document).ToHtmlPage();
-        var memory = new ReadOnlyMemory<byte>(Encoding.UTF8.GetBytes(html));
+        var memory = new ReadOnlyMemory<byte>(html);
         context.Response.StatusCode = (int)HttpStatusCode.OK;
         context.Response.ContentType = "text/html";
         context.Response.ContentLength = memory.Length;

@@ -12,14 +12,14 @@
   <PropertyGroup>
     <IsPackable>True</IsPackable>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <Description>MarkdownServer Application Framework Middleware for ASPNet Core</Description>
     <Copyright>2021 - Gateway Prgramming School, Inc.</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <PackageId>MarkdownServer.ApplicationFramework</PackageId>
+    <PackageId>MDS.ApplicationFramework</PackageId>
     <Authors>Gateway Programming School, Inc.</Authors>
-    <Product>MarkdownServer.ApplicationFramework</Product>
+    <Product>MDS.ApplicationFramework</Product>
     <IncludeSourceFilesProjectOutputGroup>True</IncludeSourceFilesProjectOutputGroup>
   </PropertyGroup>
 

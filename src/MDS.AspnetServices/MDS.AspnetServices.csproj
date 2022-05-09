@@ -11,7 +11,7 @@
     <!-- <IncludeReferencedProjects>True</IncludeReferencedProjects> -->
     <IsPackable>True</IsPackable>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <Description>MarkdownServer Middleware for ASPNet Core</Description>
     <Copyright>2022 - Gateway Prgramming School, Inc.</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -47,7 +47,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\submodules\Markdig.SyntaxHighlighting\src\MarkdownServer.Markdig.SyntaxHighlighting\MarkdownServer.Markdig.SyntaxHighlighting.csproj" PrivateAssets="all" />
-    <ProjectReference Include="..\..\submodules\ColorCodePortable\MarkdownServer.ColorCodePortable\MarkdownServer.ColorCodePortable.csproj" />
+    <ProjectReference Include="..\..\submodules\Markdig.SyntaxHighlighting\src\MDS.Markdig.SyntaxHighlighting\MDS.Markdig.SyntaxHighlighting.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\..\submodules\ColorCodePortable\MDS.ColorCodePortable\MDS.ColorCodePortable.csproj" />
   </ItemGroup>
 </Project>

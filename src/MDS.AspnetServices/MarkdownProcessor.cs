@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
+using MD = Markdig.Markdown;
 using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
@@ -22,7 +23,7 @@ internal static class MarkdownProcessor
 
     public static async Task<IResult> ProcessMarkdownFile(this MarkdownServerOptions options, string filename, ConcurrentDictionary<string, string>? variables = null)
         => File.Exists(filename)
-            ? (await options.ProcessMarkdown(File.ReadAllText(filename), Path.GetDirectoryName(filename), variables)).ToResult()
+            ? (await options.ProcessMarkdown((await File.ReadAllTextAsync(filename)) ?? "", Path.GetDirectoryName(filename) ?? "", variables)).ToResult()
             : new MarkdownResponse(HttpStatusCode.NotFound).ToMarkdownResult();
 
     // <([^>]*)md-include="([^"\n]*)"([^>]*)>
@@ -247,7 +248,7 @@ internal static class MarkdownProcessor
 
             var classAttribute = htmlAttributes.Find(
                 s => s.StartsWith("class=", StringComparison.InvariantCultureIgnoreCase));
-            
+
             classAttribute ??= "class=''";
 
             classAttribute = classAttribute[0..^1];
@@ -293,7 +294,7 @@ internal static class MarkdownProcessor
             variables = new ConcurrentDictionary<string, string>();
         }
 
-        var document = Markdig.Markdown.Parse(markdown, MarkdownResponse.Pipeline);
+        var document = MD.Parse(markdown, MarkdownResponse.Pipeline);
 
         markdown = ProcessFormTags(markdown);
         var (md, vars) = await ProcessMarkdownIncludes(markdown, document);
@@ -304,7 +305,7 @@ internal static class MarkdownProcessor
             variables.AddOrUpdate(k, v, (_, _) => v);
         }
 
-        var targetDocument = Markdig.Markdown.Parse(markdown, MarkdownResponse.Pipeline);
+        var targetDocument = MD.Parse(markdown, MarkdownResponse.Pipeline);
 
         for (var i = 0; i < document.Count; ++i)
         {
@@ -410,7 +411,7 @@ internal static class MarkdownProcessor
     internal static Task<MarkdownDocument> ProcessNestedMarkdownFile(this MarkdownServerOptions options, MarkdownDocument parent,
         string filename)
         => File.Exists(filename)
-            ? options.ProcessMarkdown(File.ReadAllText(filename), Path.GetDirectoryName(filename)!)
+            ? options.ProcessMarkdown(File.ReadAllText(filename) ?? "", Path.GetDirectoryName(filename)!)
             : throw new FileNotFoundException("Could not located nested file.", filename);
 
     public static MarkdownResult ToResult(this MarkdownDocument document)

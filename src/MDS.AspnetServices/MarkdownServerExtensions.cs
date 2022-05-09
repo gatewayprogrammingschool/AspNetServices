@@ -26,7 +26,7 @@ public static class MarkdownServerExtensions
 
     public static WebApplication UseMarkdownServer(this WebApplication app)
     {
-        var options = app.Services.GetRequiredService<MarkdownServerOptions>();
+        var options = app.Services.GetRequiredService<MarkdownServerOptions>()!;
         options.ServerRoot = app.Environment.WebRootPath;
 
         return (WebApplication)app.UseMiddleware<MarkdownFileMiddleware>();
@@ -93,4 +93,6 @@ public static class MarkdownServerExtensions
 
         return result;
     }
+
+    public static byte[] ToUtf8Bytes(this string toEncode) => Encoding.UTF8.GetBytes(toEncode);
 }
