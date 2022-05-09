@@ -56,7 +56,7 @@ jobs:
         fi;
         mkdir $outPath;
 
-        cd ${ws}/submodules/ColorCodePortable/MarkdownServer.ColorCodePortable
+        cd ${ws}/submodules/ColorCodePortable/MDS.ColorCodePortable
         rm "./bin" -r -f
         dotnet restore --source "https://api.nuget.org/v3/index.json";
         dotnet build -c Debug /property:Platform=${{ env.PLATFORM }} --no-restore
@@ -64,7 +64,7 @@ jobs:
         cd "./bin/${{ env.PLATFORM }}/Debug"
         cp -r *.symbols.nupkg $outPath
 
-        cd "${ws}/submodules/Markdig.SyntaxHighlighting/src/MarkdownServer.Markdig.SyntaxHighlighting"
+        cd "${ws}/submodules/Markdig.SyntaxHighlighting/src/MDS.Markdig.SyntaxHighlighting"
         rm "./bin" -r -f
         dotnet restore --source "https://api.nuget.org/v3/index.json";
         dotnet build -c Debug /property:Platform=${{ env.PLATFORM }} --no-restore
