@@ -30,7 +30,7 @@ namespace MDS.AppFramework.Common
                 throw new AbandonedMutexException(nameof(json));
             }
 
-            var config = json.FromJson<MarkdownApplicationConfiguration>();
+            MarkdownApplicationConfiguration? config = json.FromJson<MarkdownApplicationConfiguration>();
 
             if (config is not null)
             {

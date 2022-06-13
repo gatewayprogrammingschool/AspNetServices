@@ -38,8 +38,8 @@ namespace MDS.AppFramework.Common
 
         public static WebApplication UseMarkdownApplication(this WebApplication app)
         {
-            var config = app.Services.GetRequiredService<MarkdownApplicationConfiguration>();
-            var options = app.Services.GetRequiredService<MarkdownApplicationOptions>();
+            MarkdownApplicationConfiguration? config = app.Services.GetRequiredService<MarkdownApplicationConfiguration>();
+            MarkdownApplicationOptions? options = app.Services.GetRequiredService<MarkdownApplicationOptions>();
             //new MarkdownServerOptions(app.Services, config);
             options.ServerRoot = app.Environment.WebRootPath;
 
@@ -51,12 +51,12 @@ namespace MDS.AppFramework.Common
 
         internal static Task<IResult> MarkdownViewExecute(this MarkdownApplicationOptions options, HttpContext context, string viewPath)
         {
-            var fullPath = Path.Combine(options.ServerRoot, viewPath.TrimStart("\\/".ToCharArray()));
+            string? fullPath = Path.Combine(options.ServerRoot, viewPath.TrimStart("\\/".ToCharArray()));
             Type? viewType = null;
 
             if(File.Exists(fullPath))
             {
-                var viewSource = File.ReadAllText(fullPath);
+                string? viewSource = File.ReadAllText(fullPath);
 
                 // Get YAML frontmatter
 

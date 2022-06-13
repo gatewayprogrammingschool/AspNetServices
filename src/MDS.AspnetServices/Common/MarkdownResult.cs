@@ -10,6 +10,11 @@ public class MarkdownResult : IResult
         Document = new MarkdownDocument();
     }
 
+    public MarkdownResult(string markdown)
+    {
+        Document = global::Markdig.Markdown.Parse(markdown, true);
+    }
+
     public MarkdownResult(MarkdownDocument document)
     {
         Document = document;
@@ -22,9 +27,18 @@ public class MarkdownResult : IResult
     {
         var html = await MarkdownResponse.Create(Document).ToHtmlPage();
         var memory = new ReadOnlyMemory<byte>(html);
-        context.Response.StatusCode = (int)HttpStatusCode.OK;
-        context.Response.ContentType = "text/html";
-        context.Response.ContentLength = memory.Length;
-        await context.Response.BodyWriter.WriteAsync(memory).AsTask();
+        try
+        {
+            context.Response.Clear();
+            context.Response.StatusCode = (int)HttpStatusCode.OK;
+            context.Response.ContentType = "text/html";
+            context.Response.ContentLength = memory.Length;
+            await context.Response.BodyWriter.WriteAsync(memory).AsTask();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine(ex);
+            throw;
+        }
     }
 }

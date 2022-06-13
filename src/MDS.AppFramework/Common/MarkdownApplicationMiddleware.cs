@@ -1,9 +1,12 @@
-﻿using System.Collections.Concurrent;
+﻿#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+using System.Collections.Concurrent;
 using System.Reflection;
 
 using MDS.AppFramework.Controls;
 using MDS.AspnetServices;
 using MDS.AspnetServices.Common;
+
+using Newtonsoft.Json;
 
 namespace MDS.AppFramework.Common
 {
@@ -12,7 +15,7 @@ namespace MDS.AppFramework.Common
         private readonly RequestDelegate _next;
         public MarkdownApplicationOptions Options { get; }
 
-        private ILogger<MarkdownApplicationMiddleware> _logger;
+        private readonly ILogger<MarkdownApplicationMiddleware> _logger;
 
         public MarkdownApplicationMiddleware(RequestDelegate next, MarkdownApplicationOptions options)
         {
@@ -23,40 +26,91 @@ namespace MDS.AppFramework.Common
 
         public async Task InvokeAsync(HttpContext context)
         {
-            using var mre = new ManualResetEventSlim(false);
+            using ManualResetEventSlim mre = new(false);
+            PathString path = context.Request.Path;
 
             try
             {
-                var path = context.Request.Path;
-
                 if (!(path.Value?.StartsWith("/mdapp/", StringComparison.InvariantCultureIgnoreCase) ?? false))
                 {
                     await _next.Invoke(context);
                     return;
                 }
 
-                var map = Options.Services.GetRequiredService<ControllerMap>();
+                ControllerMap? map = Options.Services.GetRequiredService<ControllerMap>();
 
-                Type? controllerType = map.GetControllerType(path);
+                PathControllerMapItem controllerMapItem = map.GetControllerType(path);
 
-                if (controllerType == null)
+                if (controllerMapItem == default)
                 {
                     _logger.LogWarning($"No controller found for {path}");
                     await _next.Invoke(context);
                     return;
                 }
 
-                var controller = AppController.BeginContext(controllerType, context, Options.Services);
+                AppController controller = AppController.BeginContext(controllerMapItem, context, Options.Services)!;
 
-                var viewMonitor = controller.GetViewMonitor(path);
+                if (controllerMapItem.Method is { Length: > 0 })
+                {
+                    MethodInfo? methodInfo = controllerMapItem.ControllerType!.GetMethod(controllerMapItem.Method);
 
-                viewMonitor.ViewCompletedAsync -= ViewMonitor_ViewCompleted;
-                viewMonitor.ViewCompletedAsync += ViewMonitor_ViewCompleted;
+                    if (methodInfo is null)
+                    {
+                        await InvokeViewMonitor(context, mre, path, controller);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            IResult? result = null;
 
-                viewMonitor.ViewNotCompletedAsync -= ViewMonitor_ViewNotCompleted;
-                viewMonitor.ViewNotCompletedAsync += ViewMonitor_ViewNotCompleted;
+                            if (methodInfo.ReturnType.IsAssignableTo(typeof(IResult)))
+                            {
+                                ParameterInfo[]? p = methodInfo.GetParameters();
+                                if (p is { Length: 1 } &&
+                                    context.Request.ContentType is "application/x-www-form-urlencoded" &&
+                                    p[0].ParameterType.IsAssignableTo(typeof(ControlViewModel)))
+                                {
+                                    object formCollection = Activator.CreateInstance(p[0].ParameterType, new object[] { await context.Request.ReadFormAsync() });
+                                    result = (IResult)methodInfo.Invoke(controller, new object?[] { formCollection });
+                                }
+                                else if(context.Request.ContentType is not "application/x-www-form-urlencoded")
+                                {
+                                    object formCollection = Activator.CreateInstance(p[0].ParameterType,
+                                        new object?[] { JsonConvert.DeserializeObject(context.Request.BodyReader.ToJson()) });
+                                    result = (IResult)methodInfo.Invoke(controller, new object?[] { formCollection });
+                                }
+                                else
+                                {
+                                    result = (IResult)methodInfo.Invoke(controller, Array.Empty<object>());
+                                }
 
-                await viewMonitor.StartAsync(context, controller.CancellationTokenSource.Token);
+                                if (result is not null)
+                                {
+                                    await result.ExecuteAsync(context);
+                                }
+                                else
+                                {
+                                    throw new ApplicationException($"No result returned by {methodInfo.Name}.");
+                                }
+
+                                mre.Set();
+                            }
+                            else
+                            {
+                                throw new ApplicationException($"{methodInfo.Name} does not return IResult.");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new ApplicationException($"Exception calling {methodInfo.Name}.", ex);
+                        }
+                    }
+                }
+                else
+                {
+                    await InvokeViewMonitor(context, mre, path, controller);
+                }
 
                 if (mre.Wait(TimeSpan.FromMinutes(5)))
                 {
@@ -66,70 +120,6 @@ namespace MDS.AppFramework.Common
 
                 _logger.LogWarning($"Session {context.Session.Id} call to {path} timed out in {GetType().Name}.");
 
-                Task ViewMonitor_ViewNotCompleted(Controls.IViewWorkflow obj, AggregateException ae, CancellationToken token)
-                {
-                    if (ae is not null and { InnerExceptions.Count: > 0 })
-                    {
-                        _logger.LogError(ae, "Workflow returned exceptions.");
-                        throw ae;
-                    }
-
-                    _logger.LogWarning($"Session {context.Session.Id} call to {path} did not complete.");
-
-                    mre.Set();
-
-                    return Task.CompletedTask;
-                }
-
-                async Task ViewMonitor_ViewCompleted(Controls.IViewWorkflow workflow, CancellationToken token)
-                {
-                    if (workflow.Exceptions?.InnerExceptions.Any() ?? false)
-                    {
-                        _logger.LogError(workflow.Exceptions, "Workflow returned exceptions.");
-                        throw workflow.Exceptions;
-                    }
-
-                    var stream = workflow.Renderer;
-
-                    if (stream is null)
-                    {
-                        throw new ApplicationException("Workflow provides no RenderStream.");
-                    }
-
-                    await stream.FlushAsync().ConfigureAwait(false);
-
-                    var response = workflow.StringBuilder.ToString();
-
-                    // Get the Markdown file for the view
-                    string viewName = workflow.GetType().FullName!;
-                    var index = viewName.IndexOf(".mdapp.", StringComparison.OrdinalIgnoreCase);
-                    if (index > -1)
-                    {
-                        index++;
-                        var mdappName = viewName[index..].Replace(".", "\\") + ".md";
-
-                        if (File.Exists(mdappName))
-                        {
-                            var filename = new FileInfo(mdappName).FullName;
-                            ConcurrentDictionary<string, string> variables = new();
-                            variables.TryAdd(nameof(workflow.ViewKey), workflow.ViewKey);
-                            variables.TryAdd($"ViewBody:{workflow.ViewKey}", response);
-                            variables.TryAdd(nameof(viewName), viewName);
-                            if (workflow.ViewModel is not null)
-                            {
-                                ProcessViewModelAsync(workflow, variables);
-                            }
-                            var options = Options.Services.GetRequiredService<MarkdownServerOptions>();
-                            var result = await options.MarkdownFileExecute(context, filename, variables);
-                            await result.ExecuteAsync(context);
-                        }
-                    }
-
-
-                    _logger.LogInformation($"Session {context.Session.Id} call to {path} completed.");
-
-                    mre.Set();
-                }
             }
             catch (Exception e)
             {
@@ -138,39 +128,130 @@ namespace MDS.AppFramework.Common
                     .ToMarkdownResult()
                     .ExecuteAsync(context);
             }
+
+            Task ViewMonitor_ViewNotCompleted(
+                Controls.IViewWorkflow obj,
+                AggregateException ae,
+                CancellationToken token)
+            {
+                if (ae is not null and { InnerExceptions.Count: > 0 })
+                {
+                    _logger.LogError(ae, "Workflow returned exceptions.");
+                    throw ae;
+                }
+
+                _logger.LogWarning($"Session {context.Session.Id} call to {path} did not complete.");
+
+                mre.Set();
+
+                return Task.CompletedTask;
+            }
+
+            async Task ViewMonitor_ViewCompleted(
+                IViewWorkflow workflow,
+                CancellationToken token)
+            {
+                if (workflow.Exceptions?.InnerExceptions.Any() ?? false)
+                {
+                    _logger.LogError(workflow.Exceptions, "Workflow returned exceptions.");
+                    throw workflow.Exceptions;
+                }
+
+                Microsoft.AspNetCore.WebUtilities.HttpResponseStreamWriter? stream = workflow.Renderer;
+
+                if (stream is null)
+                {
+                    throw new ApplicationException("Workflow provides no RenderStream.");
+                }
+
+                //await stream.FlushAsync().ConfigureAwait(false);
+
+                string? response = workflow.StringBuilder.ToString();
+
+                // Get the Markdown file for the view
+                string viewName = workflow.GetType().FullName!;
+                int index = viewName.IndexOf(".mdapp.", StringComparison.OrdinalIgnoreCase);
+                if (index > -1)
+                {
+                    index++;
+                    string? mdappName = viewName[index..].Replace(".", "\\") + ".md";
+
+                    if (File.Exists(mdappName))
+                    {
+                        string? filename = new FileInfo(mdappName).FullName;
+                        ConcurrentDictionary<string, string> variables = new();
+                        _ = variables.TryAdd(nameof(workflow.ViewKey), workflow.ViewKey);
+                        _ = variables.TryAdd($"ViewBody:{workflow.ViewKey}", response);
+                        _ = variables.TryAdd(nameof(viewName), viewName);
+                        if (workflow.ViewModel is not null)
+                        {
+                            await ProcessViewModelAsync(workflow, variables);
+                        }
+                        MarkdownServerOptions? options = Options.Services.GetRequiredService<MarkdownServerOptions>();
+                        IResult? result = await options.MarkdownFileExecute(context, filename, variables);
+                        await result.ExecuteAsync(context);
+                    }
+                }
+
+                _logger.LogInformation($"Session {context.Session.Id} call to {path} completed.");
+                mre.Set();
+            }
+
+            async Task InvokeViewMonitor(HttpContext context, ManualResetEventSlim mre, PathString path, AppController controller)
+            {
+                IViewMonitor? viewMonitor = controller.GetViewMonitor(path);
+
+                viewMonitor.ViewCompletedAsync -= ViewMonitor_ViewCompleted;
+                viewMonitor.ViewCompletedAsync += ViewMonitor_ViewCompleted;
+
+                viewMonitor.ViewNotCompletedAsync -= ViewMonitor_ViewNotCompleted;
+                viewMonitor.ViewNotCompletedAsync += ViewMonitor_ViewNotCompleted;
+
+                await viewMonitor.StartAsync(context, controller.CancellationTokenSource.Token);
+            }
         }
 
         private async Task ProcessViewModelAsync(IViewState viewState, ConcurrentDictionary<string, string> variables)
         {
-            var lazy = viewState.ViewState.GetValueOrDefault(nameof(IAppView.ViewModel));
-            var viewModel = lazy is not null ? await lazy.GetLazyDataAsync<ControlViewModel>() : null;
+            LazyContainer? lazy = viewState.ViewState.GetValueOrDefault(nameof(IAppView.ViewModel));
+            ControlViewModel? viewModel = lazy is not null ? await lazy.GetLazyDataAsync<ControlViewModel>() : null;
 
             if (viewModel is not null)
             {
-                foreach (PropertyInfo pi in viewModel?.GetType().GetProperties(BindingFlags.Instance | System.Reflection.BindingFlags.Public) ?? Array.Empty<PropertyInfo>())
+                foreach (
+                    PropertyInfo pi in viewModel?.GetType()
+                        .GetProperties(BindingFlags.Instance | BindingFlags.Public) ?? Array.Empty<PropertyInfo>())
                 {
-                    var name = $"ViewModel.{pi.Name}";
-                    var value = pi.GetValue(viewModel) as string ?? pi.GetValue(viewModel)?.ToString() ?? String.Empty;
+                    if(pi.GetMethod?.GetParameters()?.Any() ?? false)
+                    {
+                        continue;
+                    }
 
-                    variables.AddOrUpdate(name, value, (_, _) => value);
+                    try
+                    {
+                        string? name = $"ViewModel.{pi.Name}";
+                        string? value = pi.GetValue(viewModel) as string ?? pi.GetValue(viewModel)?.ToString() ?? string.Empty;
+
+                        _ = variables.AddOrUpdate(name, value, (_, _) => value);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, $"Exception attempting to populate [{pi.Name}]");
+                        throw;
+                    }
                 }
 
-                variables.AddOrUpdate("ViewModel", viewModel.ToString(), (_, _) => viewModel.ToString());
+                _ = variables.AddOrUpdate("ViewModel", viewModel.ToString(), (_, _) => viewModel.ToString());
             }
         }
 
         public MarkdownApplicationConfiguration Value { get; } = new();
 
         public static MarkdownApplicationOptions? Current { get; private set; }
-        private string? _serverRoot;
 
-        public string? ServerRoot
-        {
-            get => _serverRoot;
-            set => _serverRoot = value;
-        }
+        public string? ServerRoot { get; set; }
 
-        public IServiceProvider Services { get; set; }
+        public IServiceProvider? Services { get; set; }
 
     }
 }

@@ -20,7 +20,7 @@ public record ViewMonitor(IViewWorkflow View, ILogger Logger) : IViewMonitor
         Token.Register(() => _tokenSource.Cancel());
         
         Task result = Task.CompletedTask;
-        var ae = new AggregateException();
+        AggregateException? ae = new AggregateException();
         try
         {
             Logger.LogInformation($"{GetType().Name}: Starting {View.GetType().Name}::{View.ViewKey}");
@@ -64,7 +64,7 @@ public record ViewMonitor(IViewWorkflow View, ILogger Logger) : IViewMonitor
         token.Register(() => _tokenSource.Cancel());
 
         Task result = Task.CompletedTask;
-        var ae = new AggregateException();
+        AggregateException? ae = new AggregateException();
 
         try{
             Logger.LogInformation($"{GetType().Name}: Stopping {View.GetType().Name}::{View.ViewKey}");

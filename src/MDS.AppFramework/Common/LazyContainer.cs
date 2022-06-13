@@ -11,7 +11,7 @@ public record LazyContainer
 
     public static Task<LazyContainer> CreateLazyContainerAsync<TData>(Func<TData> dataFactory, TData data)
     {
-        var container = new LazyContainer(() => dataFactory());
+        LazyContainer? container = new LazyContainer(() => dataFactory());
 
         return Task.FromResult(container);
     }

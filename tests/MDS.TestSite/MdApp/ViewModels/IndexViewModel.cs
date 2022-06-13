@@ -5,11 +5,21 @@ namespace MDS.TestSite.MdApp.ViewModels
 {
     public record IndexViewModel : ControlViewModel
     {
+        public IndexViewModel(IFormCollection collection) : base(collection) { }
+        public IndexViewModel() : base() { }
+
         public string PageTitle => "Page Title in ViewModel.";
 
-        public List<string>? Names { get; set;}
+        public List<string>? Names
+        {
+            get => (Values.TryGetValue(nameof(Names), out var values) ? values : default).ToList();
+            set => Values.AddOrUpdate(nameof(Names), _ => new(value?.ToArray()), (_, _) => new(value?.ToArray()));
+        }
 
-        public string q {get;set;}
+        public string? q {
+            get => (Values.TryGetValue(nameof(q), out var values) ? values : default).FirstOrDefault();
+            set => Values.AddOrUpdate(nameof(q), _ => new(value), (_, _) => new(value));
+        }
 
         internal void LoadNames()
         {

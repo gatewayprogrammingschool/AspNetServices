@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 
+using MDS.AppFramework.Common;
 using MDS.AppFramework.Controls;
 
 namespace MDS.AppFramework;
@@ -17,20 +18,20 @@ public abstract record AppController(IServiceProvider Services) : IDisposable, I
 
     public CancellationTokenSource CancellationTokenSource { get; set; } = new();
 
-    public static AppController BeginContext(Type controllerType, HttpContext context, IServiceProvider provider)
+    public static AppController BeginContext(PathControllerMapItem controllermapItem, HttpContext context, IServiceProvider provider)
     {
         _contexts.AddOrUpdate(context.Session.Id, context, (_, _) => context);
 
-        var scope = _scopes.GetOrAdd(context.Session.Id, provider.CreateScope());
+        IServiceScope? scope = _scopes.GetOrAdd(context.Session.Id, provider.CreateScope());
 
-        AppController controller = (AppController)scope.ServiceProvider.GetRequiredService(controllerType);
+        AppController controller = (AppController)scope.ServiceProvider.GetRequiredService(controllermapItem.ControllerType!);
 
         return controller;
     }
 
     public static void EndContext(Type controllerType, HttpContext context)
     {
-        if (_scopes.TryGetValue(context.Session.Id, out var scope))
+        if (_scopes.TryGetValue(context.Session.Id, out IServiceScope? scope))
         {
             AppController controller = (AppController)scope.ServiceProvider.GetRequiredService(controllerType);
 
@@ -40,7 +41,7 @@ public abstract record AppController(IServiceProvider Services) : IDisposable, I
 
     public static void EndSession(Type controllerType, HttpContext context)
     {
-        if (_scopes.TryGetValue(context.Session.Id, out var scope))
+        if (_scopes.TryGetValue(context.Session.Id, out IServiceScope? scope))
         {
             AppController controller = (AppController)scope.ServiceProvider.GetRequiredService(controllerType);
 
@@ -59,7 +60,7 @@ public abstract record AppController(IServiceProvider Services) : IDisposable, I
     public TViewMonitor RegisterView<TViewMonitor>(PathString path, string id)
         where TViewMonitor : IViewMonitor, new()
     {
-        var hash = path.GetHashCode();
+        int hash = path.GetHashCode();
 
         if (!_views.TryAdd(hash, typeof(TViewMonitor)))
         {
@@ -72,11 +73,11 @@ public abstract record AppController(IServiceProvider Services) : IDisposable, I
     protected virtual TViewMonitor CreateViewMonitor<TViewMonitor>(PathString path, string id)
         where TViewMonitor : IViewMonitor, new()
     {
-        var monitor = new TViewMonitor();
+        TViewMonitor? monitor = new TViewMonitor();
 
         if (monitor is IViewMonitor toAdd)
         {
-            var hash = path.GetHashCode();
+            int hash = path.GetHashCode();
 
             if (_monitors.TryAdd(hash, toAdd))
             {

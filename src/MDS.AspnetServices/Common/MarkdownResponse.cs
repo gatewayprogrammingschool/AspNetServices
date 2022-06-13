@@ -79,16 +79,21 @@ public record MarkdownResponse
 
         var variables = Document.GetData("Variables") as ConcurrentDictionary<string, string>;
 
-        if(!(variables?.TryGetValue("Layout", out var layout) ?? true))
+        string? layout = null;
+        variables?.TryGetValue("Layout", out layout);
+        layout ??= Options?.Value.LayoutFile ?? "./wwwroot/DefaultLayout.html";
+        if (File.Exists(layout))
         {
-            layout = _layout ??= await File.ReadAllTextAsync(Options?.Value.LayoutFile ?? "./wwwroot/DefaultLayout.html");
+            layout = await File.ReadAllTextAsync(layout);
         }
         else
         {
-            layout = _layout;
+            layout = "<html><head>$(title)</head><body>$(MarkdownBody)</body></html>";
         }
 
-        var page =
+        layout = await ReplaceVariables(variables, layout);
+
+        string page =
             layout?.Replace("$(MarkdownBody)", html) ?? "$(MarkdownBody)";
 
         page = await MarkdownProcessor.ProcessHtmlIncludes(page, variables);
@@ -98,21 +103,33 @@ public record MarkdownResponse
             return page.ToUtf8Bytes();
         }
 
-        foreach (var (key, value) in variables?.ToArray() ?? Array.Empty<KeyValuePair<string,string>>())
+        page = await ReplaceVariables(variables, page) ?? page;
+
+        return page.ToUtf8Bytes();
+    }
+
+    private static async Task<string?> ReplaceVariables(ConcurrentDictionary<string, string>? variables, string? template)
+    {
+        if (template is null)
+        {
+            return null;
+        }
+
+        foreach (var (key, value) in variables?.ToArray() ?? Array.Empty<KeyValuePair<string, string>>())
         {
             var toInsert = value;
             if (value?.EndsWith(".md", StringComparison.InvariantCultureIgnoreCase) ?? false)
             {
                 if (File.Exists(value))
                 {
-                     toInsert = await File.ReadAllTextAsync(value);
+                    toInsert = await File.ReadAllTextAsync(value);
                 }
             }
 
-            page = page.Replace($"$({key})", toInsert);
+            template = template.Replace($"$({key})", toInsert);
         }
 
-        return page.ToUtf8Bytes();
+        return template;
     }
 
     public MarkdownResult ToMarkdownResult()

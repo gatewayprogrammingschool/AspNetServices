@@ -1,20 +1,21 @@
 ﻿using System.Collections.Concurrent;
 
-namespace MDS.AppFramework.Common
+namespace MDS.AppFramework.Common;
+
+public sealed class ControllerMap
 {
-    public sealed class ControllerMap
+    private readonly ConcurrentDictionary<PathString, PathControllerMapItem> _map =
+        new();
+
+    public PathControllerMapItem MapPathController<TController>(PathString path, string? method = null)
+        where TController : AppController
     {
-        private ConcurrentDictionary<PathString, Type> _map = new();
+        PathControllerMapItem toAdd = new(path, typeof(TController), method);
+        return _map.GetOrAdd(path, toAdd);
+    }
 
-        public (PathString path, Type handlerType) MapPathController<TController>(PathString path)
-            where TController : AppController
-        {
-            var type = _map.GetOrAdd(path, typeof(TController));
-
-            return (path, type);
-        }
-
-        public Type? GetControllerType(PathString path) 
-            => _map.TryGetValue(path, out Type? type) ? type : null;
+    public PathControllerMapItem GetControllerType(PathString path)
+    {
+        return _map.TryGetValue(path, out PathControllerMapItem item) ? item : default;
     }
 }

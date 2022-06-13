@@ -16,17 +16,17 @@ namespace MDS.AppFramework.Common
             }
 
             dynamic? viewModel = 
-                viewState.ViewState.TryGetValue(nameof(IAppView.ViewModel), out var vm) 
+                viewState.ViewState.TryGetValue(nameof(IAppView.ViewModel), out LazyContainer? vm) 
                 ? await vm.GetLazyDataAsync<ControlViewModel>() 
                 : Activator.CreateInstance(viewModelType);
 
             if (viewModel is not null)
             {
-                var properties = viewModelType.GetProperties();
+                PropertyInfo[]? properties = viewModelType.GetProperties();
 
-                foreach (var item in context.Request.Form)
+                foreach (KeyValuePair<string, StringValues> item in context.Request.Form)
                 {
-                    var pi = properties.FirstOrDefault(pi => pi.Name.Equals(item.Key, StringComparison.InvariantCultureIgnoreCase));
+                    PropertyInfo? pi = properties.FirstOrDefault(pi => pi.Name.Equals(item.Key, StringComparison.InvariantCultureIgnoreCase));
                     if (pi != null)
                     {
                         SetProperty(pi, item.Value);

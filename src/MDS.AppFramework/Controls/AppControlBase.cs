@@ -15,7 +15,7 @@ public abstract record AppControlBase(string Id) : IControl
 
     public virtual async Task InitializePageStateAsync(HttpContext context)
     {
-        var id = await LazyContainer.CreateLazyContainerAsync(() => Id, Id);
+        LazyContainer? id = await LazyContainer.CreateLazyContainerAsync(() => Id, Id);
         ViewState.AddOrUpdate(nameof(Id), id, (_, existing) => id);
     }
 

@@ -23,16 +23,16 @@ public abstract record AppControlContainerBase(string Id) : AppControlBase(Id), 
             case true:
                 try
                 {
-                    var pi = GetType().GetProperties().FirstOrDefault(pi => pi.Name == "ViewModel" && pi.PropertyType != typeof(ControlViewModel));
-                    var bt = pi?.PropertyType.BaseType; while(bt is not null and { IsAbstract: false }) bt = bt.BaseType;
+                    System.Reflection.PropertyInfo? pi = GetType().GetProperties().FirstOrDefault(pi => pi.Name == "ViewModel" && pi.PropertyType != typeof(ControlViewModel));
+                    Type? bt = pi?.PropertyType.BaseType; while(bt is not null and { IsAbstract: false }) bt = bt.BaseType;
                     if(bt == typeof(ControlViewModel))
                     {
-                        var viewModel = context.GetViewModelAsync(this, pi.PropertyType);
+                        Task<ControlViewModel?>? viewModel = context.GetViewModelAsync(this, pi.PropertyType);
 
                         if (viewModel is not null)
                         {
                             pi.SetValue(this, viewModel);
-                            var lazy = await LazyContainer.CreateLazyContainerAsync(() => viewModel, viewModel);
+                            LazyContainer? lazy = await LazyContainer.CreateLazyContainerAsync(() => viewModel, viewModel);
                             ViewState.AddOrUpdate(nameof(IAppView.ViewModel), lazy, (_,_) => lazy);
                         }
                     }
@@ -44,7 +44,7 @@ public abstract record AppControlContainerBase(string Id) : AppControlBase(Id), 
                 break;
         }
 
-        foreach (var control in Controls)
+        foreach (KeyValuePair<string, IControl> control in Controls)
         {
             await control.Value.InitAsync(context).ConfigureAwait(false);
         }
@@ -53,9 +53,9 @@ public abstract record AppControlContainerBase(string Id) : AppControlBase(Id), 
     public override async Task InitializePageStateAsync(HttpContext context)
     {
         await context.Session.LoadAsync().ConfigureAwait(false);
-        if (context.Session.TryGetValue(Id, out var serializedState))
+        if (context.Session.TryGetValue(Id, out byte[]? serializedState))
         {
-            var stream = new MemoryStream(serializedState);
+            MemoryStream? stream = new MemoryStream(serializedState);
             IViewState viewState = this;
             await viewState.DeserializePageStateAsync(context, stream).ConfigureAwait(false);
         }
@@ -67,7 +67,7 @@ public abstract record AppControlContainerBase(string Id) : AppControlBase(Id), 
 
     public override async Task PreRenderAsync(HttpContext context)
     {
-        foreach (var control in Controls)
+        foreach (KeyValuePair<string, IControl> control in Controls)
         {
             await control.Value.PreRenderAsync(context).ConfigureAwait(false);
         }
@@ -83,7 +83,7 @@ public abstract record AppControlContainerBase(string Id) : AppControlBase(Id), 
         await writer.WriteLineAsync($"<form id='{Id}_form' action='{context.Request.Path}' method='POST'>");
         //writer.Indent++;
         await writer.WriteLineAsync($"<input type='hidden' value='{context.Items["ViewKey"]}' id='{Id}_ViewKey' name='{Id}|ViewKey' />");
-        foreach (var control in Controls)
+        foreach (KeyValuePair<string, IControl> control in Controls)
         {
             await control.Value.RenderAsync(context, writer, HtmlEncoder.Default).ConfigureAwait(false);
         }
@@ -100,7 +100,7 @@ public abstract record AppControlContainerBase(string Id) : AppControlBase(Id), 
 
     public override async Task ProcessPageAsync(HttpContext context)
     {
-        foreach (var control in Controls)
+        foreach (KeyValuePair<string, IControl> control in Controls)
         {
             await control.Value.ProcessPageAsync(context).ConfigureAwait(false);
         }
@@ -115,7 +115,7 @@ public abstract record AppControlContainerBase(string Id) : AppControlBase(Id), 
     /// <returns>A task that represents the asynchronous dispose operation.</returns>
     public override async ValueTask DisposeAsync()
     {
-        foreach (var disposable in Controls.Values)
+        foreach (IControl? disposable in Controls.Values)
         {
             await disposable.DisposeAsync();
         }

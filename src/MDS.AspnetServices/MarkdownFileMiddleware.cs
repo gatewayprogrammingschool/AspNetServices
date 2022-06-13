@@ -16,6 +16,11 @@ public class MarkdownFileMiddleware
         try
         {
             var path = context.Request.Path;
+            if(path.Value?.EndsWith("/mdapp/", StringComparison.OrdinalIgnoreCase) ?? true)
+            {
+                await _next.Invoke(context);
+                return;
+            }
             if (path.Value?.EndsWith("/") ?? true)
             {
                 path = path.Add(new PathString("/index.md"));

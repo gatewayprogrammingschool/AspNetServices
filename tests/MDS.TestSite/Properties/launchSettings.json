@@ -1,17 +1,9 @@
 {
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:32907",
-      "sslPort": 44348
-    }
-  },
   "profiles": {
     "MDS.TestSite": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "https://localhost:7148/",
+      "launchUrl": "https://localhost:7148/mdapp/",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
@@ -31,6 +23,14 @@
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
       "publishAllPorts": true,
       "useSSL": true
+    }
+  },
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:32907",
+      "sslPort": 44348
     }
   }
 }

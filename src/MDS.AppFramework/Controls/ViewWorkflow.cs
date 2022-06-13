@@ -17,7 +17,7 @@ public abstract record ViewWorkflow(string Id) : AppControlContainerBase(Id), IV
 
     public ControlViewModel? ViewModel
     {
-        get => ViewState.TryGetValue(nameof(ViewModel), out var value) ? value.GetLazyDataAsync<ControlViewModel>().GetAwaiter().GetResult() : default;
+        get => ViewState.TryGetValue(nameof(ViewModel), out LazyContainer? value) ? value.GetLazyDataAsync<ControlViewModel>().GetAwaiter().GetResult() : default;
         set => ViewState.AddOrUpdate(nameof(ViewModel), MakeLazy(value!).GetAwaiter().GetResult(), (_,_)=>MakeLazy(value!).GetAwaiter().GetResult());
     }
 
