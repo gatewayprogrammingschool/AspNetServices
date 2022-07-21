@@ -6,12 +6,12 @@ public record LazyContainer
 
     private LazyContainer(Func<object?> dataFactory)
     {
-        _data = new Lazy<object?>(dataFactory);
+        _data = new(dataFactory);
     }
 
     public static Task<LazyContainer> CreateLazyContainerAsync<TData>(Func<TData> dataFactory, TData data)
     {
-        LazyContainer? container = new LazyContainer(() => dataFactory());
+        LazyContainer? container = new(() => dataFactory());
 
         return Task.FromResult(container);
     }

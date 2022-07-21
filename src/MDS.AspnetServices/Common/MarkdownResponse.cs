@@ -14,7 +14,7 @@ public record MarkdownResponse
 
 
     public MarkdownDocument Document { get; private set; }
-    private string? _layout = null;
+    //private string? _layout = null;
     private static MarkdownPipeline? _pipeline;
 
     public MarkdownServerOptions? Options => MarkdownServerOptions.Current;
@@ -33,36 +33,33 @@ public record MarkdownResponse
         StatusCode = HttpStatusCode.OK;
     }
 
-    private MarkdownResponse(string markdown, string? sidebarMarkdown, MarkdownServerOptions? options = null) : this()
+    private MarkdownResponse(string markdown, string? sidebarMarkdown) : this()
     {
         SetMarkdown(markdown);
         SetSidebarMarkdown(sidebarMarkdown);
     }
 
-    public MarkdownResponse(HttpStatusCode statusCode, MarkdownServerOptions? options = null) : this()
+    public MarkdownResponse(HttpStatusCode statusCode) : this()
     {
         StatusCode = statusCode;
     }
 
-    public MarkdownResponse(Exception error, MarkdownServerOptions? options = null) : this()
+    public MarkdownResponse(Exception error) : this()
     {
         Error = error;
         StatusCode = HttpStatusCode.InternalServerError;
     }
 
     private void SetMarkdown(string markdown)
-    {
-        Document = Markdown.Parse(markdown, Pipeline);
-    }
+        => Document = Markdown.Parse(markdown, Pipeline);
 
     private void SetSidebarMarkdown(string? markdown)
-    {
-        Document.SetData("SidebarContent", markdown ?? "");
-    }
+        => Document.SetData("SidebarContent", markdown ?? "");
 
     public static MarkdownResponse Create(MarkdownDocument document)
         => new(document);
 
+    // ReSharper disable once UnusedMember.Global
     public static MarkdownResponse CreateFromFile(string filename)
         => new(File.ReadAllText(filename), "");
 
@@ -77,24 +74,30 @@ public record MarkdownResponse
     {
         var html = ToHtml();
 
-        var variables = Document.GetData("Variables") as ConcurrentDictionary<string, string>;
+        var variables = Document.GetData("Variables") as ConcurrentDictionary<string, object>;
 
-        string? layout = null;
-        variables?.TryGetValue("Layout", out layout);
+        object? layout = null;
+        variables?.TryGetValue("Variables.Layout", out layout);
         layout ??= Options?.Value.LayoutFile ?? "./wwwroot/DefaultLayout.html";
-        if (File.Exists(layout))
+        if (File.Exists(layout.ToString()))
         {
-            layout = await File.ReadAllTextAsync(layout);
+            layout = await File.ReadAllTextAsync(layout.ToString() ?? string.Empty);
         }
-        else
+        else if(layout is null or "")
         {
             layout = "<html><head>$(title)</head><body>$(MarkdownBody)</body></html>";
         }
 
-        layout = await ReplaceVariables(variables, layout);
+        layout = await ReplaceVariables(variables, layout.ToString());
+
+        if (layout is null)
+        {
+            return Array.Empty<byte>();
+        }
 
         string page =
-            layout?.Replace("$(MarkdownBody)", html) ?? "$(MarkdownBody)";
+            layout.ToString()
+                ?.Replace("$(MarkdownBody)", html) ?? "$(MarkdownBody)";
 
         page = await MarkdownProcessor.ProcessHtmlIncludes(page, variables);
 
@@ -103,39 +106,51 @@ public record MarkdownResponse
             return page.ToUtf8Bytes();
         }
 
-        page = await ReplaceVariables(variables, page) ?? page;
+        page = await MarkdownResponse.ReplaceVariables(variables, page) ?? page;
 
         return page.ToUtf8Bytes();
+
     }
 
-    private static async Task<string?> ReplaceVariables(ConcurrentDictionary<string, string>? variables, string? template)
+    private static async Task<string?> ReplaceVariables(ConcurrentDictionary<string, object>? variables, string? template)
     {
         if (template is null)
         {
             return null;
         }
 
-        foreach (var (key, value) in variables?.ToArray() ?? Array.Empty<KeyValuePair<string, string>>())
+        foreach ((var key, var value) in variables?.ToArray() ??
+                                     Array.Empty<KeyValuePair<string, object>>())
         {
-            var toInsert = value;
-            if (value?.EndsWith(".md", StringComparison.InvariantCultureIgnoreCase) ?? false)
+            switch (value)
             {
-                if (File.Exists(value))
+                case string toInsert:
                 {
-                    toInsert = await File.ReadAllTextAsync(value);
-                }
-            }
+                    if (toInsert.EndsWith(".md", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        if (File.Exists(toInsert))
+                        {
+                            toInsert = await File.ReadAllTextAsync(toInsert);
+                        }
+                    }
 
-            template = template.Replace($"$({key})", toInsert);
+                    template = template.Replace($"$({key})", toInsert);
+
+                    break;
+                }
+
+                default:
+                    template = template.Replace($"$({key})", value.ToString());
+
+                    break;
+            }
         }
 
         return template;
     }
 
     public MarkdownResult ToMarkdownResult()
-    {
-        return new MarkdownResult(Document);
-    }
+        => new(Document);
 }
 
 #pragma warning restore PH_S025 // Unused Synchronous Task Result

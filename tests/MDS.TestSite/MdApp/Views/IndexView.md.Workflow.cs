@@ -17,14 +17,12 @@ namespace MDS.TestSite.MdApp.Views
         }
 
         public override Task BuildControlsAsync(HttpContext context)
-        {
             // Be sure to give a logger to each control!
-            return Task.CompletedTask;
-        }
+            => Task.CompletedTask;
 
         public override Task InitAsync(HttpContext context)
         {
-            ViewModel = new IndexViewModel();
+            ViewModel = new();
 
             return base.InitAsync(context);
         }

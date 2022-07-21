@@ -24,8 +24,8 @@ public abstract record AppControlContainerBase(string Id) : AppControlBase(Id), 
                 try
                 {
                     System.Reflection.PropertyInfo? pi = GetType().GetProperties().FirstOrDefault(pi => pi.Name == "ViewModel" && pi.PropertyType != typeof(ControlViewModel));
-                    Type? bt = pi?.PropertyType.BaseType; while(bt is not null and { IsAbstract: false }) bt = bt.BaseType;
-                    if(bt == typeof(ControlViewModel))
+                    Type? bt = pi?.PropertyType.BaseType; while(bt is not null and { IsAbstract: false,}) bt = bt.BaseType;
+                    if(bt == typeof(ControlViewModel) && pi?.PropertyType is not null)
                     {
                         Task<ControlViewModel?>? viewModel = context.GetViewModelAsync(this, pi.PropertyType);
 
@@ -37,7 +37,7 @@ public abstract record AppControlContainerBase(string Id) : AppControlBase(Id), 
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
 
                 }
@@ -55,7 +55,7 @@ public abstract record AppControlContainerBase(string Id) : AppControlBase(Id), 
         await context.Session.LoadAsync().ConfigureAwait(false);
         if (context.Session.TryGetValue(Id, out byte[]? serializedState))
         {
-            MemoryStream? stream = new MemoryStream(serializedState);
+            MemoryStream? stream = new(serializedState);
             IViewState viewState = this;
             await viewState.DeserializePageStateAsync(context, stream).ConfigureAwait(false);
         }
@@ -107,9 +107,7 @@ public abstract record AppControlContainerBase(string Id) : AppControlBase(Id), 
     }
 
     public Task<IControl> CreateControl<TControl>(HttpContext context, IControlContainer parent, IViewState view)
-    {
-        throw new NotImplementedException();
-    }
+        => throw new NotImplementedException();
 
     /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources asynchronously.</summary>
     /// <returns>A task that represents the asynchronous dispose operation.</returns>

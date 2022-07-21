@@ -8,19 +8,19 @@ public record ViewMonitor(IViewWorkflow View, ILogger Logger) : IViewMonitor
 
     private readonly CancellationTokenSource _tokenSource = new();
 
-    public event Func<IViewWorkflow, CancellationToken, Task> ViewCompletedAsync;
-    public event Func<IViewWorkflow, AggregateException, CancellationToken, Task> ViewNotCompletedAsync;
+    public event Func<IViewWorkflow, CancellationToken, Task>? ViewCompletedAsync;
+    public event Func<IViewWorkflow, AggregateException, CancellationToken, Task>? ViewNotCompletedAsync;
 
-    public string Path { get; set; }
+    public string? Path { get; set; }
 
     public async Task StartAsync(HttpContext context, CancellationToken token = default)
     {
         Token = token;
 
         Token.Register(() => _tokenSource.Cancel());
-        
+
         Task result = Task.CompletedTask;
-        AggregateException? ae = new AggregateException();
+        AggregateException? ae = new();
         try
         {
             Logger.LogInformation($"{GetType().Name}: Starting {View.GetType().Name}::{View.ViewKey}");
@@ -55,7 +55,7 @@ public record ViewMonitor(IViewWorkflow View, ILogger Logger) : IViewMonitor
         {
             await ViewCompletedAsync(View, token);
         }
-        
+
         await result;
     }
 
@@ -64,7 +64,7 @@ public record ViewMonitor(IViewWorkflow View, ILogger Logger) : IViewMonitor
         token.Register(() => _tokenSource.Cancel());
 
         Task result = Task.CompletedTask;
-        AggregateException? ae = new AggregateException();
+        AggregateException? ae = new();
 
         try{
             Logger.LogInformation($"{GetType().Name}: Stopping {View.GetType().Name}::{View.ViewKey}");

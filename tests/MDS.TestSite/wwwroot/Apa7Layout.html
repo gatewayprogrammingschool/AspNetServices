@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>$(Variables.title)</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/apa.css" media="screen,print" />
+    <!-- HEAD -->
+</head>
+<body>
+    <header class="apa">
+        <br />
+        <br />
+        <br />
+        <br />
+        <h1>$(Variables.title)</h1>
+        <table>
+            <tbody>
+                <tr><td>$(Variables.author)</td></tr>
+                <tr><td>$(Variables.affiliation)</td></tr>
+                <tr><td>$(Variables.instructor)</td></tr>
+                <tr><td>$(Variables.course)</td></tr>
+                <tr><td>$(Variables.dueDate)</td></tr>
+            </tbody>
+        </table>
+    </header>
+
+<main>
+    <section class="apa-abstract" markdown="1">
+        <h1>Abstract</h1>
+        <p>$(Variables.Abstract)</p>
+    </section>
+    <article class="apa" markdown="1">
+            $(MarkdownBody)
+        </article>
+    </main>
+    <footer>
+        <div class="apa-ref" markdown="1">
+            <h1>$(Variables.ReferencesSection)</h1>
+
+            $(Variables.References)
+        </div>
+    </footer>
+</body>
+</html>

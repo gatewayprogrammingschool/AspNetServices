@@ -1,0 +1,10 @@
+﻿{
+    "profiles": {
+      "MDS.MarkdownParser.TestHarness (Package)": {
+        "commandName": "MsixPackage"
+      },
+      "MDS.MarkdownParser.TestHarness (Unpackaged)": {
+        "commandName": "Project"
+      }
+    }
+}

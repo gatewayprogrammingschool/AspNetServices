@@ -23,9 +23,9 @@ namespace MDS.TestSite.MdApp.ViewModels
 
         internal void LoadNames()
         {
-            Names = new List<string>()
+            Names = new()
             {
-                "Bob", "Joe", "Billy", "Jim"
+                "Bob", "Joe", "Billy", "Jim",
             };
         }
 
@@ -38,8 +38,6 @@ namespace MDS.TestSite.MdApp.ViewModels
         }
 
         public override string ToString()
-        {
-            return this.ToJson();
-        }
+            => this.ToJson();
     }
 }

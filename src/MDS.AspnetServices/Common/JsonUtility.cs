@@ -9,7 +9,7 @@ namespace MDS.AspnetServices.Common;
 public static class JsonUtility
 {
     private static JsonSerializerOptions _defaultSettings =
-        new JsonSerializerOptions(JsonSerializerDefaults.General)
+        new(JsonSerializerDefaults.General)
         {
             AllowTrailingCommas = true,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,

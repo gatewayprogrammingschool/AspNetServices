@@ -50,7 +50,7 @@ namespace MDS.AppFramework.Common
 
                 AppController controller = AppController.BeginContext(controllerMapItem, context, Options.Services)!;
 
-                if (controllerMapItem.Method is { Length: > 0 })
+                if (controllerMapItem.Method is { Length: > 0,})
                 {
                     MethodInfo? methodInfo = controllerMapItem.ControllerType!.GetMethod(controllerMapItem.Method);
 
@@ -67,18 +67,18 @@ namespace MDS.AppFramework.Common
                             if (methodInfo.ReturnType.IsAssignableTo(typeof(IResult)))
                             {
                                 ParameterInfo[]? p = methodInfo.GetParameters();
-                                if (p is { Length: 1 } &&
+                                if (p is { Length: 1,} &&
                                     context.Request.ContentType is "application/x-www-form-urlencoded" &&
                                     p[0].ParameterType.IsAssignableTo(typeof(ControlViewModel)))
                                 {
-                                    object formCollection = Activator.CreateInstance(p[0].ParameterType, new object[] { await context.Request.ReadFormAsync() });
-                                    result = (IResult)methodInfo.Invoke(controller, new object?[] { formCollection });
+                                    object formCollection = Activator.CreateInstance(p[0].ParameterType, new object[] { await context.Request.ReadFormAsync(),});
+                                    result = (IResult)methodInfo.Invoke(controller, new object?[] { formCollection,});
                                 }
                                 else if(context.Request.ContentType is not "application/x-www-form-urlencoded")
                                 {
                                     object formCollection = Activator.CreateInstance(p[0].ParameterType,
-                                        new object?[] { JsonConvert.DeserializeObject(context.Request.BodyReader.ToJson()) });
-                                    result = (IResult)methodInfo.Invoke(controller, new object?[] { formCollection });
+                                        new object?[] { JsonConvert.DeserializeObject(context.Request.BodyReader.ToJson()),});
+                                    result = (IResult)methodInfo.Invoke(controller, new object?[] { formCollection,});
                                 }
                                 else
                                 {
@@ -134,7 +134,7 @@ namespace MDS.AppFramework.Common
                 AggregateException ae,
                 CancellationToken token)
             {
-                if (ae is not null and { InnerExceptions.Count: > 0 })
+                if (ae is not null and { InnerExceptions.Count: > 0,})
                 {
                     _logger.LogError(ae, "Workflow returned exceptions.");
                     throw ae;
@@ -179,7 +179,7 @@ namespace MDS.AppFramework.Common
                     if (File.Exists(mdappName))
                     {
                         string? filename = new FileInfo(mdappName).FullName;
-                        ConcurrentDictionary<string, string> variables = new();
+                        ConcurrentDictionary<string, object> variables = new();
                         _ = variables.TryAdd(nameof(workflow.ViewKey), workflow.ViewKey);
                         _ = variables.TryAdd($"ViewBody:{workflow.ViewKey}", response);
                         _ = variables.TryAdd(nameof(viewName), viewName);
@@ -211,7 +211,7 @@ namespace MDS.AppFramework.Common
             }
         }
 
-        private async Task ProcessViewModelAsync(IViewState viewState, ConcurrentDictionary<string, string> variables)
+        private async Task ProcessViewModelAsync(IViewState viewState, ConcurrentDictionary<string, object> variables)
         {
             LazyContainer? lazy = viewState.ViewState.GetValueOrDefault(nameof(IAppView.ViewModel));
             ControlViewModel? viewModel = lazy is not null ? await lazy.GetLazyDataAsync<ControlViewModel>() : null;
@@ -241,7 +241,10 @@ namespace MDS.AppFramework.Common
                     }
                 }
 
-                _ = variables.AddOrUpdate("ViewModel", viewModel.ToString(), (_, _) => viewModel.ToString());
+                _ = variables.AddOrUpdate(
+                    "ViewModel",
+                    viewModel?.ToString() ?? "",
+                    (_, _) => viewModel?.ToString() ?? "");
             }
         }
 

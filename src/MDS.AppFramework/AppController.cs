@@ -73,7 +73,7 @@ public abstract record AppController(IServiceProvider Services) : IDisposable, I
     protected virtual TViewMonitor CreateViewMonitor<TViewMonitor>(PathString path, string id)
         where TViewMonitor : IViewMonitor, new()
     {
-        TViewMonitor? monitor = new TViewMonitor();
+        TViewMonitor? monitor = new();
 
         if (monitor is IViewMonitor toAdd)
         {

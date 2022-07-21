@@ -15,7 +15,5 @@ public sealed class ControllerMap
     }
 
     public PathControllerMapItem GetControllerType(PathString path)
-    {
-        return _map.TryGetValue(path, out PathControllerMapItem item) ? item : default;
-    }
+        => _map.TryGetValue(path, out PathControllerMapItem item) ? item : default;
 }

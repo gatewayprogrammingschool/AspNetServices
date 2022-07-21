@@ -65,8 +65,8 @@ namespace MDS.AppFramework.Common
                     _ => pi.PropertyType.IsInstanceOfType(typeof(IConvertible)) switch
                     {
                         true => Convert.ChangeType(value, pi.PropertyType),
-                        _ => (object?)null
-                    }
+                        _ => (object?)null,
+                    },
                 };
 
                 if (toSet is null && toSet is object)

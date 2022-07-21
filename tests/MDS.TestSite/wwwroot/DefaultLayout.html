@@ -3,16 +3,23 @@
 <head>
     <title>$(title)</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="css/markdown.css"/>
+    <link rel="stylesheet" href="css/markdown.css" />
     <!-- HEAD -->
 </head>
 <body>
-<header md-include="header.md"></header>
-<main>
-	<article>
-		$(MarkdownBody)
-	</article>
-</main>
-<footer md-include="footer.md"></footer>
+    <header>
+        <h1>$(title)</h1>
+        <table><tbody>
+            <tr><th>To</th><td>$(To)</td></tr>
+            <tr><th>From</th><td>$(From)</td></tr>
+            <tr><th>Date</th><td>$(Date)</td></tr>
+            <tr><th>Re</th><td>$(Re)</td></tr>
+        </tbody></table>
+    </header>    <main>
+        <article>
+            $(MarkdownBody)
+        </article>
+    </main>
+    <footer md-include="footer.md"></footer>
 </body>
 </html>

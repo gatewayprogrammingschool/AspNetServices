@@ -7,7 +7,7 @@ public class MarkdownResult : IResult
     public MarkdownDocument Document { get; }
     public MarkdownResult()
     {
-        Document = new MarkdownDocument();
+        Document = new();
     }
 
     public MarkdownResult(string markdown)

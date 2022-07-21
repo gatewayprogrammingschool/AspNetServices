@@ -45,6 +45,7 @@
     </PackageReference>
     <PackageReference Include="Markdig" Version="0.30.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="YamlDotNet" Version="11.2.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\submodules\Markdig.SyntaxHighlighting\src\MDS.Markdig.SyntaxHighlighting\MDS.Markdig.SyntaxHighlighting.csproj" PrivateAssets="all" />

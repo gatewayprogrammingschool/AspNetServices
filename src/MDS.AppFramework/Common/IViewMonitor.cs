@@ -6,8 +6,8 @@ public interface IViewMonitor
 {
     IViewWorkflow View {get;}
 
-    string Path { get; }
-    
+    string? Path { get; }
+
     Task StopAsync(CancellationToken token);
 
     event Func<IViewWorkflow, CancellationToken, Task> ViewCompletedAsync;

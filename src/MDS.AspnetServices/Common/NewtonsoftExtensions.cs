@@ -21,13 +21,11 @@ internal static class NewtonsoftExtensions
         Error = Error,
         PreserveReferencesHandling = PreserveReferencesHandling.None,
         TypeNameHandling = TypeNameHandling.All,
-        ContractResolver = new CamelCasePropertyNamesContractResolver()
+        ContractResolver = new CamelCasePropertyNamesContractResolver(),
     };
 
     private static void Error(object? sender, ErrorEventArgs e)
-    {
-        e.ErrorContext.Handled = true;
-    }
+        => e.ErrorContext.Handled = true;
 
     public static NewtonsoftSerializerSettings CurrentSettings { get; set; } = _defaultSettings;
 

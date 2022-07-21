@@ -33,13 +33,14 @@ public static class MarkdownServerExtensions
     }
 
     public static Task<IResult> MarkdownFileExecute(this WebApplication app, HttpContext context, string? filename = null)
-        => MarkdownServerOptions.Current.MarkdownFileExecute(context, filename);
+        => ((Task<IResult>)(MarkdownServerOptions.Current?.MarkdownFileExecute(context, filename)
+            ?? Task<IResult>.FromException(new ApplicationException())));
 
     public static async Task<IResult> MarkdownFileExecute(
         this MarkdownServerOptions options,
         HttpContext context,
         string? filename = null,
-        ConcurrentDictionary<string, string>? vars = null)
+        ConcurrentDictionary<string, object>? vars = null)
     {
         var rootPath = options.ServerRoot ?? "./wwwroot";
         rootPath = rootPath.Replace("/", "\\");
@@ -53,7 +54,7 @@ public static class MarkdownServerExtensions
         {
             (null, _) => new MarkdownResponse(HttpStatusCode.NotFound).ToMarkdownResult(),
             (_, true) => await options.ProcessMarkdownFile(markdownFilename!, vars),
-            _ => options.ProcessFile(filename)
+            _ => options.ProcessFile(filename),
         };
 
         if (result is not MarkdownResult mr)
@@ -61,8 +62,8 @@ public static class MarkdownServerExtensions
             return result;
         }
 
-        var variables = mr.Document.GetData("Variables") as ConcurrentDictionary<string, string>;
-        variables ??= new ConcurrentDictionary<string, string>();
+        var variables = mr.Document.GetData("Variables") as ConcurrentDictionary<string, object>;
+        variables ??= new();
 
         if (context.Request.HasFormContentType)
         {

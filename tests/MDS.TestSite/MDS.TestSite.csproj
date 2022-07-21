@@ -30,6 +30,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="wwwroot\MemoFactAndLawLayout.html">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Content Update="wwwroot\TestSite.Layout.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

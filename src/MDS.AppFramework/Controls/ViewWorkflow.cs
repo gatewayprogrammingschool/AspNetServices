@@ -29,14 +29,15 @@ public abstract record ViewWorkflow(string Id) : AppControlContainerBase(Id), IV
 
     public AggregateException? Exceptions { get; private set; }
 
-    public StringBuilder StringBuilder { get; } = new StringBuilder();
+    public StringBuilder StringBuilder { get; } = new();
     public HttpResponseStreamWriter Renderer => _renderer ??=
-        new HttpResponseStreamWriter(Context.Response.BodyWriter.AsStream(), Encoding.UTF8);
+        new(Context?.Response.BodyWriter.AsStream() ?? throw new NullReferenceException()
+            , Encoding.UTF8);
 
-    public HttpContext Context { get; private set; }
+    public HttpContext? Context { get; private set; }
 
     private bool _isDisposed = false;
-    private HttpResponseStreamWriter _renderer;
+    private HttpResponseStreamWriter? _renderer;
 
     public override async ValueTask DisposeAsync()
     {
@@ -92,7 +93,7 @@ public abstract record ViewWorkflow(string Id) : AppControlContainerBase(Id), IV
     {
         if (Exceptions is null)
         {
-            Exceptions = new AggregateException(ex);
+            Exceptions = new(ex);
         }
         else
         {
@@ -101,9 +102,7 @@ public abstract record ViewWorkflow(string Id) : AppControlContainerBase(Id), IV
     }
 
     public virtual Task LoadPageStateAsync(HttpContext context)
-    {
-        return Task.CompletedTask;
-    }
+        => Task.CompletedTask;
 
     public virtual Task PreInitAsync(HttpContext context)
     {

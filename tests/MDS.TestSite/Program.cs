@@ -12,7 +12,7 @@ builder.AddMarkdownApplication(map =>
     map.MapPathController<IndexController>("/mdapp/index");
     map.MapPathController<IndexController>("/mdapp/index/search", nameof(IndexController.Search));
 
-    builder.Services.AddScoped<IndexController>(provider => new IndexController(provider, Guid.NewGuid().ToString()));
+    builder.Services.AddScoped<IndexController>(provider => new(provider, Guid.NewGuid().ToString()));
     builder.Services.AddScoped<IndexViewMonitor>();
 });
 builder.AddMarkdownServer();

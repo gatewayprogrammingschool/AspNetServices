@@ -68,29 +68,19 @@ public abstract record ControlViewModel : IFormCollection, INotifyPropertyChange
     }
 
     protected void OnPropertyChanged([CallerMemberName] string? property = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-    }
+        => PropertyChanged?.Invoke(this, new(property));
 
     public bool ContainsKey(string key)
-    {
-        return Keys.Contains(key);
-    }
+        => Keys.Contains(key);
 
     public bool TryGetValue(string key, out StringValues value)
-    {
-        return Values.TryGetValue(key, out value);
-    }
+        => Values.TryGetValue(key, out value);
 
     public IEnumerator<KeyValuePair<string, StringValues>> GetEnumerator()
-    {
-        return Values.GetEnumerator();
-    }
+        => Values.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator()
-    {
-        return Values.GetEnumerator();
-    }
+        => Values.GetEnumerator();
 
     public event PropertyChangedEventHandler? PropertyChanged;
 }

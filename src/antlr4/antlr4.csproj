@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>library</OutputType>
+    <TargetFramework>net7.0-windows10.0.22000.0</TargetFramework>
+    <Platforms>x86;x64;arm64</Platforms>
+    <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>MDS.Antlr4md</RootNamespace>
+    <AssemblyName>MDS.Antlr4md</AssemblyName>
+    <SupportedOSPlatformVersion>10.0.22000.0</SupportedOSPlatformVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Antlr4 Remove="markdown.preprocessor.g4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Markdown.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Antlr4" Version="4.6.6">
+      <!--<PrivateAssets>all</PrivateAssets>-->
+    </PackageReference>
+    <PackageReference Include="Antlr4.CodeGenerator" Version="4.6.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <!--<PackageReference Include="Syncfusion.SfGrid.WPF" Version="20.2.0.36" />-->
+  </ItemGroup>
+  <ItemGroup>
+    <Antlr4 Update="MarkdownParser.g4">
+      <DefaultCustomToolNamespace>$([MSBuild]::ValueOrDefault('$(RootNamespace).%(DefaultCustomToolNamespace)', '').TrimEnd('.'))</DefaultCustomToolNamespace>
+      <CustomToolNamespace>$([MSBuild]::ValueOrDefault(%(CustomToolNamespace), %(DefaultCustomToolNamespace)))</CustomToolNamespace>
+    </Antlr4>
+  </ItemGroup>
+
+</Project>

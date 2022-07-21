@@ -1,0 +1,243 @@
+/* Original Source: https://stackoverflow.com/a/37689302/5639935 */
+
+lexer grammar MarkdownLexer;
+
+/*@members {
+    public static final int COMMENTS = 1;
+}*/
+
+EMPTY: ;
+
+BOL : NL ;
+
+WHITE_SPACE: [ \u000B\t];
+/* OTHER: .; */
+
+NL
+    : '\r\n'
+    | '\n'
+    ;
+
+PADDED_NL
+    : WHITE_SPACE* NL
+    ;
+
+LINE_MARKER
+    : '---'
+    ;
+
+END_LINE_MARKER
+    : BOL '---'
+    ;
+
+STAR_MARKER
+    : '*'
+    ;
+
+EQUAL_MARKER
+    : '='
+    ;
+
+DASH_MARKER
+    : '-'
+    ;
+
+UNDERLINE_MARKER
+    : '_'
+    ;
+
+QUOTE_MARKER
+    : '> '
+    ;
+
+PIPE_MARKER
+    : '|'
+    ;
+
+BRACE_OPEN_MARKER
+    : '{'
+    ;
+
+BRACE_CLOSE_MARKER
+    : '}'
+    ;
+
+COLON_MARKER
+    : ':'
+    ;
+
+COMA_MARKER
+    : ','
+    ;
+
+BACKTICK_MARKER
+    : '`'
+    ;
+
+BRKT_LEFT
+    : '['
+    ;
+
+BRKT_RIGHT
+    : ']'
+    ;
+
+INCLUDE_MARKER: 'include';
+BANG_MARKER: '!';
+PAREN_LEFT: '(';
+PAREN_RIGHT: ')';
+LT_MARKER: '<';
+GT_MARKER: '>';
+CARET_MARKER: '^';
+
+DBL_QUOTE_MARKER: '"';
+SNG_QUOTE_MARKER: '\'';
+FORWARD_SLASH_MARKER: '/';
+
+PARA_MARKER: 'p';
+SPAN_MARKER: 'span';
+DIV_MARKER: 'div';
+
+ESCAPED_CHARS_MARKER
+    :'.'
+    | CARET_MARKER
+    | '-'
+    | FORWARD_SLASH_MARKER
+    | BRKT_LEFT
+    | BRKT_RIGHT
+    ;
+
+HASH_MARKER
+    : '#'
+    ;
+
+H1_MARKER
+    : BOL HASH_MARKER
+    | QUOTE_MARKER HASH_MARKER
+    ;
+
+H2_MARKER
+    : BOL HASH_MARKER HASH_MARKER
+    | QUOTE_MARKER HASH_MARKER HASH_MARKER
+    ;
+
+H3_MARKER
+    : BOL HASH_MARKER HASH_MARKER HASH_MARKER
+    | QUOTE_MARKER HASH_MARKER HASH_MARKER HASH_MARKER
+    ;
+
+H4_MARKER
+    : BOL HASH_MARKER HASH_MARKER HASH_MARKER HASH_MARKER
+    | QUOTE_MARKER HASH_MARKER HASH_MARKER HASH_MARKER HASH_MARKER
+    ;
+
+CAPTION_MARKER
+    : BOL HASH_MARKER HASH_MARKER HASH_MARKER HASH_MARKER HASH_MARKER
+    | QUOTE_MARKER HASH_MARKER HASH_MARKER HASH_MARKER HASH_MARKER HASH_MARKER
+    ;
+
+H_MARKER
+    : H1_MARKER
+    | H2_MARKER
+    | H3_MARKER
+    | H4_MARKER
+    ;
+
+ITALICS_MARKER
+    : [*_]
+    ;
+
+BOLD_MARKER
+    : '**'
+    | '__'
+    ;
+
+BULLET_MARKER
+    : (BOL|QUOTE_MARKER) WHITE_SPACE* STAR_MARKER WHITE_SPACE+
+    | (BOL|QUOTE_MARKER) WHITE_SPACE* DASH_MARKER WHITE_SPACE+
+    ;
+
+LISTING_MARKER
+    : '~~~'
+    ;
+
+FENCE_MARKER
+    : '==='
+    ;
+
+PATH_START_MARKER
+    : '[[[[['
+    ;
+PATH_END_MARKER
+    : ']]]]]'
+    ;
+
+LABELREF_START_MARKER
+    : '{##'
+    ;
+LABELREF_END_MARKER
+    : '##}'
+    ;
+
+LABEL_START_MARKER
+    : '{#'
+    ;
+LABEL_END_MARKER
+    : '#}'
+    ;
+
+NUMBER_MARKER
+    : WHITE_SPACE* '1.' WHITE_SPACE+
+    ;
+
+fragment ALPHA_NUMERIC: [a-zA-Z0-9];
+fragment CHARS: [~_@#$%&;!=(){}<>];
+
+PATH_CHAR_MARKERS
+    : CHARS+
+    | ESCAPED_CHARS_MARKER+
+    ;
+
+PATH_CHARACTERS
+    : HASH_MARKER? PATH_CHAR_MARKERS+
+    ;
+
+IDENTIFIER
+    : ALPHA_NUMERIC+
+    ;
+
+TEXT_MARKER
+    : DASH_MARKER
+    | COMA_MARKER
+    | BRKT_LEFT
+    | BRKT_RIGHT
+    | COLON_MARKER
+    | BACKTICK_MARKER
+    | '.'
+    | CARET_MARKER
+    | FORWARD_SLASH_MARKER
+    ;
+
+TEXT_CHARACTERS
+    : TEXT_MARKER
+    | CHARS
+    | ALPHA_NUMERIC
+    ;
+
+BODY_TEXT_MARKER
+    : DASH_MARKER
+    | COMA_MARKER
+    | COLON_MARKER
+    | BACKTICK_MARKER
+    | '.'
+    | CARET_MARKER
+    | FORWARD_SLASH_MARKER
+    | '\''
+    ;
+
+BODY_TEXT_CHARACTERS
+    : BODY_TEXT_MARKER
+    | CHARS
+    | ALPHA_NUMERIC
+    ;
+

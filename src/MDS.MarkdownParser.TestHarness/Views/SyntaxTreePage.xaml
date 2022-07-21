@@ -1,0 +1,107 @@
+﻿<Page x:Class="MDS.MarkdownParser.TestHarness.Views.SyntaxTreePage"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sf="using:Syncfusion.UI.Xaml.TreeGrid" mc:Ignorable="d" x:Name="Main">
+    <Page.Resources>
+        <sf:TreeGridColumns x:Key="Columns">
+        </sf:TreeGridColumns>
+    </Page.Resources>
+    <Grid x:Name="ContentArea">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="500" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <sf:SfTreeGrid Grid.Row="1" Grid.Column="0" DataContext="{Binding ElementName=Main, Path=ViewModel}"
+                ItemsSource="{Binding ParseTree, Mode=OneWay}" SelectedItem="{Binding Selected, Mode=TwoWay}"
+                ChildPropertyName="Children" AutoExpandMode="AllNodesExpanded" AutoGenerateColumns="False"
+                       AllowSorting="False">
+            <sf:SfTreeGrid.Columns>
+                <sf:TreeGridTextColumn MappingName="TypeName" HeaderText="Node Type" x:Name="NodeType"
+                        ColumnWidthMode="Star" />
+            </sf:SfTreeGrid.Columns>
+        </sf:SfTreeGrid>
+
+        <Border Grid.Row="1" Grid.Column="1" Margin="8" Padding="8"
+                BorderBrush="{ThemeResource TextControlElevationBorderBrush}"
+                BorderThickness="{ThemeResource TextControlBorderThemeThickness}"
+                Background="{ThemeResource AccentAcrylicBackgroundFillColorDefaultBrush}"
+                DataContext="{Binding ElementName=Main, Path=ViewModel.Selected, Mode=OneWay}">
+            <ScrollViewer>
+                <StackPanel>
+                    <StackPanel.Resources>
+                        <Style x:Key="Header20Style" TargetType="RichTextBlock">
+                            <Setter Property="FontSize" Value="20" />
+                            <Setter Property="FontWeight" Value="Bold" />
+                        </Style>
+                    </StackPanel.Resources>
+                    <RichTextBlock VerticalAlignment="Top" HorizontalAlignment="Stretch"
+                            Style="{StaticResource Header20Style}">
+                        <Paragraph>
+                            <Run Text="{Binding Span, Mode=OneWay}" />
+                        </Paragraph>
+                    </RichTextBlock>
+                    <RichTextBlock VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,0,0,8">
+                        <Paragraph>
+                            <Run Text="{Binding Text, Mode=OneWay}" />
+                        </Paragraph>
+                    </RichTextBlock>
+                    <RichTextBlock VerticalAlignment="Top" HorizontalAlignment="Stretch"
+                            Style="{StaticResource Header20Style}">
+                        <Paragraph>
+                            <Run Text="Exception" />
+                        </Paragraph>
+                    </RichTextBlock>
+                    <RichTextBlock VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,0,0,8">
+                        <Paragraph>
+                            <Run Text="{Binding Exception, Mode=OneWay}" />
+                        </Paragraph>
+                    </RichTextBlock>
+                    <RichTextBlock VerticalAlignment="Top" HorizontalAlignment="Stretch"
+                            Style="{StaticResource Header20Style}">
+                        <Paragraph>
+                            <Run Text="Inner Text" />
+                        </Paragraph>
+                    </RichTextBlock>
+                    <RichTextBlock VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,0,0,8">
+                        <Paragraph>
+                            <Run Text="{Binding InnerString, Mode=OneWay}" />
+                        </Paragraph>
+                    </RichTextBlock>
+                    <RichTextBlock VerticalAlignment="Top" HorizontalAlignment="Stretch"
+                            Style="{StaticResource Header20Style}">
+                        <Paragraph>
+                            <Run Text="Tokens" />
+                        </Paragraph>
+                    </RichTextBlock>
+                    <RichTextBlock VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,0,0,8">
+                        <Paragraph>
+                            <InlineUIContainer>
+                                <ListView ItemsSource="{Binding TokenList}">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <RichTextBlock>
+                                                <Paragraph>
+                                                    <Run>🔹</Run>
+                                                    <Run Text="{Binding}" />
+                                                </Paragraph>
+                                            </RichTextBlock>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </InlineUIContainer>
+                        </Paragraph>
+                    </RichTextBlock>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+    </Grid>
+</Page>

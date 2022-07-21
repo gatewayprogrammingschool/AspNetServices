@@ -38,19 +38,13 @@ public abstract record AppControlBase(string Id) : IControl
     public string Name { get; set; } = Id;
 
     public virtual Task InitAsync(HttpContext context)
-    {
-        return Task.CompletedTask;
-    }
+        => Task.CompletedTask;
 
     public virtual Task ProcessPageAsync(HttpContext context)
-    {
-        return Task.CompletedTask;
-    }
+        => Task.CompletedTask;
 
     public virtual Task PreRenderAsync(HttpContext context)
-    {
-        return Task.CompletedTask;
-    }
+        => Task.CompletedTask;
 
     public abstract Task RenderAsync(HttpContext context, HttpResponseStreamWriter writer, HtmlEncoder htmlEncoder);
 }

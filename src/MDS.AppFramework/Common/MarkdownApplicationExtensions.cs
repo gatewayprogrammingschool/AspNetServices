@@ -51,7 +51,7 @@ namespace MDS.AppFramework.Common
 
         internal static Task<IResult> MarkdownViewExecute(this MarkdownApplicationOptions options, HttpContext context, string viewPath)
         {
-            string? fullPath = Path.Combine(options.ServerRoot, viewPath.TrimStart("\\/".ToCharArray()));
+            string? fullPath = Path.Combine(options.ServerRoot ?? ".", viewPath.TrimStart("\\/".ToCharArray()));
             Type? viewType = null;
 
             if(File.Exists(fullPath))
