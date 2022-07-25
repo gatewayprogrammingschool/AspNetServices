@@ -132,7 +132,7 @@ p {
 
 .apa blockquote {
     padding-left: 0.5in;
-    font-style: italic;
+    font-style: normal;
 }
 
 li /* All list items */ {

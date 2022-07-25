@@ -339,11 +339,11 @@ internal static class MarkdownProcessor
 
             Deserializer deserializer = new();
 
-            dynamic dict;
+            dynamic ddynamicDictionary;
 
             try
             {
-                dict = deserializer.Deserialize<dynamic>(frontMatter);
+                ddynamicDictionary = deserializer.Deserialize<dynamic>(frontMatter);
             }
             // ReSharper disable once RedundantCatchClause
             catch (Exception)
@@ -408,36 +408,66 @@ internal static class MarkdownProcessor
                 }
             }
 
-            RecurseDictionary("",dict);
+            RecurseDictionary("", ddynamicDictionary);
 
-            // YAML Front Matter
-            foreach (string key in dict.Keys)
+            IDictionary<object, object>? dict = ddynamicDictionary as IDictionary<object, object>;
+
+            string parent = "";
+
+            if (dict?.Keys.FirstOrDefault() is "Variables")
             {
-                string linestring = dict[key].ToString() ?? "";
+                parent = "Variables.";
+                dict = dict.Values.First() as IDictionary<object, object>;
+            }
 
-                if (linestring.IndexOf(":", StringComparison.OrdinalIgnoreCase) <= -1)
+            await AddDictionary("Variables", dict!);
+
+            async Task AddDictionary(string par, IDictionary<object, object> dict)
+            {
+                // YAML Front Matter
+                foreach (string key in dict.Keys)
                 {
-                    continue;
-                }
+                    string name = $"{par}.{key}";
+                    string value = "";
 
-                string name = key;
-                string value = linestring;
+                    object? temp = dict[key];
 
-                if (name == "ViewModel")
-                {
-                    continue;
-                }
-
-                if (name.Equals("Variables.Layout", StringComparison.CurrentCultureIgnoreCase))
-                {
-                    if (File.Exists(value))
+                    if (temp is IDictionary<object, object> child)
                     {
-                        value = await File.ReadAllTextAsync(value);
-                        document.SetData(name, value);
-                    }
-                }
+                        await AddDictionary(name, child);
 
-                variables.AddOrUpdate(name, value, (_, _) => value);
+                        continue;
+                    }
+
+                    if (temp is List<object> list)
+                    {
+                        value = string.Join('\n', list.Select(s => $"<p>{s}</p>"));
+                    }
+                    else
+                    {
+                        string linestring = dict[key]
+                                                .ToString() ??
+                                            "";
+
+                        value = linestring;
+                    }
+
+                    if (name == "Variables.ViewModel")
+                    {
+                        continue;
+                    }
+
+                    if (name.Equals("Variables.Layout", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        if (File.Exists(value))
+                        {
+                            value = await File.ReadAllTextAsync(value);
+                            document.SetData(name, value);
+                        }
+                    }
+
+                    variables.AddOrUpdate(name, value, (_, _) => value);
+                }
             }
 
             markdown = markdown.Remove(0, document[i].Span.End);
