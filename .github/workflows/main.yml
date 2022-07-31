@@ -57,6 +57,12 @@ jobs:
       env:
         PLATFORM: ${{ env.PLATFORM }}
       run: |
+        event_name="${{ github.event_name }}"
+        if [ $event_name == 'release' ]; then
+          CONFIG='Release'
+        else;
+          CONFIG='Debug'
+        fi;
         ws="${{ github.workspace }}"
         echo "\$ws - $ws"
         outPath="${ws}/packages"
