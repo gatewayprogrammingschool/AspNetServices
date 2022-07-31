@@ -1,4 +1,4 @@
-name: pack -o $outPathages
+name: packages
 
 on:
   release:
@@ -55,7 +55,7 @@ jobs:
         fi;
         ws="${{ github.workspace }}"
         echo "\$ws - $ws"
-        outPath="${ws}/pack -o $outPathages"
+        outPath="${ws}/packages"
         if [ -d $outPath ]; then
             rm $outPath -r -f;
         fi;
@@ -86,12 +86,12 @@ jobs:
         dotnet pack -o $outPath -c ${CONFIG} --no-build --include-source --include-symbols --force
         ls -al $outPath
 
-    - name: GitHub pack -o $outPathages - ColorCode Symbols
+    - name: GitHub packages - ColorCode Symbols
       if: ${{ github.event_name != 'release' }}
-      uses: tanaka-takayoshi/nuget-publish-to-github-pack -o $outPathages-action@v2.1
+      uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}/pack -o $outPathages/MDS.MarkdownServer.ColorCodePortable.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        nupkg-path: ${{ github.workspace }}/packages/MDS.MarkdownServer.ColorCodePortable.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # pack -o $outPathage repository owner
         repo-owner: MarkdownServer
         # user account
@@ -101,12 +101,12 @@ jobs:
         # skip publishing duplicated pack -o $outPathage(s)
         skip-duplicate: true
 
-    - name: GitHub pack -o $outPathages - Markdig.SyntaxHighlighting Symbols
+    - name: GitHub packages - Markdig.SyntaxHighlighting Symbols
       if: ${{ github.event_name != 'release' }}
-      uses: tanaka-takayoshi/nuget-publish-to-github-pack -o $outPathages-action@v2.1
+      uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}/pack -o $outPathages/MarkdownServer.Markdig.SyntaxHighlighting.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        nupkg-path: ${{ github.workspace }}/packages/MarkdownServer.Markdig.SyntaxHighlighting.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # pack -o $outPathage repository owner
         repo-owner: MarkdownServer
         # user account
@@ -116,12 +116,12 @@ jobs:
         # skip publishing duplicated pack -o $outPathage(s)
         skip-duplicate: true
 
-    - name: GitHub pack -o $outPathages - App Server Symbols
+    - name: GitHub packages - App Server Symbols
       if: ${{ github.event_name != 'release' }}
-      uses: tanaka-takayoshi/nuget-publish-to-github-pack -o $outPathages-action@v2.1
+      uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}/pack -o $outPathages/MDS.MarkdownServer.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        nupkg-path: ${{ github.workspace }}/packages/MDS.MarkdownServer.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # pack -o $outPathage repository owner
         repo-owner: MarkdownServer
         # user account
@@ -131,12 +131,12 @@ jobs:
         # skip publishing duplicated pack -o $outPathage(s)
         skip-duplicate: true
 
-    - name: GitHub pack -o $outPathages - App Framework Symbols
+    - name: GitHub packages - App Framework Symbols
       if: ${{ github.event_name != 'release' }}
-      uses: tanaka-takayoshi/nuget-publish-to-github-pack -o $outPathages-action@v2.1
+      uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}/pack -o $outPathages/MDS.MarkdownServer.ApplicationFramework.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        nupkg-path: ${{ github.workspace }}/packages/MDS.MarkdownServer.ApplicationFramework.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # pack -o $outPathage repository owner
         repo-owner: MarkdownServer
         # user account
@@ -149,8 +149,8 @@ jobs:
     - name: Nuget Publish
       if: ${{ github.event_name == 'release' }}
       run: |
-        $symbolpack -o $outPathages = gci ${{ github.workspace }}/pack -o $outPathages/*.${{ env.GitVersion_SemVer }}.symbols.nupkg -ErrorAction Stop
+        $symbolpackages = gci ${{ github.workspace }}/packages/*.${{ env.GitVersion_SemVer }}.symbols.nupkg -ErrorAction Stop
 
-        $symbolpack -o $outPathages | forEach-Object -process {
+        $symbolpackages | forEach-Object -process {
           dotnet nuget push $_ -k "${{ secrets.NUGET_KEY }}" -s https://api.nuget.org/v3/index.json --skip-duplicate
         }
