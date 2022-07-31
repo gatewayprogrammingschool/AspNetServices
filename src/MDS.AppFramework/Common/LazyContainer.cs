@@ -2,16 +2,12 @@
 
 public record LazyContainer
 {
-    private readonly Lazy<object?> _data;
-
-    private LazyContainer(Func<object?> dataFactory)
+    public static Task<LazyContainer> CreateLazyContainerAsync<TData>(
+        Func<TData> dataFactory,
+        TData data
+    )
     {
-        _data = new(dataFactory);
-    }
-
-    public static Task<LazyContainer> CreateLazyContainerAsync<TData>(Func<TData> dataFactory, TData data)
-    {
-        LazyContainer? container = new(() => dataFactory());
+        LazyContainer container = new(() => dataFactory());
 
         return Task.FromResult(container);
     }
@@ -20,4 +16,11 @@ public record LazyContainer
         => _data.Value is TData data
             ? Task.FromResult((TData?)data)
             : Task.FromResult(default(TData?));
+
+    private LazyContainer(Func<object?> dataFactory)
+    {
+        _data = new(dataFactory);
+    }
+
+    private readonly Lazy<object?> _data;
 }

@@ -1,30 +1,50 @@
 ﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
 
 using MDS.AppFramework.Common;
-using MDS.AppFramework.Controls;
 
 namespace MDS.AppFramework;
 
 public abstract record AppController(IServiceProvider Services) : IDisposable, IAsyncDisposable
 {
-    private static ConcurrentDictionary<string, HttpContext> _contexts = new();
-    private static ConcurrentDictionary<string, IServiceScope> _scopes = new();
+    public CancellationTokenSource CancellationTokenSource
+    {
+        get;
+        set;
+    } = new();
 
-    protected ConcurrentDictionary<int, Type> _views = new();
-    protected ConcurrentDictionary<int, IViewMonitor> _monitors = new();
-    private bool disposedValue;
-    private bool _asyncDisposing;
+    public virtual async ValueTask DisposeAsync()
+    {
+        _asyncDisposing = true;
+        // Do not change this code. Put cleanup code in 'DisposeAsync(bool disposing)' method
+        await DisposeAsync(true);
+        GC.SuppressFinalize(this);
+    }
 
-    public CancellationTokenSource CancellationTokenSource { get; set; } = new();
+    public void Dispose()
+    {
+        if (!_asyncDisposing)
+        {
+            return;
+        }
 
-    public static AppController BeginContext(PathControllerMapItem controllermapItem, HttpContext context, IServiceProvider provider)
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(true);
+    }
+
+    public static AppController BeginContext(
+        PathControllerMapItem controllermapItem,
+        HttpContext context,
+        IServiceProvider provider
+    )
     {
         _contexts.AddOrUpdate(context.Session.Id, context, (_, _) => context);
 
-        IServiceScope? scope = _scopes.GetOrAdd(context.Session.Id, provider.CreateScope());
+        var scope = AppController._scopes.GetOrAdd(context.Session.Id, provider.CreateScope());
 
-        AppController controller = (AppController)scope.ServiceProvider.GetRequiredService(controllermapItem.ControllerType!);
+        AppController controller
+            = (AppController)scope.ServiceProvider.GetRequiredService(
+                controllermapItem.ControllerType!
+            );
 
         return controller;
     }
@@ -33,7 +53,8 @@ public abstract record AppController(IServiceProvider Services) : IDisposable, I
     {
         if (_scopes.TryGetValue(context.Session.Id, out IServiceScope? scope))
         {
-            AppController controller = (AppController)scope.ServiceProvider.GetRequiredService(controllerType);
+            AppController controller
+                = (AppController)scope.ServiceProvider.GetRequiredService(controllerType);
 
             controller.CancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(15));
         }
@@ -43,11 +64,14 @@ public abstract record AppController(IServiceProvider Services) : IDisposable, I
     {
         if (_scopes.TryGetValue(context.Session.Id, out IServiceScope? scope))
         {
-            AppController controller = (AppController)scope.ServiceProvider.GetRequiredService(controllerType);
+            AppController controller
+                = (AppController)scope.ServiceProvider.GetRequiredService(controllerType);
 
             controller.CancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(15));
 
-            controller.DisposeAsync().GetAwaiter().GetResult();
+            controller.DisposeAsync()
+                .GetAwaiter()
+                .GetResult();
         }
     }
 
@@ -55,7 +79,7 @@ public abstract record AppController(IServiceProvider Services) : IDisposable, I
         => GetViewMonitor<IViewMonitor>(path);
 
     public abstract TViewMonitor GetViewMonitor<TViewMonitor>(PathString path)
-            where TViewMonitor : IViewMonitor;
+        where TViewMonitor : IViewMonitor;
 
     public TViewMonitor RegisterView<TViewMonitor>(PathString path, string id)
         where TViewMonitor : IViewMonitor, new()
@@ -64,16 +88,22 @@ public abstract record AppController(IServiceProvider Services) : IDisposable, I
 
         if (!_views.TryAdd(hash, typeof(TViewMonitor)))
         {
-            throw new ApplicationException("Duplicate view cannot be added to controller.  Ensure ViewKey is unique per instance.");
+            throw new ApplicationException(
+                "Duplicate view cannot be added to controller.  Ensure ViewKey is unique per instance."
+            );
         }
 
         return CreateViewMonitor<TViewMonitor>(path, id);
     }
 
+    protected ConcurrentDictionary<int, IViewMonitor> _monitors = new();
+
+    protected ConcurrentDictionary<int, Type> _views = new();
+
     protected virtual TViewMonitor CreateViewMonitor<TViewMonitor>(PathString path, string id)
         where TViewMonitor : IViewMonitor, new()
     {
-        TViewMonitor? monitor = new();
+        TViewMonitor monitor = new();
 
         if (monitor is IViewMonitor toAdd)
         {
@@ -100,17 +130,6 @@ public abstract record AppController(IServiceProvider Services) : IDisposable, I
         }
     }
 
-    public void Dispose()
-    {
-        if (!_asyncDisposing)
-        {
-            return;
-        }
-
-        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        Dispose(true);
-    }
-
     protected virtual async ValueTask DisposeAsync(bool disposing)
     {
         if (!disposedValue)
@@ -126,11 +145,8 @@ public abstract record AppController(IServiceProvider Services) : IDisposable, I
         }
     }
 
-    public virtual async ValueTask DisposeAsync()
-    {
-        _asyncDisposing = true;
-        // Do not change this code. Put cleanup code in 'DisposeAsync(bool disposing)' method
-        await DisposeAsync(true);
-        GC.SuppressFinalize(this);
-    }
+    private bool _asyncDisposing;
+    private static ConcurrentDictionary<string, HttpContext> _contexts = new();
+    private static ConcurrentDictionary<string, IServiceScope> _scopes = new();
+    private bool disposedValue;
 }

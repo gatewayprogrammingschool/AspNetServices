@@ -8,25 +8,34 @@ namespace MDS.AppFramework.Common
 {
     public static class ViewModelExtensions
     {
-        public static async Task<ControlViewModel?> GetViewModelAsync(this HttpContext context, IViewState viewState, Type viewModelType)
+        public static async Task<ControlViewModel?> GetViewModelAsync(
+            this HttpContext context,
+            IViewState viewState,
+            Type viewModelType
+        )
         {
             if (viewModelType is null)
             {
                 throw new ArgumentNullException(nameof(viewModelType));
             }
 
-            dynamic? viewModel = 
-                viewState.ViewState.TryGetValue(nameof(IAppView.ViewModel), out LazyContainer? vm) 
-                ? await vm.GetLazyDataAsync<ControlViewModel>() 
+            dynamic? viewModel = viewState.ViewState.TryGetValue(
+                nameof(IAppView.ViewModel),
+                out LazyContainer? vm
+            )
+                ? await vm.GetLazyDataAsync<ControlViewModel>()
                 : Activator.CreateInstance(viewModelType);
 
             if (viewModel is not null)
             {
-                PropertyInfo[]? properties = viewModelType.GetProperties();
+                var properties = viewModelType.GetProperties();
 
                 foreach (KeyValuePair<string, StringValues> item in context.Request.Form)
                 {
-                    PropertyInfo? pi = properties.FirstOrDefault(pi => pi.Name.Equals(item.Key, StringComparison.InvariantCultureIgnoreCase));
+                    PropertyInfo? pi = properties.FirstOrDefault(
+                        pi => pi.Name.Equals(item.Key, StringComparison.InvariantCultureIgnoreCase)
+                    );
+
                     if (pi != null)
                     {
                         SetProperty(pi, item.Value);
@@ -36,7 +45,7 @@ namespace MDS.AppFramework.Common
 
             Func<ControlViewModel?> func = () => viewModel;
             LazyContainer lazy = await LazyContainer.CreateLazyContainerAsync(func, viewModel);
-            viewState.ViewState.AddOrUpdate(nameof(IAppView.ViewModel), lazy, (_,_) => lazy);
+            viewState.ViewState.AddOrUpdate(nameof(IAppView.ViewModel), lazy, (_, _) => lazy);
 
             return viewModel as ControlViewModel;
 
@@ -69,7 +78,8 @@ namespace MDS.AppFramework.Common
                     },
                 };
 
-                if (toSet is null && toSet is object)
+                if (toSet is null &&
+                    toSet is object)
                 {
                     viewModel.Set(pi.Name, value);
                 }
