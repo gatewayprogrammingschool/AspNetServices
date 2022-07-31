@@ -7,6 +7,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <OutputType>Library</OutputType>
+    <Title>MDS.ApplicationFramework</Title>
+    <PackageProjectUrl>https://github.com/MarkdownServer/AspNetServices</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/MarkdownServer/AspNetServices/main/LICENSE</PackageLicenseUrl>
+    <PackageIcon>93015012.png</PackageIcon>
+    <RepositoryUrl>https://github.com/MarkdownServer/AspNetServices</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -18,7 +24,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageId>MDS.ApplicationFramework</PackageId>
-    <Authors>Gateway Programming School, Inc.</Authors>
+    <Authors>@sharpninja &lt;ninja@thesharp.ninja&gt;</Authors>
     <Product>MDS.ApplicationFramework</Product>
     <IncludeSourceFilesProjectOutputGroup>True</IncludeSourceFilesProjectOutputGroup>
   </PropertyGroup>
@@ -28,6 +34,10 @@
     <Content Remove="ViewModels\**" />
     <EmbeddedResource Remove="ViewModels\**" />
     <None Remove="ViewModels\**" />
+    <None Update="93015012.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

@@ -6,6 +6,11 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>MDS.AspnetServices</RootNamespace>
+    <Title>MarkdownServer</Title>
+    <PackageProjectUrl>https://github.com/MarkdownServer/AspNetServices</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/MarkdownServer/AspNetServices/main/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/MarkdownServer/AspNetServices</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
   <PropertyGroup>
     <!-- <IncludeReferencedProjects>True</IncludeReferencedProjects> -->
@@ -18,7 +23,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageId>MarkdownServer</PackageId>
-    <Authors>Gateway Programming School, Inc.</Authors>
+    <Authors>@sharpninja &lt;ninja@thesharp.ninja&gt;</Authors>
     <Product>MarkdownServer</Product>
     <IncludeSourceFilesProjectOutputGroup>True</IncludeSourceFilesProjectOutputGroup>
   </PropertyGroup>
