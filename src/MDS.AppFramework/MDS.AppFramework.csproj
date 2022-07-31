@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <Title>MDS.ApplicationFramework</Title>
     <PackageProjectUrl>https://github.com/MarkdownServer/AspNetServices</PackageProjectUrl>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/MarkdownServer/AspNetServices/main/LICENSE</PackageLicenseUrl>
+    <PackageLicenseUrl></PackageLicenseUrl>
     <PackageIcon>93015012.png</PackageIcon>
     <RepositoryUrl>https://github.com/MarkdownServer/AspNetServices</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

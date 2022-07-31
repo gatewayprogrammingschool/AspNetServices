@@ -8,9 +8,10 @@
     <RootNamespace>MDS.AspnetServices</RootNamespace>
     <Title>MarkdownServer</Title>
     <PackageProjectUrl>https://github.com/MarkdownServer/AspNetServices</PackageProjectUrl>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/MarkdownServer/AspNetServices/main/LICENSE</PackageLicenseUrl>
+    <PackageLicenseUrl></PackageLicenseUrl>
     <RepositoryUrl>https://github.com/MarkdownServer/AspNetServices</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageIcon>93015012.png</PackageIcon>
   </PropertyGroup>
   <PropertyGroup>
     <!-- <IncludeReferencedProjects>True</IncludeReferencedProjects> -->
@@ -35,6 +36,10 @@
     <None Include="..\..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
+    </None>
+    <None Update="93015012.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
     </None>
   </ItemGroup>
   <ItemGroup>
