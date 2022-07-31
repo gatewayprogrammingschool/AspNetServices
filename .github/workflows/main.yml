@@ -22,6 +22,12 @@ jobs:
       env:
         event_name: ${{ github.event_name }}
       run: echo "event_name $env:event_name"
+    - if: ${{ github.event_name == 'release' }}
+      env:
+        CONFIG: Release
+    - if: ${{ github.event_name != 'release' }}
+      env:
+        CONFIG: Debug
     - name: Checkout
       uses: actions/checkout@v1
       with:
@@ -45,8 +51,7 @@ jobs:
         fi;
         $HOME/.dotnet/tools/dotnet-gitversion;
 
-    - name: Build ASP.Net Services Debug
-      if: ${{ github.event_name != 'release' }}
+    - name: Build ASP.Net Services
       run: |
         ws="${{ github.workspace }}"
         echo "\$ws - $ws"
@@ -59,38 +64,38 @@ jobs:
         cd ${ws}/submodules/ColorCodePortable/MDS.ColorCodePortable
         rm "./bin" -r -f
         dotnet restore --source "https://api.nuget.org/v3/index.json";
-        dotnet build -c Debug /property:Platform=${{ env.PLATFORM }} --no-restore
-        dotnet pack -c Debug /property:Platform=${{ env.PLATFORM }} --no-build --include-source --include-symbols --force
-        cd "./bin/${{ env.PLATFORM }}/Debug"
+        dotnet build -c $env:CONFIG /property:Platform=${{ env.PLATFORM }} --no-restore
+        dotnet pack -c $env:CONFIG /property:Platform=${{ env.PLATFORM }} --no-build --include-source --include-symbols --force
+        cd "./bin/${{ env.PLATFORM }}/$env:CONFIG"
         cp -r *.symbols.nupkg $outPath
 
         cd "${ws}/submodules/Markdig.SyntaxHighlighting/src/MDS.Markdig.SyntaxHighlighting"
         rm "./bin" -r -f
         dotnet restore --source "https://api.nuget.org/v3/index.json";
-        dotnet build -c Debug /property:Platform=${{ env.PLATFORM }} --no-restore
-        dotnet pack -c Debug /property:Platform=${{ env.PLATFORM }} --no-build --include-source --include-symbols --force
-        cd "./bin/${{ env.PLATFORM }}/Debug"
+        dotnet build -c $env:CONFIG /property:Platform=${{ env.PLATFORM }} --no-restore
+        dotnet pack -c $env:CONFIG /property:Platform=${{ env.PLATFORM }} --no-build --include-source --include-symbols --force
+        cd "./bin/${{ env.PLATFORM }}/$env:CONFIG"
         cp -r *.symbols.nupkg $outPath
 
         cd "${ws}/src/MDS.AspnetServices"
         rm "./bin" -r -f
         dotnet restore --source "https://api.nuget.org/v3/index.json";
-        dotnet build -c Debug /property:Platform=${{ env.PLATFORM }} --no-restore
-        dotnet pack -c Debug /property:Platform=${{ env.PLATFORM }} --no-build --include-source --include-symbols --force
-        cd "./bin/${{ env.PLATFORM }}/Debug"
+        dotnet build -c $env:CONFIG /property:Platform=${{ env.PLATFORM }} --no-restore
+        dotnet pack -c $env:CONFIG /property:Platform=${{ env.PLATFORM }} --no-build --include-source --include-symbols --force
+        cd "./bin/${{ env.PLATFORM }}/$env:CONFIG"
         cp -r *.symbols.nupkg $outPath
 
         cd "${ws}/src/MDS.AppFramework/"
         rm "./bin" -r -f
         dotnet restore --source "https://api.nuget.org/v3/index.json";
-        dotnet build -c Debug /property:Platform=${{ env.PLATFORM }} --no-restore
-        dotnet pack -c Debug /property:Platform=${{ env.PLATFORM }} --no-build --include-source --include-symbols --force
-        cd "./bin/${{ env.PLATFORM }}/Debug"
+        dotnet build -c $env:CONFIG /property:Platform=${{ env.PLATFORM }} --no-restore
+        dotnet pack -c $env:CONFIG /property:Platform=${{ env.PLATFORM }} --no-build --include-source --include-symbols --force
+        cd "./bin/${{ env.PLATFORM }}/$env:CONFIG"
         cp -r *.symbols.nupkg $outPath
         ls -al $outPath
 
     - name: Build ASP.Net Services Release
-      if: ${{ github.event_name == 'release' }}
+      if: ${{ false }}
       run: |
         ws="${{ github.workspace }}"
         echo "\$ws - $ws"
@@ -132,7 +137,7 @@ jobs:
 #       if: ${{ github.event_name != 'release' }}
 #       run: |
 #         set-location ${{ github.workspace }}/src/CommunityToolkit.Extensions.Hosting.WindowsAppSdk
-#         dotnet test -c Debug --no-build
+#         dotnet test -c $env:CONFIG --no-build
 #     - name: Dotnet Release Tests
 #       if: ${{ github.event_name == 'release' }}
 #       run: |
@@ -144,7 +149,7 @@ jobs:
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}/packages/MarkdownServer.ColorCodePortable.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        nupkg-path: ${{ github.workspace }}/packages/MDS.MarkdownServer.ColorCodePortable.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # package repository owner
         repo-owner: MarkdownServer
         # user account
@@ -174,7 +179,7 @@ jobs:
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}/packages/MarkdownServer.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        nupkg-path: ${{ github.workspace }}/packages/MDS.MarkdownServer.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # package repository owner
         repo-owner: MarkdownServer
         # user account
@@ -189,7 +194,7 @@ jobs:
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}/packages/MarkdownServer.ApplicationFramework.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        nupkg-path: ${{ github.workspace }}/packages/MDS.MarkdownServer.ApplicationFramework.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # package repository owner
         repo-owner: MarkdownServer
         # user account
