@@ -21,7 +21,7 @@ jobs:
     - name: Event
       env:
         event_name: ${{ github.event_name }}
-      run: echo "event_name $env:event_name"
+      run: echo "event_name $event_name"
     - if: ${{ github.event_name == 'release' }}
       shell: pwsh
       run: echo 'Setting Release.'
@@ -69,33 +69,33 @@ jobs:
         cd ${ws}/submodules/ColorCodePortable/MDS.ColorCodePortable
         rm "./bin" -r -f
         dotnet restore --source "https://api.nuget.org/v3/index.json";
-        dotnet build -c $env:CONFIG /property:Platform=${{ env.PLATFORM }} --no-restore
-        dotnet pack -c $env:CONFIG /property:Platform=${{ env.PLATFORM }} --no-build --include-source --include-symbols --force
-        cd "./bin/${{ env.PLATFORM }}/$env:CONFIG"
+        dotnet build -c $CONFIG /property:Platform=${{ env.PLATFORM }} --no-restore
+        dotnet pack -c $CONFIG /property:Platform=${{ env.PLATFORM }} --no-build --include-source --include-symbols --force
+        cd "./bin/${{ env.PLATFORM }}/$CONFIG"
         cp -r *.symbols.nupkg $outPath
 
         cd "${ws}/submodules/Markdig.SyntaxHighlighting/src/MDS.Markdig.SyntaxHighlighting"
         rm "./bin" -r -f
         dotnet restore --source "https://api.nuget.org/v3/index.json";
-        dotnet build -c $env:CONFIG /property:Platform=${{ env.PLATFORM }} --no-restore
-        dotnet pack -c $env:CONFIG /property:Platform=${{ env.PLATFORM }} --no-build --include-source --include-symbols --force
-        cd "./bin/${{ env.PLATFORM }}/$env:CONFIG"
+        dotnet build -c $CONFIG /property:Platform=${{ env.PLATFORM }} --no-restore
+        dotnet pack -c $CONFIG /property:Platform=${{ env.PLATFORM }} --no-build --include-source --include-symbols --force
+        cd "./bin/${{ env.PLATFORM }}/$CONFIG"
         cp -r *.symbols.nupkg $outPath
 
         cd "${ws}/src/MDS.AspnetServices"
         rm "./bin" -r -f
         dotnet restore --source "https://api.nuget.org/v3/index.json";
-        dotnet build -c $env:CONFIG /property:Platform=${{ env.PLATFORM }} --no-restore
-        dotnet pack -c $env:CONFIG /property:Platform=${{ env.PLATFORM }} --no-build --include-source --include-symbols --force
-        cd "./bin/${{ env.PLATFORM }}/$env:CONFIG"
+        dotnet build -c $CONFIG /property:Platform=${{ env.PLATFORM }} --no-restore
+        dotnet pack -c $CONFIG /property:Platform=${{ env.PLATFORM }} --no-build --include-source --include-symbols --force
+        cd "./bin/${{ env.PLATFORM }}/$CONFIG"
         cp -r *.symbols.nupkg $outPath
 
         cd "${ws}/src/MDS.AppFramework/"
         rm "./bin" -r -f
         dotnet restore --source "https://api.nuget.org/v3/index.json";
-        dotnet build -c $env:CONFIG /property:Platform=${{ env.PLATFORM }} --no-restore
-        dotnet pack -c $env:CONFIG /property:Platform=${{ env.PLATFORM }} --no-build --include-source --include-symbols --force
-        cd "./bin/${{ env.PLATFORM }}/$env:CONFIG"
+        dotnet build -c $CONFIG /property:Platform=${{ env.PLATFORM }} --no-restore
+        dotnet pack -c $CONFIG /property:Platform=${{ env.PLATFORM }} --no-build --include-source --include-symbols --force
+        cd "./bin/${{ env.PLATFORM }}/$CONFIG"
         cp -r *.symbols.nupkg $outPath
         ls -al $outPath
 
@@ -142,7 +142,7 @@ jobs:
 #       if: ${{ github.event_name != 'release' }}
 #       run: |
 #         set-location ${{ github.workspace }}/src/CommunityToolkit.Extensions.Hosting.WindowsAppSdk
-#         dotnet test -c $env:CONFIG --no-build
+#         dotnet test -c $CONFIG --no-build
 #     - name: Dotnet Release Tests
 #       if: ${{ github.event_name == 'release' }}
 #       run: |
