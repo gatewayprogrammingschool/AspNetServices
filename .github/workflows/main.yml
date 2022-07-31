@@ -60,7 +60,7 @@ jobs:
         event_name="${{ github.event_name }}"
         if [ $event_name == 'release' ]; then
           CONFIG='Release'
-        else;
+        else
           CONFIG='Debug'
         fi;
         ws="${{ github.workspace }}"
