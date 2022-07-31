@@ -27,6 +27,7 @@
     <Authors>@sharpninja &lt;ninja@thesharp.ninja&gt;</Authors>
     <Product>MDS.ApplicationFramework</Product>
     <IncludeSourceFilesProjectOutputGroup>True</IncludeSourceFilesProjectOutputGroup>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -41,6 +42,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\..\93015012.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="Controls\ControlViewModel.cs" />
   </ItemGroup>
 
