@@ -1,4 +1,4 @@
-name: Packages
+name: pack -o $outPathages
 
 on:
   release:
@@ -22,14 +22,6 @@ jobs:
       env:
         event_name: ${{ github.event_name }}
       run: echo "event_name $event_name"
-    - if: ${{ github.event_name == 'release' }}
-      run: echo 'Setting Release.'
-      env:
-        CONFIG: Release
-    - if: ${{ github.event_name != 'release' }}
-      run: echo 'Setting Debug.'
-      env:
-        CONFIG: Debug
     - name: Checkout
       uses: actions/checkout@v1
       with:
@@ -54,8 +46,6 @@ jobs:
         $HOME/.dotnet/tools/dotnet-gitversion;
 
     - name: Build ASP.Net Services
-      env:
-        PLATFORM: ${{ env.PLATFORM }}
       run: |
         event_name="${{ github.event_name }}"
         if [ $event_name == 'release' ]; then
@@ -65,7 +55,7 @@ jobs:
         fi;
         ws="${{ github.workspace }}"
         echo "\$ws - $ws"
-        outPath="${ws}/packages"
+        outPath="${ws}/pack -o $outPathages"
         if [ -d $outPath ]; then
             rm $outPath -r -f;
         fi;
@@ -74,101 +64,93 @@ jobs:
         cd ${ws}/submodules/ColorCodePortable/MDS.ColorCodePortable
         rm "./bin" -r -f
         dotnet restore --source "https://api.nuget.org/v3/index.json";
-        dotnet build -c ${CONFIG} -a ${PLATFORM} --no-restore
-        dotnet pack -c ${CONFIG} --no-build --include-source --include-symbols --force
-        cd "./bin/${PLATFORM}/${CONFIG}"
-        cp -r *.symbols.nupkg $outPath
+        dotnet build -c ${CONFIG} --no-restore
+        dotnet pack -o $outPath -c ${CONFIG} --no-build --include-source --include-symbols --force
 
         cd "${ws}/submodules/Markdig.SyntaxHighlighting/src/MDS.Markdig.SyntaxHighlighting"
         rm "./bin" -r -f
         dotnet restore --source "https://api.nuget.org/v3/index.json";
-        dotnet build -c ${CONFIG} -a ${PLATFORM} --no-restore
-        dotnet pack -c ${CONFIG} --no-build --include-source --include-symbols --force
-        cd "./bin/${PLATFORM}/${CONFIG}"
-        cp -r *.symbols.nupkg $outPath
+        dotnet build -c ${CONFIG} --no-restore
+        dotnet pack -o $outPath -c ${CONFIG} --no-build --include-source --include-symbols --force
 
         cd "${ws}/src/MDS.AspnetServices"
         rm "./bin" -r -f
         dotnet restore --source "https://api.nuget.org/v3/index.json";
-        dotnet build -c ${CONFIG} -a ${PLATFORM} --no-restore
-        dotnet pack -c ${CONFIG} --no-build --include-source --include-symbols --force
-        cd "./bin/${PLATFORM}/${CONFIG}"
-        cp -r *.symbols.nupkg $outPath
+        dotnet build -c ${CONFIG} --no-restore
+        dotnet pack -o $outPath -c ${CONFIG} --no-build --include-source --include-symbols --force
 
         cd "${ws}/src/MDS.AppFramework/"
         rm "./bin" -r -f
         dotnet restore --source "https://api.nuget.org/v3/index.json";
-        dotnet build -c ${CONFIG} -a ${PLATFORM} --no-restore
-        dotnet pack -c ${CONFIG} --no-build --include-source --include-symbols --force
-        cd "./bin/${PLATFORM}/${CONFIG}"
-        cp -r *.symbols.nupkg $outPath
+        dotnet build -c ${CONFIG} --no-restore
+        dotnet pack -o $outPath -c ${CONFIG} --no-build --include-source --include-symbols --force
         ls -al $outPath
 
-    - name: GitHub Packages - ColorCode Symbols
+    - name: GitHub pack -o $outPathages - ColorCode Symbols
       if: ${{ github.event_name != 'release' }}
-      uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
+      uses: tanaka-takayoshi/nuget-publish-to-github-pack -o $outPathages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}/packages/MDS.MarkdownServer.ColorCodePortable.${{ env.GitVersion_SemVer }}.symbols.nupkg
-        # package repository owner
+        nupkg-path: ${{ github.workspace }}/pack -o $outPathages/MDS.MarkdownServer.ColorCodePortable.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        # pack -o $outPathage repository owner
         repo-owner: MarkdownServer
         # user account
         gh-user: sharpninja
         # access token
         token: ${{ secrets.PIPELINE_TOKEN }}
-        # skip publishing duplicated package(s)
+        # skip publishing duplicated pack -o $outPathage(s)
         skip-duplicate: true
 
-    - name: GitHub Packages - Markdig.SyntaxHighlighting Symbols
+    - name: GitHub pack -o $outPathages - Markdig.SyntaxHighlighting Symbols
       if: ${{ github.event_name != 'release' }}
-      uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
+      uses: tanaka-takayoshi/nuget-publish-to-github-pack -o $outPathages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}/packages/MarkdownServer.Markdig.SyntaxHighlighting.${{ env.GitVersion_SemVer }}.symbols.nupkg
-        # package repository owner
+        nupkg-path: ${{ github.workspace }}/pack -o $outPathages/MarkdownServer.Markdig.SyntaxHighlighting.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        # pack -o $outPathage repository owner
         repo-owner: MarkdownServer
         # user account
         gh-user: sharpninja
         # access token
         token: ${{ secrets.PIPELINE_TOKEN }}
-        # skip publishing duplicated package(s)
+        # skip publishing duplicated pack -o $outPathage(s)
         skip-duplicate: true
 
-    - name: GitHub Packages - App Server Symbols
+    - name: GitHub pack -o $outPathages - App Server Symbols
       if: ${{ github.event_name != 'release' }}
-      uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
+      uses: tanaka-takayoshi/nuget-publish-to-github-pack -o $outPathages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}/packages/MDS.MarkdownServer.${{ env.GitVersion_SemVer }}.symbols.nupkg
-        # package repository owner
+        nupkg-path: ${{ github.workspace }}/pack -o $outPathages/MDS.MarkdownServer.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        # pack -o $outPathage repository owner
         repo-owner: MarkdownServer
         # user account
         gh-user: sharpninja
         # access token
         token: ${{ secrets.PIPELINE_TOKEN }}
-        # skip publishing duplicated package(s)
+        # skip publishing duplicated pack -o $outPathage(s)
         skip-duplicate: true
 
-    - name: GitHub Packages - App Framework Symbols
+    - name: GitHub pack -o $outPathages - App Framework Symbols
       if: ${{ github.event_name != 'release' }}
-      uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
+      uses: tanaka-takayoshi/nuget-publish-to-github-pack -o $outPathages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}/packages/MDS.MarkdownServer.ApplicationFramework.${{ env.GitVersion_SemVer }}.symbols.nupkg
-        # package repository owner
+        nupkg-path: ${{ github.workspace }}/pack -o $outPathages/MDS.MarkdownServer.ApplicationFramework.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        # pack -o $outPathage repository owner
         repo-owner: MarkdownServer
         # user account
         gh-user: sharpninja
         # access token
         token: ${{ secrets.PIPELINE_TOKEN }}
-        # skip publishing duplicated package(s)
+        # skip publishing duplicated pack -o $outPathage(s)
         skip-duplicate: true
 
     - name: Nuget Publish
       if: ${{ github.event_name == 'release' }}
       run: |
-        $symbolPackages = gci ${{ github.workspace }}/packages/*.${{ env.GitVersion_SemVer }}.symbols.nupkg -ErrorAction Stop
+        $symbolpack -o $outPathages = gci ${{ github.workspace }}/pack -o $outPathages/*.${{ env.GitVersion_SemVer }}.symbols.nupkg -ErrorAction Stop
 
-        $symbolPackages | forEach-Object -process {
+        $symbolpack -o $outPathages | forEach-Object -process {
           dotnet nuget push $_ -k "${{ secrets.NUGET_KEY }}" -s https://api.nuget.org/v3/index.json --skip-duplicate
         }
