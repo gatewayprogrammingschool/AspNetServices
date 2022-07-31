@@ -68,32 +68,32 @@ jobs:
         cd ${ws}/submodules/ColorCodePortable/MDS.ColorCodePortable
         rm "./bin" -r -f
         dotnet restore --source "https://api.nuget.org/v3/index.json";
-        dotnet build -c ${CONFIG} /property:Platform=${PLATFORM} --no-restore
-        dotnet pack -c ${CONFIG} /property:Platform=${PLATFORM} --no-build --include-source --include-symbols --force
+        dotnet build -c ${CONFIG} -a ${PLATFORM} --no-restore
+        dotnet pack -c ${CONFIG} -a ${PLATFORM} --no-build --include-source --include-symbols --force
         cd "./bin/${PLATFORM}/${CONFIG}"
         cp -r *.symbols.nupkg $outPath
 
         cd "${ws}/submodules/Markdig.SyntaxHighlighting/src/MDS.Markdig.SyntaxHighlighting"
         rm "./bin" -r -f
         dotnet restore --source "https://api.nuget.org/v3/index.json";
-        dotnet build -c ${CONFIG} /property:Platform=${PLATFORM} --no-restore
-        dotnet pack -c ${CONFIG} /property:Platform=${PLATFORM} --no-build --include-source --include-symbols --force
+        dotnet build -c ${CONFIG} -a ${PLATFORM} --no-restore
+        dotnet pack -c ${CONFIG} -a ${PLATFORM} --no-build --include-source --include-symbols --force
         cd "./bin/${PLATFORM}/${CONFIG}"
         cp -r *.symbols.nupkg $outPath
 
         cd "${ws}/src/MDS.AspnetServices"
         rm "./bin" -r -f
         dotnet restore --source "https://api.nuget.org/v3/index.json";
-        dotnet build -c ${CONFIG} /property:Platform=${PLATFORM} --no-restore
-        dotnet pack -c ${CONFIG} /property:Platform=${PLATFORM} --no-build --include-source --include-symbols --force
+        dotnet build -c ${CONFIG} -a ${PLATFORM} --no-restore
+        dotnet pack -c ${CONFIG} -a ${PLATFORM} --no-build --include-source --include-symbols --force
         cd "./bin/${PLATFORM}/${CONFIG}"
         cp -r *.symbols.nupkg $outPath
 
         cd "${ws}/src/MDS.AppFramework/"
         rm "./bin" -r -f
         dotnet restore --source "https://api.nuget.org/v3/index.json";
-        dotnet build -c ${CONFIG} /property:Platform=${PLATFORM} --no-restore
-        dotnet pack -c ${CONFIG} /property:Platform=${PLATFORM} --no-build --include-source --include-symbols --force
+        dotnet build -c ${CONFIG} -a ${PLATFORM} --no-restore
+        dotnet pack -c ${CONFIG} -a ${PLATFORM} --no-build --include-source --include-symbols --force
         cd "./bin/${PLATFORM}/${CONFIG}"
         cp -r *.symbols.nupkg $outPath
         ls -al $outPath
