@@ -136,7 +136,7 @@ jobs:
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}/packages/MDS.MarkdownServer.ApplicationFramework.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        nupkg-path: ${{ github.workspace }}/packages/MDS.ApplicationFramework.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # pack -o $outPathage repository owner
         repo-owner: MarkdownServer
         # user account
