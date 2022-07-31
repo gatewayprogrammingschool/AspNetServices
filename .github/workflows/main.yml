@@ -148,6 +148,7 @@ jobs:
 
     - name: Nuget Publish
       if: ${{ github.event_name == 'release' }}
+      shell: pwsh
       run: |
         $symbolpackages = gci ${{ github.workspace }}/packages/*.${{ env.GitVersion_SemVer }}.symbols.nupkg -ErrorAction Stop
 
