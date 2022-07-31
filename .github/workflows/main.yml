@@ -91,7 +91,7 @@ jobs:
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}/packages/MDS.MarkdownServer.ColorCodePortable.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        nupkg-path: ${{ github.workspace }}/packages/MDS.ColorCodePortable.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # pack -o $outPathage repository owner
         repo-owner: MarkdownServer
         # user account
@@ -106,7 +106,7 @@ jobs:
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}/packages/MarkdownServer.Markdig.SyntaxHighlighting.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        nupkg-path: ${{ github.workspace }}/packages/MDS.Markdig.SyntaxHighlighting.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # pack -o $outPathage repository owner
         repo-owner: MarkdownServer
         # user account
@@ -121,7 +121,7 @@ jobs:
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}/packages/MDS.MarkdownServer.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        nupkg-path: ${{ github.workspace }}/packages/MarkdownServer.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # pack -o $outPathage repository owner
         repo-owner: MarkdownServer
         # user account
