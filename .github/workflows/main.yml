@@ -23,12 +23,10 @@ jobs:
         event_name: ${{ github.event_name }}
       run: echo "event_name $event_name"
     - if: ${{ github.event_name == 'release' }}
-      shell: pwsh
       run: echo 'Setting Release.'
       env:
         CONFIG: Release
     - if: ${{ github.event_name != 'release' }}
-      shell: pwsh
       run: echo 'Setting Debug.'
       env:
         CONFIG: Debug
@@ -43,7 +41,6 @@ jobs:
         dotnet-version: 6.0.202
 
     - name: Setup GitVersion
-      shell: pwsh
       run: |
         export PATH="${PATH}:$HOME/.dotnet/tools/"
         #if [ ! -f $HOME/.dotnet/tools/pwsh ]; then
