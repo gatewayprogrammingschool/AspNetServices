@@ -23,7 +23,8 @@
     <Copyright>2021 - Gateway Prgramming School, Inc.</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <PackageId>MDS.ApplicationFramework</PackageId>
+    <PackageId>MarkdownServer.ApplicationFramework</PackageId>
+    <Title>MarkdownServer.ApplicationFramework</Title>
     <Authors>@sharpninja &lt;ninja@thesharp.ninja&gt;</Authors>
     <Product>MDS.ApplicationFramework</Product>
     <IncludeSourceFilesProjectOutputGroup>True</IncludeSourceFilesProjectOutputGroup>

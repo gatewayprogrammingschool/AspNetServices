@@ -149,6 +149,9 @@ jobs:
     - name: Nuget Publish
       if: ${{ github.event_name == 'release' }}
       run: |
+        echo "github.workspace: ${{ github.workspace }}"
+        echo "env.GitVersion_SemVer: ${{ env.GitVersion_SemVer }}"
+        echo "secrets.NUGET_KEY: ${{ secrets.NUGET_KEY }}"
         $symbolpackages = gci ${{ github.workspace }}/packages/*.${{ env.GitVersion_SemVer }}.symbols.nupkg -ErrorAction Stop
 
         $symbolpackages | forEach-Object -process {
