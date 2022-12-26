@@ -358,3 +358,7 @@ MigrationBackup/
 /tests/MDS.TestSite/wwwroot/MemoFactAndLawLayout.html
 /tests/MDS.TestSite/wwwroot/images
 /tests/MDS.TestSite/wwwroot/unit-5.md
+/tests/MDS.TestSite/wwwroot/rebuttle_motion_to_dismiss_2.md
+/tests/MDS.TestSite/wwwroot/motion_for_summary_judgement.md
+/tests/MDS.TestSite/wwwroot/motion_for_hearing_on_summary_judgement.md
+/tests/MDS.TestSite/wwwroot/index.md
