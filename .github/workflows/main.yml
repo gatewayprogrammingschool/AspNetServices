@@ -30,7 +30,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 6.0.202
+        dotnet-version: 7.0.200
 
     - name: Setup GitVersion
       run: |
@@ -91,9 +91,9 @@ jobs:
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}/packages/MDS.ColorCodePortable.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        nupkg-path: ${{ github.workspace }}/packages/MarkdownServer.ColorCodePortable.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # pack -o $outPathage repository owner
-        repo-owner: MarkdownServer
+        repo-owner: sharpninja
         # user account
         gh-user: sharpninja
         # access token
@@ -106,9 +106,9 @@ jobs:
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}/packages/MDS.Markdig.SyntaxHighlighting.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        nupkg-path: ${{ github.workspace }}/packages/MarkdownServer.Markdig.SyntaxHighlighting.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # pack -o $outPathage repository owner
-        repo-owner: MarkdownServer
+        repo-owner: sharpninja
         # user account
         gh-user: sharpninja
         # access token
@@ -123,7 +123,7 @@ jobs:
         # Path of NuPkg
         nupkg-path: ${{ github.workspace }}/packages/MarkdownServer.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # pack -o $outPathage repository owner
-        repo-owner: MarkdownServer
+        repo-owner: sharpninja
         # user account
         gh-user: sharpninja
         # access token
@@ -136,9 +136,9 @@ jobs:
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}/packages/MDS.ApplicationFramework.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        nupkg-path: ${{ github.workspace }}/packages/MarkdownServer.ApplicationFramework.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # pack -o $outPathage repository owner
-        repo-owner: MarkdownServer
+        repo-owner: sharpninja
         # user account
         gh-user: sharpninja
         # access token
