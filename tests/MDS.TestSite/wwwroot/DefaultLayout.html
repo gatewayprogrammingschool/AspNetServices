@@ -7,15 +7,8 @@
     <!-- HEAD -->
 </head>
 <body>
-    <header>
-        <h1>$(Variables.title)</h1>
-        <table><tbody>
-            <tr><th>To</th><td>$(Variables.To)</td></tr>
-            <tr><th>From</th><td>$(Variables.From)</td></tr>
-            <tr><th>Date</th><td>$(Variables.Date)</td></tr>
-            <tr><th>Re</th><td>$(Variables.Re)</td></tr>
-        </tbody></table>
-    </header>    <main>
+    <header md-include="header.md"></header>
+    <main>
         <article>
             $(MarkdownBody)
         </article>

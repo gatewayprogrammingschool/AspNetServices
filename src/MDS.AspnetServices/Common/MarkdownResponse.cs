@@ -47,6 +47,7 @@ public record MarkdownResponse
     public MarkdownResponse(Exception error) : this()
     {
         Error = error;
+        Document = Markdown.Parse($"---\nVariables:\n  Layout: ./wwwroot/error.html\n  Title: {error.Message}\n\n---\n\n# Error\n\n```\n{error}\n```\n");
         StatusCode = HttpStatusCode.InternalServerError;
     }
 

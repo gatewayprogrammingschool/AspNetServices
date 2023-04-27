@@ -362,3 +362,5 @@ MigrationBackup/
 /tests/MDS.TestSite/wwwroot/motion_for_summary_judgement.md
 /tests/MDS.TestSite/wwwroot/motion_for_hearing_on_summary_judgement.md
 /tests/MDS.TestSite/wwwroot/index.md
+/tests/MDS.TestSite/wwwroot/meds.md
+/tests/MDS.TestSite/wwwroot/legal

@@ -600,7 +600,7 @@ internal static class MarkdownProcessor
     )
         => File.Exists(filename)
             ? options.ProcessMarkdown(File.ReadAllText(filename), Path.GetDirectoryName(filename)!)
-            : throw new FileNotFoundException("Could not located nested file.", filename);
+            : options.ProcessMarkdown("Could not located nested file.", Path.GetDirectoryName(filename)!);
 
     private static MarkdownPipeline? _pipeline;
 }

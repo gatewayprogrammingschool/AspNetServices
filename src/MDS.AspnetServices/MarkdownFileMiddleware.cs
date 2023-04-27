@@ -21,9 +21,10 @@ public class MarkdownFileMiddleware
                 await _next.Invoke(context);
                 return;
             }
+
             if (path.Value?.EndsWith("/") ?? true)
             {
-                path = path.Add(new PathString("/index.md"));
+                path = path.Add(new PathString($"/{Options.Value.DefaultPath}"));
             }
 
             if (!(path.Value?.EndsWith(".md", StringComparison.InvariantCultureIgnoreCase) ?? false))

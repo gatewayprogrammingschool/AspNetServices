@@ -46,50 +46,66 @@ public static class MarkdownServerExtensions
 
         var matrix = (markdownFilename,
             markdownFilename?.EndsWith("md", StringComparison.InvariantCultureIgnoreCase));
-        var result = matrix switch
-        {
-            (null, _) => new MarkdownResponse(HttpStatusCode.NotFound).ToMarkdownResult(),
-            (_, true) => await options.ProcessMarkdownFile(markdownFilename!, vars),
-            _ => options.ProcessFile(filename),
-        };
 
-        if (result is not MarkdownResult mr)
+        try
         {
+
+            var result = matrix switch
+            {
+                (null, _) => new MarkdownResponse(HttpStatusCode.NotFound).ToMarkdownResult(),
+                (_, true) => await options.ProcessMarkdownFile(markdownFilename!, vars),
+                _ => options.ProcessFile(filename),
+            };
+
+            if (result is not MarkdownResult mr)
+            {
+                return result;
+            }
+
+            var variables = mr.Document.GetData("Variables") as ConcurrentDictionary<string, object>;
+            variables ??= new();
+
+            if (context.Request.HasFormContentType)
+            {
+                foreach (var (name, value) in context.Request.Form)
+                {
+                    variables.AddOrUpdate(
+                        name,
+                        string.Join(",", value),
+                        (_, _) => string.Join(",", value)
+                    );
+                }
+            }
+
+            if (context.Request.HasJsonContentType())
+            {
+                var body = new StreamReader(context.Request.BodyReader.AsStream()).ReadToEnd();
+                variables.AddOrUpdate("Body", body, (_, _) => string.Join(",", body));
+            }
+
+            foreach (var (name, value) in context.Request.Query)
+            {
+                variables.AddOrUpdate(name, string.Join(",", value), (_, _) => string.Join(",", value));
+            }
+
+            if (!variables.ContainsKey("title"))
+            {
+                variables.AddOrUpdate("title", context.Request.Path, (_, old) => old);
+            }
+
             return result;
         }
-
-        var variables = mr.Document.GetData("Variables") as ConcurrentDictionary<string, object>;
-        variables ??= new();
-
-        if (context.Request.HasFormContentType)
+        catch (Exception ex)
         {
-            foreach (var (name, value) in context.Request.Form)
+            throw new AggregateException("Exception caught while executing MarkdownFileExecute Middleware.", ex)
             {
-                variables.AddOrUpdate(
-                    name,
-                    string.Join(",", value),
-                    (_, _) => string.Join(",", value)
-                );
-            }
+                Data =
+                {
+                    { nameof(filename), filename },
+                    { nameof(matrix), matrix },
+                }
+            };
         }
-
-        if (context.Request.HasJsonContentType())
-        {
-            var body = new StreamReader(context.Request.BodyReader.AsStream()).ReadToEnd();
-            variables.AddOrUpdate("Body", body, (_, _) => string.Join(",", body));
-        }
-
-        foreach (var (name, value) in context.Request.Query)
-        {
-            variables.AddOrUpdate(name, string.Join(",", value), (_, _) => string.Join(",", value));
-        }
-
-        if (!variables.ContainsKey("title"))
-        {
-            variables.AddOrUpdate("title", context.Request.Path, (_, old) => old);
-        }
-
-        return result;
     }
 
     public static byte[] ToUtf8Bytes(this string toEncode)
