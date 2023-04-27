@@ -93,7 +93,7 @@ jobs:
         # Path of NuPkg
         nupkg-path: ${{ github.workspace }}/packages/MarkdownServer.ColorCodePortable.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # pack -o $outPathage repository owner
-        repo-owner: MarkdownServer
+        repo-owner: sharpninja
         # user account
         gh-user: sharpninja
         # access token
@@ -108,7 +108,7 @@ jobs:
         # Path of NuPkg
         nupkg-path: ${{ github.workspace }}/packages/MarkdownServer.Markdig.SyntaxHighlighting.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # pack -o $outPathage repository owner
-        repo-owner: MarkdownServer
+        repo-owner: sharpninja
         # user account
         gh-user: sharpninja
         # access token
@@ -123,7 +123,7 @@ jobs:
         # Path of NuPkg
         nupkg-path: ${{ github.workspace }}/packages/MarkdownServer.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # pack -o $outPathage repository owner
-        repo-owner: MarkdownServer
+        repo-owner: sharpninja
         # user account
         gh-user: sharpninja
         # access token
@@ -138,7 +138,7 @@ jobs:
         # Path of NuPkg
         nupkg-path: ${{ github.workspace }}/packages/MarkdownServer.ApplicationFramework.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # pack -o $outPathage repository owner
-        repo-owner: MarkdownServer
+        repo-owner: sharpninja
         # user account
         gh-user: sharpninja
         # access token
