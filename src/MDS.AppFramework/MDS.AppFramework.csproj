@@ -8,10 +8,10 @@
     <Nullable>enable</Nullable>
     <OutputType>Library</OutputType>
     <Title>MDS.ApplicationFramework</Title>
-    <PackageProjectUrl>https://github.com/MarkdownServer/AspNetServices</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/sharpninja/AspNetServices</PackageProjectUrl>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageIcon>93015012.png</PackageIcon>
-    <RepositoryUrl>https://github.com/MarkdownServer/AspNetServices</RepositoryUrl>
+    <RepositoryUrl>https://github.com/sharpninja/AspNetServices</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 

@@ -7,9 +7,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>MDS.AspnetServices</RootNamespace>
     <Title>MarkdownServer</Title>
-    <PackageProjectUrl>https://github.com/MarkdownServer/AspNetServices</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/sharpninja/AspNetServices</PackageProjectUrl>
     <PackageLicenseUrl></PackageLicenseUrl>
-    <RepositoryUrl>https://github.com/MarkdownServer/AspNetServices</RepositoryUrl>
+    <RepositoryUrl>https://github.com/sharpninja/AspNetServices</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageIcon>93015012.png</PackageIcon>
   </PropertyGroup>
