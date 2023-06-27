@@ -25,7 +25,7 @@ public class MarkdownResult : IResult
     /// <returns>A task that represents the asynchronous execute operation.</returns>
     public async Task ExecuteAsync(HttpContext context)
     {
-        var html = await MarkdownResponse.Create(Document).ToHtmlPage();
+        byte[] html = await MarkdownResponse.Create(Document).ToHtmlPage();
         var memory = new ReadOnlyMemory<byte>(html);
         try
         {

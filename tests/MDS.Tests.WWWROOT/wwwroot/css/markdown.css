@@ -46,7 +46,7 @@ body {
 
 div#header, header {
     /* Put border on bottom. Separates it from TOC or body that comes after it. */
-    /*border-bottom: 1px solid #aaa;*/
+    border-bottom: 1px solid #aaa;
     margin-bottom: 0.5em;
 }
 
@@ -294,10 +294,6 @@ tr.header /* Each header row */ {
 
 tbody /* Entire table  body */ {
 }
-
-    tbody th {
-        text-align: left
-    }
 
 /* Table body rows */
 

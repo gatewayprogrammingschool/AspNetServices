@@ -33,7 +33,7 @@ public class MarkdownFileMiddleware
                 return;
             }
 
-            var result = await Options.MarkdownFileExecute(context, path);
+            IResult result = await Options.MarkdownFileExecute(context, path);
             await result.ExecuteAsync(context);
 
         }

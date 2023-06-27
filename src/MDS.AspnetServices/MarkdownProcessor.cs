@@ -220,6 +220,16 @@ internal static class MarkdownProcessor
 
         MarkdownDocument document = MD.Parse(markdown, MarkdownResponse.Pipeline);
 
+        var rootPath = myRoot;
+        var index = myRoot.IndexOf("wwwroot");
+
+        if (index > -1)
+        {
+            rootPath = myRoot[0..index];
+        }
+
+        document.SetData("root", rootPath);
+
         markdown = ProcessFormTags(markdown);
         (var md, var vars) = await MarkdownProcessor.ProcessMarkdownIncludes(markdown);
         markdown = md;

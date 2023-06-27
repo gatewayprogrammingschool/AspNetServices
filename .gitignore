@@ -352,31 +352,6 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
-/tests/MDS.TestSite/wwwroot/memo_law_fact_1.md
-/tests/MDS.TestSite/wwwroot/memo_law_fact_2.md
-/tests/MDS.TestSite/wwwroot/rebuttle_motion_to_dismiss.md
-/tests/MDS.TestSite/wwwroot/MemoFactAndLawLayout.html
-/tests/MDS.TestSite/wwwroot/images
-/tests/MDS.TestSite/wwwroot/unit-5.md
-/tests/MDS.TestSite/wwwroot/rebuttle_motion_to_dismiss_2.md
-/tests/MDS.TestSite/wwwroot/motion_for_summary_judgement.md
-/tests/MDS.TestSite/wwwroot/motion_for_hearing_on_summary_judgement.md
-/tests/MDS.TestSite/wwwroot/index.md
-/tests/MDS.TestSite/wwwroot/meds.md
-/tests/MDS.TestSite/wwwroot/legal
-/tests/MDS.TestSite/wwwroot/legal/rebuttle_june_2_2023.md
-/tests/MDS.TestSite/wwwroot/legal/Paintiff's-Opening-Statement.md
-/tests/MDS.Tests.WWWROOT/wwwroot/legal/DefaultLayout.html
-/tests/MDS.Tests.WWWROOT/wwwroot/legal/index.md
-/tests/MDS.Tests.WWWROOT/wwwroot/legal/MemoFactAndLawLayout.html
-/tests/MDS.Tests.WWWROOT/wwwroot/legal/memo_law_fact_1.md
-/tests/MDS.Tests.WWWROOT/wwwroot/legal/memo_law_fact_2.md
-/tests/MDS.Tests.WWWROOT/wwwroot/legal/motion_for_hearing_on_summary_judgement.md
-/tests/MDS.Tests.WWWROOT/wwwroot/legal/motion_for_summary_judgement.md
-/tests/MDS.Tests.WWWROOT/wwwroot/legal/Paintiff's-Opening-Statement.md
-/tests/MDS.Tests.WWWROOT/wwwroot/legal/payton_byrd_timeline.md
-/tests/MDS.Tests.WWWROOT/wwwroot/legal/post-trial-brief.md
-/tests/MDS.Tests.WWWROOT/wwwroot/legal/rebuttle_june_2_2023.md
-/tests/MDS.Tests.WWWROOT/wwwroot/legal/rebuttle_motion_to_dismiss.md
-/tests/MDS.Tests.WWWROOT/wwwroot/legal/rebuttle_motion_to_dismiss_2.md
-/tests/MDS.Tests.WWWROOT/wwwroot/legal/unit-5.md
+/tests/MDS.TestSite/wwwroot/
+/tests/MDS.Tests.WWWROOT/wwwroot/legal/
+tests/MDS.TestSite/wwwroot/css/

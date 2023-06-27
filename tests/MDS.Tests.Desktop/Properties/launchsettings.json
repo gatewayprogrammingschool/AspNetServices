@@ -1,0 +1,10 @@
+﻿{
+    "profiles": {
+      "MDS.Tests.Desktop (Package)": {
+        "commandName": "MsixPackage"
+      },
+      "MDS.Tests.Desktop (Unpackaged)": {
+        "commandName": "Project"
+      }
+    }
+}

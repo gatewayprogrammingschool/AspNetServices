@@ -62,6 +62,9 @@ public static class MarkdownServerExtensions
                 return result;
             }
 
+            var root = options.ServerRoot.Replace("wwwroot", "").TrimEnd("/\\".ToCharArray()) ?? ".";
+            mr.Document.SetData("root", root);
+
             var variables = mr.Document.GetData("Variables") as ConcurrentDictionary<string, object>;
             variables ??= new();
 

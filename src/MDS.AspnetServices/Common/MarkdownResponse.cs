@@ -76,10 +76,16 @@ public record MarkdownResponse
         var html = ToHtml();
 
         var variables = Document.GetData("Variables") as ConcurrentDictionary<string, object>;
-
+        var rootPath = Document.GetData("root") as string;
         object? layout = null;
         variables?.TryGetValue("Variables.Layout", out layout);
         layout ??= Options?.Value.LayoutFile ?? "./wwwroot/DefaultLayout.html";
+        
+        if (rootPath is {  Length: > 0})
+        {
+            layout = Path.Combine(rootPath, layout!.ToString());
+        }
+
         if (File.Exists(layout.ToString()))
         {
             layout = await File.ReadAllTextAsync(layout.ToString() ?? string.Empty);
