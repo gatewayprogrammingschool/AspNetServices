@@ -1,10 +1,11 @@
-﻿{
-    "profiles": {
-      "MDS.Tests.Desktop (Package)": {
-        "commandName": "MsixPackage"
-      },
-      "MDS.Tests.Desktop (Unpackaged)": {
-        "commandName": "Project"
-      }
+{
+  "profiles": {
+    "MDS.Tests.Desktop (Package)": {
+      "commandName": "MsixPackage",
+      "nativeDebugging": false
+    },
+    "MDS.Tests.Desktop (Unpackaged)": {
+      "commandName": "Project"
     }
+  }
 }

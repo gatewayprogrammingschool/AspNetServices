@@ -6,173 +6,430 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     xmlns:viewmodels="using:MDS.Tests.Desktop.ViewModels"
+    xmlns:dialogs="using:MDS.Tests.Desktop.Models"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:converters="using:MDS.Tests.Desktop.Converters"
+    xmlns:editors="using:Syncfusion.UI.Xaml.Editors"
     Loaded="OnLoaded"
     Unloaded="OnUnloaded"
+    x:Name="Shell"
     mc:Ignorable="d">
     <Page.Resources>
+        <converters:BooleanToVisibilityConverter
+            x:Key="BooleanToVisibilityConverter" />
         <DataTemplate
             x:Key="NavLinkItemTemplate"
-            x:DataType="viewmodels:NavLink">
-            <ListViewItem Padding="0">
-               <StackPanel
-                        Orientation="Horizontal">
-                        <SymbolIcon
-                            Symbol="{x:Bind Symbol}"
-                            Margin="{x:Bind MarginString}"
-                            Width="48" />
-                        <TextBlock
-                            Text="{x:Bind Label}" />
-                    </StackPanel>
+            x:DataType="dialogs:NavLink">
+            <ListViewItem
+                Padding="0">
+                <StackPanel
+                    Orientation="Horizontal"
+                    Spacing="0">
+                    <SymbolIcon
+                        Symbol="{x:Bind Symbol}"
+                        Margin="{x:Bind MarginString}"
+                        Width="48" />
+                    <Button
+                        VerticalAlignment="Center"
+                        Foreground="Red"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Padding="0"
+                        Margin="0"
+                        Click="Button_Click"
+                        Command="{Binding ElementName=Shell, Path=ViewModel.DeleteFileCommand}"
+                        Visibility="{x:Bind CanDelete, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        CommandParameter="{x:Bind}">
+                        <FontIcon
+                            FontWeight="Bold"
+                            Glyph="&#xF13D;" />
+                    </Button>
+                    <TextBlock
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        Text="{x:Bind Label}" />
+                </StackPanel>
             </ListViewItem>
         </DataTemplate>
     </Page.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition
-                Height="48" />
-            <RowDefinition
-                Height="48" />
-            <RowDefinition
-                Height="*" />
-        </Grid.RowDefinitions>
+    <SplitView
+        IsPaneOpen="{x:Bind ViewModel.IsDialogOpen, Mode=OneWay}"
+        OpenPaneLength="1280"
+        DisplayMode="Overlay"
+        x:Name="NewDocDialog"
+        PanePlacement="Right">
         <Grid
-            Grid.Row="0"
-            x:Name="AppTitleBar">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition
-                    Width="32" />
-                <ColumnDefinition
-                    Width="Auto" />
-                <ColumnDefinition
-                    Width="*" />
-            </Grid.ColumnDefinitions>
-            <Image
-                Grid.Column="0"
-                Source="/Assets/WindowIcon.ico"
-                HorizontalAlignment="Left"
-                Width="16"
-                Height="16"
-                Margin="8,0" />
-            <TextBlock
-                Grid.Column="2"
-                x:Name="AppTitleBarText"
-                VerticalAlignment="Center"
-                TextWrapping="NoWrap"
-                Style="{StaticResource CaptionTextBlockStyle}"
-                Margin="8, 0, 0, 0" />
-        </Grid>
-        <Grid
-            Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition
-                    Width="Auto" />
-                <ColumnDefinition
-                    Width="Auto" />
-                <ColumnDefinition
-                    Width="*" />
-            </Grid.ColumnDefinitions>
-            <Button
-                Grid.Column="0"
-                x:Uid="HamburgerButton"
-                Command="{x:Bind ViewModel.TogglePanelCommand, Mode=OneWay}"
-                Margin="{StaticResource XSmallLeftTopRightBottomMargin}"
-                Padding="{StaticResource XXSmallLeftTopRightBottomMargin}"
-                Style="{StaticResource AccentButtonStyle}">
-                <FontIcon
-                    FontFamily="{StaticResource SymbolThemeFontFamily}"
-                    FontWeight="Black"
-                    Glyph="&#xE700;" />
-            </Button>
-            <Button
-                Grid.Column="1"
-                x:Uid="BackButton"
-                Command="{x:Bind ViewModel.BackCommand, Mode=OneWay}"
-                Margin="{StaticResource XSmallLeftTopRightBottomMargin}"
-                Padding="{StaticResource XXSmallLeftTopRightBottomMargin}"
-                Style="{StaticResource AccentButtonStyle}">
-                <FontIcon
-                    FontFamily="{StaticResource SymbolThemeFontFamily}"
-                    FontWeight="Black"
-                    Glyph="&#xE830;" />
-            </Button>
-            <MenuBar
-                Grid.Column="2">
-                <!--
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition
+                    Height="48" />
+                <RowDefinition
+                    Height="48" />
+                <RowDefinition
+                    Height="*" />
+            </Grid.RowDefinitions>
+            <Grid
+                Grid.Row="0"
+                x:Name="AppTitleBar">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition
+                        Width="32" />
+                    <ColumnDefinition
+                        Width="Auto" />
+                    <ColumnDefinition
+                        Width="*" />
+                </Grid.ColumnDefinitions>
+                <Image
+                    Grid.Column="0"
+                    Source="/Assets/WindowIcon.ico"
+                    HorizontalAlignment="Left"
+                    Width="16"
+                    Height="16"
+                    Margin="8,0" />
+                <TextBlock
+                    Grid.Column="2"
+                    x:Name="AppTitleBarText"
+                    VerticalAlignment="Center"
+                    TextWrapping="NoWrap"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    Margin="8, 0, 0, 0" />
+            </Grid>
+            <Grid
+                Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition
+                        Width="Auto" />
+                    <ColumnDefinition
+                        Width="Auto" />
+                    <ColumnDefinition
+                        Width="*" />
+                </Grid.ColumnDefinitions>
+                <Button
+                    Grid.Column="0"
+                    x:Uid="HamburgerButton"
+                    Command="{x:Bind ViewModel.TogglePanelCommand, Mode=OneWay}"
+                    Margin="{StaticResource XSmallLeftTopRightBottomMargin}"
+                    Padding="{StaticResource XXSmallLeftTopRightBottomMargin}"
+                    Style="{StaticResource AccentButtonStyle}">
+                    <FontIcon
+                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                        FontWeight="Black"
+                        Glyph="&#xE700;" />
+                </Button>
+                <Button
+                    Grid.Column="1"
+                    x:Uid="BackButton"
+                    Command="{x:Bind ViewModel.BackCommand, Mode=OneWay}"
+                    Margin="{StaticResource XSmallLeftTopRightBottomMargin}"
+                    Padding="{StaticResource XXSmallLeftTopRightBottomMargin}"
+                    Style="{StaticResource AccentButtonStyle}">
+                    <FontIcon
+                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                        FontWeight="Black"
+                        Glyph="&#xE830;" />
+                </Button>
+                <MenuBar
+                    Grid.Column="2">
+                    <!--
                 TODO: Update item titles by updating <x:Uid>.Text entries in Strings/en-us/Resources.resw.
                 https://docs.microsoft.com/windows/uwp/app-resources/localize-strings-ui-manifest#refer-to-a-string-resource-identifier-from-xaml
                 -->
-                <MenuBarItem
-                    x:Uid="ShellMenuBarItem_File">
-                    <MenuFlyoutItem
-                        x:Uid="ShellMenuItem_File_Exit"
-                        Command="{x:Bind ViewModel.MenuFileExitCommand}" />
-                </MenuBarItem>
-                <MenuBarItem
-                    x:Uid="ShellMenuBarItem_Views">
-                    <MenuBarItem.Items>
+                    <MenuBarItem
+                        x:Uid="ShellMenuBarItem_File">
                         <MenuFlyoutItem
-                            x:Uid="ShellMenuItem_Views_Main"
-                            Command="{x:Bind ViewModel.MenuViewsMainCommand}" />
-                    </MenuBarItem.Items>
-                </MenuBarItem>
-            </MenuBar>
+                            x:Uid="ShellMenuItem_File_New"
+                            ToolTipService.ToolTip="CTRL-C"
+                            Command="{x:Bind ViewModel.MenuFileNewCommand}">
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator
+                                    Modifiers="Control"
+                                    Key="N" />
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem
+                            x:Uid="ShellMenuItem_File_Save"
+                            Command="{x:Bind ViewModel.MenuFileSaveCommand}">
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator
+                                    Modifiers="Control"
+                                    Key="S" />
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem
+                            x:Uid="ShellMenuItem_File_SaveAs"
+                            Command="{x:Bind ViewModel.MenuFileSaveAsCommand}">
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator
+                                    Modifiers="Control,Shift"
+                                    Key="S" />
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem
+                            x:Uid="ShellMenuItem_File_Print"
+                            Command="{x:Bind ViewModel.MenuFilePrintCommand}">
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator
+                                    Modifiers="Control"
+                                    Key="P" />
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutSeparator />
+                        <MenuFlyoutItem
+                            x:Uid="ShellMenuItem_File_Exit"
+                            Command="{x:Bind ViewModel.MenuFileExitCommand}">
+                        </MenuFlyoutItem>
+                    </MenuBarItem>
+                    <MenuBarItem
+                        x:Uid="ShellMenuBarItem_Views">
+                        <MenuBarItem.Items>
+                            <MenuFlyoutItem
+                                x:Uid="ShellMenuItem_Views_Main"
+                                Command="{x:Bind ViewModel.MenuViewsMainCommand}">
+                                <MenuFlyoutItem.KeyboardAccelerators>
+                                    <KeyboardAccelerator
+                                        Modifiers="Control"
+                                        Key="1" />
+                                </MenuFlyoutItem.KeyboardAccelerators>
+                            </MenuFlyoutItem>
+                        </MenuBarItem.Items>
+                    </MenuBarItem>
+                </MenuBar>
+            </Grid>
+            <SplitView
+                Grid.Row="2"
+                x:Name="splitView"
+                PaneBackground="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
+                IsPaneOpen="{x:Bind ViewModel.IsPaneOpen, Mode=OneWay}"
+                OpenPaneLength="300"
+                CompactPaneLength="48"
+                DisplayMode="CompactInline"
+                >
+                <SplitView.Pane>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition
+                                Height="Auto" />
+                            <RowDefinition
+                                Height="*" />
+                            <RowDefinition
+                                Height="48" />
+                        </Grid.RowDefinitions>
+                        <ListView
+                            x:Name="NavLinksList"
+                            Margin="0,0,0,0"
+                            SelectionMode="Single"
+                            Grid.Row="1"
+                            VerticalAlignment="Stretch"
+                            ItemTemplate="{StaticResource NavLinkItemTemplate}"
+                            ItemsSource="{x:Bind ViewModel.NavLinks, Mode=OneWay}"
+                            IsItemClickEnabled="True"
+                            ItemClick="NavLinksList_ItemClick">
+                            <ListView.ItemContainerStyle>
+                                <Style
+                                    TargetType="ListViewItem">
+                                    <Setter
+                                        Property="HorizontalAlignment"
+                                        Value="Stretch" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                        </ListView>
+
+                        <Button
+                            Grid.Row="2"
+                            x:Name="ShellMenuBarSettingsButton"
+                            x:Uid="ShellMenuBarSettingsButton"
+                            AnimatedIcon.State="Normal"
+                            PointerEntered="ShellMenuBarSettingsButton_PointerEntered"
+                            PointerExited="ShellMenuBarSettingsButton_PointerExited"
+                            Margin="{StaticResource XSmallLeftTopRightBottomMargin}"
+                            Padding="{StaticResource XXSmallLeftTopRightBottomMargin}"
+                            Command="{x:Bind ViewModel.MenuSettingsCommand}">
+                            <AnimatedIcon
+                                x:Name="ShellMenuBarSettingsButtonIcon">
+                                <AnimatedIcon.Source>
+                                    <animatedvisuals:AnimatedSettingsVisualSource />
+                                </AnimatedIcon.Source>
+                                <AnimatedIcon.FallbackIconSource>
+                                    <FontIconSource
+                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                        Glyph="&#xE713;" />
+                                </AnimatedIcon.FallbackIconSource>
+                            </AnimatedIcon>
+                        </Button>
+                    </Grid>
+                </SplitView.Pane>
+
+                <Frame
+                    x:Name="NavigationFrame" />
+            </SplitView>
         </Grid>
-        <SplitView
-            Grid.Row="2"
-            x:Name="splitView"
-            PaneBackground="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
-            IsPaneOpen="{x:Bind ViewModel.IsPaneOpen, Mode=OneWay}"
-            OpenPaneLength="300"
-            CompactPaneLength="48"
-            DisplayMode="CompactInline">
-            <SplitView.Pane>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition
-                            Height="Auto" />
-                        <RowDefinition
-                            Height="*" />
-                        <RowDefinition
-                            Height="48" />
-                    </Grid.RowDefinitions>
-                    <ListView
-                        x:Name="NavLinksList"
-                        Margin="0,0,0,0"
-                        SelectionMode="Single"
-                        Grid.Row="1"
-                        VerticalAlignment="Stretch"
-                        ItemTemplate="{StaticResource NavLinkItemTemplate}"
-                        ItemsSource="{x:Bind ViewModel.NavLinks}"
-                        IsItemClickEnabled="True"
-                        ItemClick="NavLinksList_ItemClick"/>
-
-                    <Button
-                        Grid.Row="2"
-                        x:Name="ShellMenuBarSettingsButton"
-                        x:Uid="ShellMenuBarSettingsButton"
-                        AnimatedIcon.State="Normal"
-                        PointerEntered="ShellMenuBarSettingsButton_PointerEntered"
-                        PointerExited="ShellMenuBarSettingsButton_PointerExited"
-                        Margin="{StaticResource XSmallLeftTopRightBottomMargin}"
-                        Padding="{StaticResource XXSmallLeftTopRightBottomMargin}"
-                        Command="{x:Bind ViewModel.MenuSettingsCommand}">
-                        <AnimatedIcon
-                            x:Name="ShellMenuBarSettingsButtonIcon">
-                            <AnimatedIcon.Source>
-                                <animatedvisuals:AnimatedSettingsVisualSource />
-                            </AnimatedIcon.Source>
-                            <AnimatedIcon.FallbackIconSource>
-                                <FontIconSource
-                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                    Glyph="&#xE713;" />
-                            </AnimatedIcon.FallbackIconSource>
-                        </AnimatedIcon>
-                    </Button>
-                </Grid>
-            </SplitView.Pane>
-
-            <Frame
-                x:Name="NavigationFrame" />
-        </SplitView>
-    </Grid>
+        <SplitView.Pane>
+            <controls:SwitchPresenter
+                Value="{x:Bind ViewModel.DialogToShow, Mode=OneWay}">
+                <controls:Case
+                    Value="NewDocumentDialog">
+                    <controls:DockPanel
+                        HorizontalAlignment="Stretch"
+                        Padding="0">
+                        <controls:DockPanel
+                            Padding="8"
+                            Background="{ThemeResource SystemControlBackgroundListLowBrush}"
+                            controls:DockPanel.Dock="Left">
+                            <ListView
+                                x:Name="foldersList"
+                                SelectedItem="{x:Bind NewDocViewModel.SelectedFolder, Mode=TwoWay}"
+                                ItemsSource="{x:Bind NewDocViewModel.Folders, Mode=OneWay}">
+                                <ListView.Header>
+                                    <TextBlock
+                                        Style="{ThemeResource NavigationViewItemHeaderTextStyle}">Select Folder</TextBlock>
+                                </ListView.Header>
+                                <ListView.Footer>
+                                    <StackPanel
+                                        Spacing="8">
+                                        <RichTextBlock
+                                            Style="{ThemeResource BodyRichTextBlockStyle}">
+                                            <Paragraph>
+                                                <Run
+                                                    Text="{x:Bind NewDocViewModel.Folders.Count, Mode=OneWay}" />
+                                                <Run>items</Run>
+                                            </Paragraph>
+                                        </RichTextBlock>
+                                        <Button
+                                            Content="New Folder"
+                                            Visibility="{x:Bind NewDocViewModel.NotAddingFolder, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                            Command="{x:Bind NewDocViewModel.NewFolderCommand}" />
+                                        <Grid
+                                            Visibility="{x:Bind NewDocViewModel.AddingFolder, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition
+                                                    Width="*" />
+                                                <ColumnDefinition
+                                                    Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox
+                                                Grid.Column="0"
+                                                HorizontalAlignment="Stretch"
+                                                x:Name="NewFolderName" />
+                                            <Button
+                                                Grid.Column="1"
+                                                Command="{x:Bind NewDocViewModel.SaveNewFolderCommand}"
+                                                CommandParameter="{Binding ElementName=NewFolderName, Path=Text}">
+                                                <SymbolIcon
+                                                    Symbol="Save" />
+                                            </Button>
+                                        </Grid>
+                                    </StackPanel>
+                                </ListView.Footer>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate
+                                        x:DataType="dialogs:FolderItem">
+                                        <TextBlock
+                                            Text="{x:Bind RelativePath}"
+                                            Style="{ThemeResource BaseTextBlockStyle}" />
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </controls:DockPanel>
+                        <Grid
+                            ColumnSpacing="8"
+                            RowSpacing="8"
+                            Padding="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition
+                                    Width="Auto" />
+                                <ColumnDefinition
+                                    Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition
+                                    Height="Auto" />
+                                <RowDefinition
+                                    Height="Auto" />
+                                <RowDefinition
+                                    Height="Auto" />
+                                <RowDefinition
+                                    Height="Auto" />
+                                <RowDefinition
+                                    Height="Auto" />
+                                <RowDefinition
+                                    Height="*" />
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                Style="{ThemeResource NavigationViewItemHeaderTextStyle}">New Document Details</TextBlock>
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                VerticalAlignment="Center">Name</TextBlock>
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                VerticalAlignment="Center">Type</TextBlock>
+                            <TextBox
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                HorizontalAlignment="Stretch"
+                                x:Name="NewDocumentName" />
+                            <editors:SfComboBox
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                HorizontalAlignment="Stretch"
+                                ItemsSource="{x:Bind NewDocViewModel.DocumentTypeList, Mode=OneWay}"
+                                SelectedIndex="0"
+                                SelectedItem="{x:Bind NewDocViewModel.DocumentTypeString, Mode=TwoWay}" />
+                            <RichTextBlock
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2">
+                                <Paragraph>
+                                    <Run
+                                        FontStyle="Italic"
+                                        Foreground="DarkGray"
+                                        Text="{x:Bind NewDocViewModel.SelectedFolderPath, Mode=OneWay}" />
+                                    <Run
+                                        Text="{Binding ElementName=NewDocumentName, Path=Text, Mode=OneWay}" />
+                                    <Run
+                                        Text="{x:Bind NewDocViewModel.DocumentTypeExtension, Mode=OneWay}" />
+                                </Paragraph>
+                            </RichTextBlock>
+                            <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right"
+                                        Spacing="8">
+                                <Button
+                                    VerticalAlignment="Stretch"
+                                    Command="{x:Bind ViewModel.CancelDialogCommand}">
+                                    <StackPanel Spacing="8"
+                                        Orientation="Horizontal">
+                                        <TextBlock>Cancel</TextBlock>
+                                    </StackPanel>
+                                </Button>
+                                <Button
+                                    VerticalAlignment="Stretch"
+                                    Style="{ThemeResource AccentButtonStyle}"
+                                    Command="{x:Bind NewDocViewModel.CreateDocumentCommand}"
+                                    CommandParameter="{Binding ElementName=NewDocumentName, Path=Text}">
+                                    <StackPanel
+                                        Spacing="8"
+                                        Orientation="Horizontal">
+                                        <SymbolIcon
+                                            Symbol="Save" />
+                                        <TextBlock>Create</TextBlock>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                            <TextBlock
+                                Grid.Row="6"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                FontFamily="Consolas, 'Courier New'"
+                                FontSize="9.0"
+                                Text="{x:Bind NewDocViewModel.DocumentTemplate, Mode=OneWay}" />
+                        </Grid>
+                    </controls:DockPanel>
+                </controls:Case>
+            </controls:SwitchPresenter>
+        </SplitView.Pane>
+    </SplitView>
 </Page>

@@ -59,70 +59,14 @@ public class WebViewService : IWebViewService
 
     }
 
-    private void DocumentTitleChanged(CoreWebView2 sender, object args)
-    {
-        StatusChanged?.Invoke(sender, _webView.CoreWebView2.DocumentTitle);
-    }
+    private void DocumentTitleChanged(CoreWebView2 sender, object args) => StatusChanged?.Invoke(sender, _webView.CoreWebView2.DocumentTitle);
     public void GoBack() => _webView?.GoBack();
 
     public void GoForward() => _webView?.GoForward();
 
     public void Reload() => _webView?.Reload();
 
-    public async Task Print()
-    {
-        _webView.CoreWebView2.ShowPrintUI(CoreWebView2PrintDialogKind.Browser);
-
-        //// Create a new PrintHelperOptions instance
-        //var defaultPrintHelperOptions = new PrintHelperOptions();
-
-        //// Configure options that you want to be displayed on the print dialog
-        //defaultPrintHelperOptions.AddDisplayOption(StandardPrintTaskOptions.Orientation);
-        //defaultPrintHelperOptions.Orientation = PrintOrientation.Portrait;
-
-        //// Create a new PrintHelper instance
-        //// "container" is a XAML panel that will be used to host printable control.
-        //// It needs to be in your visual tree but can be hidden with Opacity = 0
-        //var printHelper = new PrintHelper((Panel)_webView.Parent, defaultPrintHelperOptions);
-
-        //// Add controls that you want to print
-        //printHelper.AddFrameworkElementToPrint(_webView);
-
-        //// And/Or create pages programmatically
-        //var grid = new Grid();
-        //grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-        //grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
-        //var header = new TextBlock { Text = "This is the header", Margin = new Thickness(0, 0, 0, 20) };
-        //Grid.SetRow(header, 0);
-        //grid.Children.Add(header);
-        //var content = _webView;
-        //Grid.SetRow(content, 1);
-        //grid.Children.Add(content);
-        //printHelper.AddFrameworkElementToPrint(grid);
-
-        //// Connect to relevant events
-        //printHelper.OnPrintFailed += PrintHelper_OnPrintFailed;
-        //printHelper.OnPrintSucceeded += PrintHelper_OnPrintSucceeded;
-
-        //// Start printing process
-        //await printHelper.ShowPrintUIAsync("Windows Community Toolkit Sample App");
-
-        //// Event handlers
-
-        //async void PrintHelper_OnPrintSucceeded()
-        //{
-        //    printHelper.Dispose();
-        //    var dialog = new MessageDialog("Printing done.");
-        //    await dialog.ShowAsync();
-        //}
-
-        //async void PrintHelper_OnPrintFailed()
-        //{
-        //    printHelper.Dispose();
-        //    var dialog = new MessageDialog("Printing failed.");
-        //    await dialog.ShowAsync();
-        //}
-    }
+    public async Task Print() => _webView.CoreWebView2.ShowPrintUI(CoreWebView2PrintDialogKind.Browser);//// Create a new PrintHelperOptions instance//var defaultPrintHelperOptions = new PrintHelperOptions();//// Configure options that you want to be displayed on the print dialog//defaultPrintHelperOptions.AddDisplayOption(StandardPrintTaskOptions.Orientation);//defaultPrintHelperOptions.Orientation = PrintOrientation.Portrait;//// Create a new PrintHelper instance//// "container" is a XAML panel that will be used to host printable control.//// It needs to be in your visual tree but can be hidden with Opacity = 0//var printHelper = new PrintHelper((Panel)_webView.Parent, defaultPrintHelperOptions);//// Add controls that you want to print//printHelper.AddFrameworkElementToPrint(_webView);//// And/Or create pages programmatically//var grid = new Grid();//grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });//grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });//var header = new TextBlock { Text = "This is the header", Margin = new Thickness(0, 0, 0, 20) };//Grid.SetRow(header, 0);//grid.Children.Add(header);//var content = _webView;//Grid.SetRow(content, 1);//grid.Children.Add(content);//printHelper.AddFrameworkElementToPrint(grid);//// Connect to relevant events//printHelper.OnPrintFailed += PrintHelper_OnPrintFailed;//printHelper.OnPrintSucceeded += PrintHelper_OnPrintSucceeded;//// Start printing process//await printHelper.ShowPrintUIAsync("Windows Community Toolkit Sample App");//// Event handlers//async void PrintHelper_OnPrintSucceeded()//{//    printHelper.Dispose();//    var dialog = new MessageDialog("Printing done.");//    await dialog.ShowAsync();//}//async void PrintHelper_OnPrintFailed()//{//    printHelper.Dispose();//    var dialog = new MessageDialog("Printing failed.");//    await dialog.ShowAsync();//}
 
     public void UnregisterEvents()
     {

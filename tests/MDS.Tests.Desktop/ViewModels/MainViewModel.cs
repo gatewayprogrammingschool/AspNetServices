@@ -71,16 +71,10 @@ public partial class MainViewModel : ObservableRecipient, INavigationAware
     }
 
     [RelayCommand]
-    private void Reload()
-    {
-        WebViewService.Reload();
-    }
+    private void Reload() => WebViewService.Reload();
 
     [RelayCommand]
-    private void Print()
-    {
-        WebViewService.Print();
-    }
+    private void Print() => WebViewService.Print();
 
     [RelayCommand(CanExecute = nameof(BrowserCanGoForward))]
     private void BrowserForward()
@@ -91,10 +85,7 @@ public partial class MainViewModel : ObservableRecipient, INavigationAware
         }
     }
 
-    private bool BrowserCanGoForward()
-    {
-        return WebViewService.CanGoForward;
-    }
+    private bool BrowserCanGoForward() => WebViewService.CanGoForward;
 
     [RelayCommand(CanExecute = nameof(BrowserCanGoBack))]
     private void BrowserBack()
@@ -105,10 +96,7 @@ public partial class MainViewModel : ObservableRecipient, INavigationAware
         }
     }
 
-    private bool BrowserCanGoBack()
-    {
-        return WebViewService.CanGoBack;
-    }
+    private bool BrowserCanGoBack() => WebViewService.CanGoBack;
 
     public void OnNavigatedTo(object parameter)
     {

@@ -56,8 +56,5 @@ public class ThemeSelectorService : IThemeSelectorService
         return ElementTheme.Default;
     }
 
-    private async Task SaveThemeInSettingsAsync(ElementTheme theme)
-    {
-        await _localSettingsService.SaveSettingAsync(SettingsKey, theme.ToString());
-    }
+    private async Task SaveThemeInSettingsAsync(ElementTheme theme) => await _localSettingsService.SaveSettingAsync(SettingsKey, theme.ToString());
 }

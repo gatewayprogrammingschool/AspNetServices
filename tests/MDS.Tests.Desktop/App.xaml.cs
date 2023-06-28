@@ -2,6 +2,7 @@
 using MDS.Tests.Desktop.Contracts.Services;
 using MDS.Tests.Desktop.Core.Contracts.Services;
 using MDS.Tests.Desktop.Core.Services;
+using MDS.Tests.Desktop.Dialogs;
 using MDS.Tests.Desktop.Helpers;
 using MDS.Tests.Desktop.Models;
 using MDS.Tests.Desktop.Services;
@@ -93,12 +94,13 @@ public partial class App : Application
                 services.AddSingleton<IFileService, FileService>();
 
                 // Views and ViewModels
-                services.AddTransient<SettingsViewModel>();
-                services.AddTransient<SettingsPage>();
-                services.AddTransient<MainViewModel>();
-                services.AddTransient<MainPage>();
-                services.AddTransient<ShellPage>();
-                services.AddTransient<ShellViewModel>();
+                services.AddSingleton<SettingsViewModel>();
+                services.AddSingleton<SettingsPage>();
+                services.AddSingleton<MainViewModel>();
+                services.AddSingleton<MainPage>();
+                services.AddSingleton<ShellPage>();
+                services.AddSingleton<ShellViewModel>();
+                services.AddSingleton<NewDocumentViewModel>();
 
                 // Configuration
                 services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));

@@ -161,25 +161,22 @@ public class NavigationService : INavigationService
         OnNavigated(_frame!, null);
     }
 
-    private void OnNavigated(object sender, object? parameter)
-    {
-        App.Dispatch(() =>
-        {
-            if (sender is Frame frame)
-            {
-                var clearNavigation = (bool)frame.Tag;
-                if (clearNavigation)
-                {
-                    frame.BackStack.Clear();
-                }
+    private void OnNavigated(object sender, object? parameter) => App.Dispatch(() =>
+                                                                       {
+                                                                           if (sender is Frame frame)
+                                                                           {
+                                                                               var clearNavigation = (bool)frame.Tag;
+                                                                               if (clearNavigation)
+                                                                               {
+                                                                                   frame.BackStack.Clear();
+                                                                               }
 
-                if (frame.GetPageViewModel() is INavigationAware navigationAware)
-                {
-                    navigationAware.OnNavigatedTo(parameter ?? new());
-                }
+                                                                               if (frame.GetPageViewModel() is INavigationAware navigationAware)
+                                                                               {
+                                                                                   navigationAware.OnNavigatedTo(parameter ?? new());
+                                                                               }
 
-                Navigated?.Invoke(sender, null);
-            }
-        });
-    }
+                                                                               Navigated?.Invoke(sender, null);
+                                                                           }
+                                                                       });
 }

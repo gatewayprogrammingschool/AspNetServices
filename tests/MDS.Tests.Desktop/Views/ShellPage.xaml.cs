@@ -1,5 +1,7 @@
 ﻿using MDS.Tests.Desktop.Contracts.Services;
+using MDS.Tests.Desktop.Dialogs;
 using MDS.Tests.Desktop.Helpers;
+using MDS.Tests.Desktop.Models;
 using MDS.Tests.Desktop.ViewModels;
 
 using Microsoft.UI.Xaml;
@@ -17,13 +19,26 @@ public sealed partial class ShellPage : Page
     {
         get;
     }
+    public NewDocumentViewModel NewDocViewModel
+    {
+        get;
+    }
 
-    public ShellPage(ShellViewModel viewModel)
+    public ShellPage(ShellViewModel viewModel, NewDocumentViewModel newDocViewModel)
     {
         ViewModel = viewModel;
+        NewDocViewModel = newDocViewModel;
         InitializeComponent();
 
+        Loaded += (_, _) =>
+        {
+            ViewModel.XamlRoot = App.MainWindow.Content.XamlRoot;
+            ViewModel.Initialize();
+            NewDocViewModel.Initialize();
+        };
+
         ViewModel.NavigationService.Frame = NavigationFrame;
+        ViewModel.OpenNewDocDialog += ViewModel_OpenNewDocDialog;
 
         // TODO: Set the title bar icon by updating /Assets/WindowIcon.ico.
         // A custom title bar is required for full window theme and Mica support.
@@ -33,6 +48,9 @@ public sealed partial class ShellPage : Page
         App.MainWindow.Activated += MainWindow_Activated;
         AppTitleBarText.Text = "AppDisplayName".GetLocalized();
     }
+
+    private void ViewModel_OpenNewDocDialog()
+        => ViewModel.IsDialogOpen = true;
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
@@ -82,33 +100,24 @@ public sealed partial class ShellPage : Page
         args.Handled = result;
     }
 
-    private void ShellMenuBarSettingsButton_PointerEntered(object sender, PointerRoutedEventArgs e)
-    {
-        AnimatedIcon.SetState((UIElement)sender, "PointerOver");
-    }
+    private void ShellMenuBarSettingsButton_PointerEntered(object sender, PointerRoutedEventArgs e) => AnimatedIcon.SetState((UIElement)sender, "PointerOver");
 
-    private void ShellMenuBarSettingsButton_PointerPressed(object sender, PointerRoutedEventArgs e)
-    {
-        AnimatedIcon.SetState((UIElement)sender, "Pressed");
-    }
+    private void ShellMenuBarSettingsButton_PointerPressed(object sender, PointerRoutedEventArgs e) => AnimatedIcon.SetState((UIElement)sender, "Pressed");
 
-    private void ShellMenuBarSettingsButton_PointerReleased(object sender, PointerRoutedEventArgs e)
-    {
-        AnimatedIcon.SetState((UIElement)sender, "Normal");
-    }
+    private void ShellMenuBarSettingsButton_PointerReleased(object sender, PointerRoutedEventArgs e) => AnimatedIcon.SetState((UIElement)sender, "Normal");
 
-    private void ShellMenuBarSettingsButton_PointerExited(object sender, PointerRoutedEventArgs e)
-    {
-        AnimatedIcon.SetState((UIElement)sender, "Normal");
-    }
+    private void ShellMenuBarSettingsButton_PointerExited(object sender, PointerRoutedEventArgs e) => AnimatedIcon.SetState((UIElement)sender, "Normal");
 
-    private void NavigationView_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
-    {
-        ViewModel.BackCommand.Execute(null);
-    }
+    private void NavigationView_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args) => ViewModel.BackCommand.Execute(null);
 
-    private void NavLinksList_ItemClick(object sender, ItemClickEventArgs e)
+    private void NavLinksList_ItemClick(object sender, ItemClickEventArgs e) 
+        => ViewModel.DocumentSelected((NavLink)e.ClickedItem);
+
+    private async void Button_Click(object sender, RoutedEventArgs e)
     {
-        ViewModel.DocumentSelected((NavLink)e.ClickedItem);
+        if (sender is Button b)
+        {
+            await ViewModel.DeleteFile((NavLink)b.CommandParameter);
+        }
     }
 }
