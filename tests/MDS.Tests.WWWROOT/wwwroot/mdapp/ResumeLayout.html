@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>$(Variables.title)</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/resume.css" media="screen,print" />
+    <!-- HEAD -->
+</head>
+<body>
+    <header class="resume">
+        <h1>$(Variables.title)</h1>
+    </header>
+
+<main>
+    <section class="resume-abstract" markdown="1">
+        <h1>Abstract</h1>
+        <p>$(Variables.Abstract)</p>
+    </section>
+    <article class="resume" markdown="1">
+            $(MarkdownBody)
+        </article>
+    </main>
+    <footer>
+        <div class="resume-ref" markdown="1">
+            <h1>$(Variables.ReferencesSection.Title)</h1>
+
+            $(Variables.ReferencesSection.References)
+        </div>
+    </footer>
+</body>
+</html>

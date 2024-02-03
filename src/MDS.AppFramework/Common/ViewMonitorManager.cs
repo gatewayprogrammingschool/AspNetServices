@@ -1,6 +1,5 @@
-﻿namespace MDS.AppFramework.Common
+﻿namespace MDS.AppFramework.Common;
+
+internal class ViewMonitorManager : IViewMonitorManager
 {
-    internal class ViewMonitorManager : IViewMonitorManager
-    {
-    }
 }

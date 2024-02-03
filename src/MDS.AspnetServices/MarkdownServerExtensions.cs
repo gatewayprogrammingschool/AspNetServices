@@ -91,9 +91,9 @@ public static class MarkdownServerExtensions
                 variables.AddOrUpdate(name, string.Join(",", value), (_, _) => string.Join(",", value));
             }
 
-            if (!variables.ContainsKey("title"))
+            if (!variables.ContainsKey("Variables.title"))
             {
-                variables.AddOrUpdate("title", context.Request.Path, (_, old) => old);
+                variables.AddOrUpdate("Variables.title", context.Request.Path, (_, old) => old);
             }
 
             return result;

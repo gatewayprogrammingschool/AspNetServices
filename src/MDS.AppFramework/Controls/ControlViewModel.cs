@@ -11,17 +11,22 @@ public abstract record ControlViewModel : IFormCollection, INotifyPropertyChange
 {
     protected ControlViewModel(IFormCollection collection) : this()
     {
-        foreach(var kvp in collection)
+        foreach (var kvp in collection)
         {
             Values.TryAdd(kvp.Key, kvp.Value);
         }
     }
 
-    protected ControlViewModel() { }
+    protected ControlViewModel()
+    {
+    }
 
     protected ConcurrentDictionary<string, StringValues> Values = new();
 
-    public int Count { get; }
+    public int Count
+    {
+        get;
+    }
     public ICollection<string> Keys => Values.Keys;
     public IFormFileCollection Files { get; } = new FormFileCollection();
 

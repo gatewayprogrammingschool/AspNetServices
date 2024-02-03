@@ -1,6 +1,5 @@
-﻿namespace MDS.AppFramework
+﻿namespace MDS.AppFramework;
+
+public class ControllerMapItem
 {
-    public class ControllerMapItem
-    {
-    }
 }

@@ -4,7 +4,10 @@ namespace MDS.AspnetServices.Common;
 
 public class MarkdownResult : IResult
 {
-    public MarkdownDocument Document { get; }
+    public MarkdownDocument Document
+    {
+        get;
+    }
     public MarkdownResult()
     {
         Document = new();

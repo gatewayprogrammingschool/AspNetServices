@@ -1,93 +1,91 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 
 using MDS.AspnetServices.Common;
 
-namespace MDS.AppFramework.Common
+namespace MDS.AppFramework.Common;
+
+public static class MarkdownApplicationExtensions
 {
-    public static class MarkdownApplicationExtensions
+    public static WebApplicationBuilder AddMarkdownApplication(
+        this WebApplicationBuilder builder,
+        Action<ControllerMap>? addMappings = null
+    )
     {
-        public static WebApplicationBuilder AddMarkdownApplication(
-            this WebApplicationBuilder builder,
-            Action<ControllerMap>? addMappings = null
-        )
+        builder.Services.AddDistributedMemoryCache();
+        builder.Services.AddSession();
+        builder.Services.AddSingleton(
+                provider => builder.Configuration.GetSection("MarkdownServerApplication")
+                    .Get<MarkdownApplicationConfiguration>()
+            )
+            .AddSingleton<MarkdownApplicationOptions>()
+            .AddSingleton(BuildControllerMapInstance(addMappings));
+
+        builder.Services.AddSingleton<IViewMonitorManager, ViewMonitorManager>();
+
+        return builder;
+
+        ControllerMap BuildControllerMapInstance(Action<ControllerMap>? add = null)
         {
-            builder.Services.AddDistributedMemoryCache();
-            builder.Services.AddSession();
-            builder.Services.AddSingleton(
-                    provider => builder.Configuration.GetSection("MarkdownServerApplication")
-                        .Get<MarkdownApplicationConfiguration>()
-                )
-                .AddSingleton<MarkdownApplicationOptions>()
-                .AddSingleton(BuildControllerMapInstance(addMappings));
+            ControllerMap map = new();
+            add?.Invoke(map);
 
-            builder.Services.AddSingleton<IViewMonitorManager, ViewMonitorManager>();
+            return map;
+        }
+    }
 
-            return builder;
+    public static WebApplication UseMarkdownApplication(this WebApplication app)
+    {
+        var config = app.Services.GetRequiredService<MarkdownApplicationConfiguration>();
+        var options = app.Services.GetRequiredService<MarkdownApplicationOptions>();
+        //new MarkdownServerOptions(app.Services, config);
+        options.ServerRoot = app.Environment.WebRootPath;
 
-            ControllerMap BuildControllerMapInstance(Action<ControllerMap>? add = null)
-            {
-                ControllerMap map = new();
-                add?.Invoke(map);
+        app.UseResponseCaching();
+        app.UseSession();
 
-                return map;
-            }
+        return (WebApplication)app.UseMiddleware<MarkdownApplicationMiddleware>();
+    }
+
+    internal static Task<IResult> MarkdownViewExecute(
+        this MarkdownApplicationOptions options,
+        HttpContext context,
+        string viewPath
+    )
+    {
+        var fullPath = Path.Combine(
+            options.ServerRoot ?? ".",
+            viewPath.TrimStart("\\/".ToCharArray())
+        );
+        Type? viewType = null;
+
+        if (File.Exists(fullPath))
+        {
+            var viewSource = File.ReadAllText(fullPath);
+
+            // Get YAML frontmatter
+
+            // Process ViewMonitor
+
+            // Process Markdown
+
+            // return result
+        }
+        else
+        {
+            viewType = Assembly.GetEntryAssembly()
+                ?.GetType(viewPath.Replace("/", "_"));
         }
 
-        public static WebApplication UseMarkdownApplication(this WebApplication app)
+        if (viewType == null)
         {
-            var config = app.Services.GetRequiredService<MarkdownApplicationConfiguration>();
-            var options = app.Services.GetRequiredService<MarkdownApplicationOptions>();
-            //new MarkdownServerOptions(app.Services, config);
-            options.ServerRoot = app.Environment.WebRootPath;
+            IResult notFound = Results.NotFound(viewPath);
 
-            app.UseResponseCaching();
-            app.UseSession();
-
-            return (WebApplication)app.UseMiddleware<MarkdownApplicationMiddleware>();
+            return Task.FromResult(notFound);
         }
 
-        internal static Task<IResult> MarkdownViewExecute(
-            this MarkdownApplicationOptions options,
-            HttpContext context,
-            string viewPath
-        )
-        {
-            var fullPath = Path.Combine(
-                options.ServerRoot ?? ".",
-                viewPath.TrimStart("\\/".ToCharArray())
-            );
-            Type? viewType = null;
+        // Resolve View and execute
+        IResult result = new MarkdownResult();
 
-            if (File.Exists(fullPath))
-            {
-                var viewSource = File.ReadAllText(fullPath);
-
-                // Get YAML frontmatter
-
-                // Process ViewMonitor
-
-                // Process Markdown
-
-                // return result
-            }
-            else
-            {
-                viewType = Assembly.GetEntryAssembly()
-                    ?.GetType(viewPath.Replace("/", "_"));
-            }
-
-            if (viewType == null)
-            {
-                IResult notFound = Results.NotFound(viewPath);
-
-                return Task.FromResult(notFound);
-            }
-
-            // Resolve View and execute
-            IResult result = new MarkdownResult();
-
-            return Task.FromResult(result);
-        }
+        return Task.FromResult(result);
     }
 }

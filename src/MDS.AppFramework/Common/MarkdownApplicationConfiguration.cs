@@ -1,6 +1,5 @@
-﻿namespace MDS.AppFramework.Common
+﻿namespace MDS.AppFramework.Common;
+
+public class MarkdownApplicationConfiguration
 {
-    public class MarkdownApplicationConfiguration
-    {
-    }
 }

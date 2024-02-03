@@ -1,0 +1,381 @@
+---
+basics:
+  name: Payton Byrd
+  email: plbyrd@gmail.com
+  phone: 931-436-8775
+  label: Senior Software Engineer
+  url: https://thesharp.ninja
+  summary: Over 28 Years of Professional Software Engineering.
+  location:
+    address: 114 Lynnwood Circle
+    city: Clarksville
+    countryCode: US
+    postalCode: '37040'
+    region: TN
+  profiles:
+  - network: github
+    username: sharpninja
+    url: https://github.com/sharpninja
+work:
+- name: Centene (Kforce)
+  startDate: 2022-06
+  endDate: 2023-03
+  position: Senior Software Engineer and Architect
+  summary: Long-term contract.  Senior Software Engineer and Architect
+  description: |-
+    Duties:
+    - Leadership
+      * Mentoring Junior Developers
+      * Providing Guidance to Dev Manager on AWS and .Net Best Practices
+    - Architecture
+      * Design Data Mapping IDE that provides UI for managing data mappings and testing of mappings for 
+        incoming EDI documents and transforming them to Common Business Objects (CBO) used by Centene.
+    - Developer
+      * Implement the Data Mapping IDE in WPF on .Net Framework 4.7.1 (Centene standard deployment target).
+      * Update existing mapping to use a rules-driven data dictionary instead of hard coded behaviors.
+      * Implement new integration for a completely new EDI event document to a completely new CBO.
+- name: Sedgwick (Kforce)
+  startDate: 2021-02
+  endDate: 2022-02
+  position: Senior Tech Lead and Architect
+  summary: Long-term contract.  Leadership of Kforce resources and architecture of a greenfield project are my focus.
+  description: |-
+    Duties:
+    - Leadership
+      *	Manage expectations for customer on feasibility and timelines for projects and goals.
+      *	Mentor and lead Kforce resources working at Sedgwick.
+      *	Provide guidance to Sedgwick leadership on technical challenges and solutions.
+    - Architecture
+      *	Creating green-field redesign of existing WinForms app as a Blazor App.
+      *	Designing new layers for Server-Side Blazor and gRPC services.
+      *	Updating WebAPI 2 services to ASP.Net gRPC.
+      *	Updating nHiberate ORM to Entity Framework Core 5.
+      *	Creating tools to analyze existing nHibernate ORM for correctness compared to target MS SQL Database.
+    - Tech Writer
+      *	Helping to move Sedgwick to using Azure DevOps for SCRUM management and how to write effective stories, 
+        requirements and reports.
+- name: Cognitive Energy LLC. (POWWR)
+  startDate: 2020-08
+  endDate: 2021-01
+  position: Senior Software Engineer
+  summary: >
+    Contract-to-Hire position.  First project was creating a portal in WebForms in their existing application 
+    to allow energy brokers to request quotes for individual customers.  Was hired full time after finishing 
+    the project in half the time as expected after just 3 weeks.  Was placed on the product team responsible 
+    for the WebForms app where I was responsible for helping modernize the deployment process in Azure.
+  description: |-
+    Duties:
+    -	DevOps
+      *	Create new Azure DevOps pipelines for legacy ASP.Net WebForms Applications
+      *	Preserve existing Team City pipelines during transition period.
+      *	Set up new Azure App Service environments to deploy services to directly from Azure DevOps Git Repositories.
+      *	Document completed work and administrative expectations. 
+    -	Development
+      *	Created Portal for users to request pricing from energy suppliers for customers.
+      *	Add OAuth2 authentication to WebForms application.
+      *	Create user migration tool for moving users from WebForms Authentication to OAuth2.
+      *	Modernized WebForms applications by creating mechanisms to allow HttpContext to be accessed from child threads 
+        via a custom Task Scheduler.
+    -	Other
+      *	Participated in daily SCRUM activities, including process tracking in Jira and performing demos in sprint 
+        closing ceremonies.
+- name: Catalyst Fire Inc.
+  startDate: 2019-09
+  endDate: 2020-07
+  position: Senior Software Engineer
+  summary: >
+    Reverse engineered WebForms Application to UML diagrams and thorough algorithmic analysis for project to recreate 
+    the pages in ASP.Net Core.  Create NetForum extension to group customer credit cards across business units so 
+    that they may be managed and synchronized through a single business unit.  Created NetForum dashboard using 
+    KendoUI graphs and grids.  Created suite of tools for selecting and purging out-of-use data in a NetForum database 
+    and safely deleting that data and its children.
+  description: |-
+    Duties:
+    -	Architecture
+      *	Reverse Engineer and document WebForms Application
+      *	Design NetForum updates for the NetForum ORM and iWeb UI to accommodate grouping credit cards across Business 
+        Units.
+      *	Design Unified ORM to bridge the NetForum ORM with raw SQL, Catalyst Fire’s Ignition and Flashpoint products.
+      *	Designed Data Purge Application consisting of SQL Stored Procedures & Tables, PowerShell DevOps scripts, 
+        TopShelf-based Windows Service, and WPF-based Management UI., 
+    -	Development
+      *	Implement the credit card syncing in iWeb and xWeb by updating the database schema and implementing the 
+        NetForum Entities in the NetForum ORM. Used SQL and C#.
+      *	Implemented Unified ORM with data-driven code generators for each entity and a repository for each entity in 
+        C# 8.0.  Used Roslyn to create and optimize entities then compile and assemble them.  Implemented full test 
+        suite with xUnit.
+      *	Implemented Data Purge project in SQL Server 2016, PowerShell 7, and C# 8.0.
+- name: Marcum LLP
+  startDate: 2018-09
+  endDate: 2019-09
+  position: Senior Software Engineer
+  summary: >
+    Developed Android and iOS apps to allow Marcum Associates to gain instant information about their clients.  
+    Updated existing Angular 6 application to add new data entry forms and reports and using Angular Material controls 
+    through the application.  Work on business-critical Windows application in WPF.
+  description: |-
+    Duties:
+    - Architecture
+      * Analyze existing prototype of native android app and extract requirements and verify them with the business 
+        stakeholders.
+      * Design new application based on Xamarin Forms that utilized a common navigation system across both Android and 
+        iOS that allowed for instant page transitions without using activities or any other heavy navigation framework
+      * Analyze existing Angular reporting app and acquire business rules for the extension of the app to allow data entry.
+      * Refactor legacy tightly coupled WinForms UI to MVVM-based WPF UI.
+    - Development
+      * Carried out development of the new Xamarin Forms architecture using WebAPI, REST, XAML and C#.  
+      * Carried out development of the upgrades to the Angular reporting system using HTML, CSS, WebAPI, REST, and 
+        Angular Material controls in C# and TypeScript.
+      * Carried out development of the conversion of legacy WinForms app to WPF in C#. 
+      * Migrating .Net Framework 4.6 libraries to Dotnet Standard 2.0 libraries with Dotnet Core 2.2 in C#.
+- name: Deloitte (CSI Companies)
+  startDate: 2018-05
+  endDate: 2018-07
+  position: Application Architect - Consultant
+  summary: >
+    Lead offshore (primarily Ukraine) development efforts to maintain and expand a SaaS offering for the hospitality
+    industry.  Evaluate new requirements to be added during feature-centric builds and then design solution before 
+    sending to developers for implementation.  Manage day-to-day product support operations.
+  description: |-
+    Duties:
+    - Architecture
+      * Analyze business requirements and add new designs or adapt existing designs to accommodate. 
+      * Present proposed architecture designs to Enterprise Architects for approval.
+      * Present new technologies to Enterprise Architects for approval for company-wide acceptance.
+    - Development
+      * Prototype designs to demonstrate implementation details to developers and to display design viability to business owners.
+      * Update code to meet corporate security and compliance standards where third parties are not allowed to participate.
+      * Handle off-hours bug fixes for immediate release of ASP.Net Core WebAPI in C#.
+    - Leadership
+      * Manage day-to-day activities for handling product maintenance.
+      * Monitor and support development team progress in meeting current sprint goals.
+      * Lead daily SCRUM activities.
+      * Mentor intern in software architecture and business analysis.
+
+- name: Deloitte (CSI Companies)
+  startDate: 2017-10
+  endDate: 2018-03
+  position: Application Architect - Consultant
+  summary: >
+    Leading development of web portal to provide customer service reps with access to SAP.  Project is written in 
+    C#/ASP.Net, and JavaScript/KnockoutJS.  Interaction between the front end and back end is handled with WCF via 
+    webHttps connections.
+  description: |-
+    Duties:
+    - Architecture
+      * Designed full stack from user interface of Javascript/KnockoutJS/jQuery/Bootstrap to ASP.Net WebServices to integration with SAP.
+      * Designed command line application to import 1.6 million addresses from legacy Great Plains system, checking the addresses for errors with Address Checking Web Service, and writing the results to SQL Server.
+      * Designed SQL Server Schema for staging address that were imported and logging all problems reported by the address validation.
+    - Development 
+      * Developed website SPA using the technologies listed above.  Consume ASP.Net WebService using JSON.
+      * Developed application for address importing and cleanup with Visual Studio 2017 in C#.
+      * Developed Data Access Layer for address importing application with SQL Management Studio 2017.
+    - Leadership 
+      * Mentor team members on modern architecture such as MVC.
+      * Perform product demonstrations for end-users and management.
+
+- name: Change Healthcare
+  startDate: 2016-08
+  endDate: 2017-09
+  position: Software Engineer IV - Dev Lead
+  summary: >
+    Worked as the team leader for a major product within Change Healthcare's offerings.
+  description: |-
+    Duties:
+    - Leadership
+      * SCRUM Master overseeing daily standups, bi-weekly backlog grooming, bi-weekly retrospectives, bi-weekly sprint planning sessions, and bi-weekly reviews.
+      * Lead team of developers, QA resources, and production engineer in day-to-day operations, allocating work, coordinating interactions with other teams.
+    - Architecture
+      * Designed new high-capacity batch processor that heavily utilizes thread queues, batch scheduling and results rollup for multi-process batches utilizing Topshelf, SQL Server, and Entity Framework with Visual Studio 2017 in C#.
+      * Designed data migration tool that interacted with McKesson Technology's REST services, matching up to data in the SQL Server, and exporting JSON to send back to the REST services with Visual Studio 2017 in C#.
+      * UML Documentation of designs with Sparx Enterprise Architect.
+    - DevOps
+      * AWS Experience including EC2, RDS, EBS, ASG and ELB.
+      * Maintained SQL-Server cluster in EC2.
+      * Build and stage deployments with Nuget, Nexus and Octopus deploy.
+    - Development
+      * Lots of C#, Entity Framework, TopShelf, Log4Net, JSON.Net and SQL Server work.
+
+- name: Direct General Corporation
+  startDate: 2016-01
+  endDate: 2016-07
+  position: Sr. Analyst/Developer
+  summary: >
+    Worked as the primary experimental developer and architect for new projects.
+  description: |-
+    Duties:
+    - Architecture
+      * Designed database driven rules engine. When rules are created or updated, they are templated in C# and 
+        then compiled into an assembly which is then loaded into the existing running webserver.
+      * Designed Mongo DB database structure for rules engine.
+      * Designed IE Browser Helper Object (Visual C++) and Chrome Plugin (Javascript) which talks to a WCF 
+        service to cache page hit URLs and screenshots. The WCF service reports usage to a WebAPI using WebAPI 2.
+    - Development
+      * Implement rules engine prototype in C#.
+      * Implement browser plugins in C++ and JavaScript
+      * Implement KnockoutJS based Single Page Application utilizing ASP.Net MVC 5 and C#. 
+
+- name: Tool Planners Inc.
+  startDate: 2010-07
+  endDate: 2015-12
+  position: CTO
+  summary: >
+    Started as a part time programmer for the DieMatrix product line, I quickly became Tool Planners’ go-to guy for 
+    all product lines.  Was promoted to full time CTO in November 2013 when we opened our office in Springfield, TN.
+  description: |-
+    Duties:
+    - Architecture
+      * Designed the DieMatrix 5 application in 2010 as a SaaS web app implemented with ASP.Net WebForms, SQL-Server 2010, Silverlight, HTML, jQuery, jQuery UI.
+      * Designed the TierView 2 application in 2012 as a SaaS web app implemented with ASP.Net WebForms, SQL-Server 2010, HTML, jQuery, jQuery UI .
+      * Designed the DieMatrix 6 application in 2012 as a subscription-based WinForms application including 2D CAD manipulation.
+      * Designed the ToolView application in 2013 as a SaaS web app implemented with ASP.Net MVC, SQL-Server 2010, HTML, jQuery, Bootstrap.
+      * Designed the HuntView android application using Xamarin Studio native Android API.
+      * Designed the DieMatrix 7 application in 2014 as a subscription-based WinForms application including 3D CAD manipulation.
+      * Designed all Database Schemas for SQL Server 2012 with SQL Management Studio.
+      * Designed reports for TierView and ToolView with Microsoft SQL Server Reporting Services.
+    - Development
+      * Build the DieMatrix 5 application using Visual Studio 2010 in .Net 4.0 with C#.
+      * Build the DieMatrix 6 application in WinForms using Visual Studio 2012, .Net 4.0 with C#.  Also used 2D drawing canvas in the application.
+      * Build the DieMatrix 7 application in WinForms using Visual Studio 2013, .Net 4.5 with C#.  Also used 3D CAD library to manipulate Solid Works files.
+      * Build the TierView 2 application using Visual Studio 2010 in .Net 4.0 with C#.
+      * Build the ToolView application using Visual Studio 2013 in .Net 4.5 with C#.
+      * Build the Hunt Plan android application using Xamarin studio in 2015 with C#.
+      * Build the SSRS reports with Microsoft Business Intelligence Studio.
+    - Leadership
+      * Interview and hire developers and tech support staff.
+      * Lead developers and tech support staff in daily activities.
+      * Assign work to individual developers to support development of our projects.
+      * Budgeting for IT and ensuring spending performance. 
+    - DevOps
+      * Purchase, deploy all servers, desktops and software.
+      * Network administration
+    - Training
+      * Travelled with company President to client sites to train on use of the applications.  Also performed monthly customer training in our facility in Springfield, TN.
+education:
+- institution: Austin Peay State University
+  area: Computer Science
+  score: '3.6'
+  endDate: '2000'
+  startDate: '1997'
+  studyType: Bachelor
+  url: https://www.apsu.edu
+- institution: Bethel University
+  area: Computer Science
+  score: '3.6'
+  endDate: '2000'
+  startDate: '1997'
+  studyType: Bachelor
+awards:
+- awarder: US Dept of Education
+  date: '1989'
+  title: Presidential Academic Achievement Award
+  summary: Awarded to best student (as selected by school faculty) of the graduating
+    class.
+skills:
+- name: C#
+  level: '9'
+  keywords:
+  - csharp
+  - c#
+  - ".net"
+  - ".net core"
+- name: SQL Server
+  level: '7'
+  keywords:
+  - t-sql
+  - sql
+  - dba
+  - stored procedures
+  - data model
+- name: ASP.Net Web Forms
+  level: '7'
+  keywords:
+  - asp
+  - web forms
+  - ".net framework"
+- name: Blazor
+  level: '6'
+  keywords:
+  - razor
+  - reactive ui
+  - wasm
+  - server side rendering
+  - pwa
+- name: WCF
+  level: '9'
+  keywords:
+  - soap
+  - binary
+  - named pipes
+  - tcp
+  - tls
+- name: Windows Forms
+  level: '9'
+  keywords:
+  - winforms
+  - desktop
+  - windows
+  - mvc
+- name: WPF
+  level: '9'
+  keywords:
+  - xaml
+  - desktop
+  - windows
+  - mvvm
+- name: UWP
+  level: '7'
+  keywords:
+  - xaml
+  - desktop
+  - windows
+  - mvvm
+- name: Xamarin
+  level: '6'
+  keywords:
+  - xaml
+  - mobile
+  - android
+  - mvvm
+- name: MAUI
+  level: '6'
+  keywords:
+  - xaml
+  - desktop
+  - mobile
+  - windows
+  - android
+  - mvvm
+- name: UNO Platform
+  level: '6'
+  keywords:
+  - xaml
+  - desktop
+  - mobile
+  - windows
+  - android
+  - linux
+  - gtk
+  - mvvm
+- name: PowerShell
+  level: '8'
+  keywords:
+  - pwsh
+  - windows
+  - wsl
+  - linux
+- name: Azure
+  level: '6'
+  keywords:
+  - app services
+  - functions
+  - devops
+  - hyper-v
+- name: AWS
+  level: '6'
+  keywords:
+  - ec2
+  - s3
+  - lambda
+  - elastic beanstalk
+  - rds

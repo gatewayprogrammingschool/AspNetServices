@@ -1,8 +1,8 @@
-﻿namespace MDS.Antlr4md;
+﻿using System.Collections.ObjectModel;
 
 using Antlr4.Runtime;
 
-using System.Collections.ObjectModel;
+namespace MDS.Antlr4md;
 
 public record ParserRuleContextWrapper(ParserRuleContext? Inner)
 {
@@ -25,7 +25,10 @@ public record ParserRuleContextWrapper(ParserRuleContext? Inner)
 
     public string Tokens => string.Join(", ", TokenList);
 
-    public ObservableCollection<ParserRuleContextWrapper> Children { get; } =
+    public ObservableCollection<ParserRuleContextWrapper> Children
+    {
+        get;
+    } =
         (Inner?.exception is null)
         ? new ObservableCollection<ParserRuleContextWrapper>(Inner?.children?
              .Select(i => new ParserRuleContextWrapper(i as ParserRuleContext))
@@ -36,5 +39,5 @@ public record ParserRuleContextWrapper(ParserRuleContext? Inner)
 
 
     public ParserRuleContextWrapper? Parent
-        => new (Inner?.Parent as ParserRuleContext);
+        => new(Inner?.Parent as ParserRuleContext);
 }

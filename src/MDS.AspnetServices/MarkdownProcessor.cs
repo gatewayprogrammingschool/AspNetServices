@@ -253,9 +253,8 @@ internal static class MarkdownProcessor
 
             ++i;
 
-            string frontMatter = markdown[document[i]
-                .Span.Start..document[i]
-                .Span.End];
+            string frontMatter = markdown[
+                document[i].Span.Start..document[i].Span.Length];
 
             Regex tagReplacer = new(@"\t");
 
@@ -298,30 +297,30 @@ internal static class MarkdownProcessor
                             break;
 
                         case List<object> e:
-                        {
-                            StringBuilder sb = new();
-
-                            foreach (var subItem in e)
                             {
-                                switch (subItem)
+                                StringBuilder sb = new();
+
+                                foreach (var subItem in e)
                                 {
-                                    case string ss:
-                                        sb.AppendLine($"<p>{ss}</p>");
+                                    switch (subItem)
+                                    {
+                                        case string ss:
+                                            sb.AppendLine($"<p>{ss}</p>");
 
-                                        break;
+                                            break;
+                                    }
                                 }
+
+                                variables.AddOrUpdate(newPath, sb.ToString(), (_, _) => sb.ToString());
+
+                                break;
                             }
-
-                            variables.AddOrUpdate(newPath, sb.ToString(), (_, _) => sb.ToString());
-
-                            break;
-                        }
 
                         default:
                             variables.AddOrUpdate(
                                 newPath,
-                                value.ToString() ?? string.Empty,
-                                (_, _) => value.ToString() ?? string.Empty
+                                value?.ToString() ?? string.Empty,
+                                (_, _) => value?.ToString() ?? string.Empty
                             );
 
                             break;
@@ -363,7 +362,7 @@ internal static class MarkdownProcessor
                     }
                     else
                     {
-                        var linestring = dictionary[key]
+                        var linestring = dictionary[key]?
                                              .ToString() ??
                                          "";
 
@@ -375,14 +374,14 @@ internal static class MarkdownProcessor
                         continue;
                     }
 
-                    if (name.Equals("Variables.Layout", StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        if (File.Exists(value))
-                        {
-                            value = await File.ReadAllTextAsync(value);
-                            document.SetData(name, value);
-                        }
-                    }
+                    //if (name.Equals("Variables.Layout", StringComparison.CurrentCultureIgnoreCase))
+                    //{
+                    //    if (File.Exists(value))
+                    //    {
+                    //        value = await File.ReadAllTextAsync(value);
+                    //        document.SetData(name, value);
+                    //    }
+                    //}
 
                     variables.AddOrUpdate(name, value, (_, _) => value);
                 }
@@ -391,7 +390,7 @@ internal static class MarkdownProcessor
             markdown = markdown.Remove(
                 0,
                 document[i]
-                    .Span.End
+                    .Span.Start + document[i].Span.Length
             );
 
             foreach ((string key, object value) in variables)
@@ -454,11 +453,11 @@ internal static class MarkdownProcessor
                             or '_'
                             or '.'
                     ):
-                    {
-                        markdown = markdown.Replace($"$({key})", o.ToString());
+                        {
+                            markdown = markdown.Replace($"$({key})", o.ToString());
 
-                        break;
-                    }
+                            break;
+                        }
 
                     default:
                         markdown = markdown.Replace($"$({key})", value.ToString());
