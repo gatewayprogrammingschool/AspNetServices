@@ -108,9 +108,9 @@ public abstract record AppControlContainerBase(string Id) : AppControlBase(Id), 
                     Type? bt = pi?.PropertyType.BaseType;
                     while (bt is not null
                            and
-                           {
-                               IsAbstract: false,
-                           })
+                        {
+                            IsAbstract: false,
+                        })
                         bt = bt.BaseType;
 
                     if (bt == typeof(ControlViewModel) &&

@@ -4,9 +4,15 @@ namespace MDS.AppFramework;
 
 public interface IViewMonitor
 {
-    IViewWorkflow View {get;}
+    IViewWorkflow View
+    {
+        get;
+    }
 
-    string? Path { get; }
+    string? Path
+    {
+        get;
+    }
 
     Task StopAsync(CancellationToken token);
 

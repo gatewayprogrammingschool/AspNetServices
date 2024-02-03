@@ -19,7 +19,7 @@ public static class JsonUtility
             UnknownTypeHandling = JsonUnknownTypeHandling.JsonElement,
             WriteIndented = true,
             ReferenceHandler = ReferenceHandler.Preserve,
-            
+
         };
 
     public static JsonSerializerOptions CurrentSettings { get; set; } = _defaultSettings;

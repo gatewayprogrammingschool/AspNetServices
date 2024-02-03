@@ -1,8 +1,5 @@
-﻿using System;
+﻿namespace MDS.TestSite.MdApp.Views;
 
-namespace MDS.TestSite.MdApp.Views
+public partial record IndexView
 {
-    public partial record IndexView
-    {
-    }
 }

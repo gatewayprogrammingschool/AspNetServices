@@ -9,7 +9,7 @@ public class MarkdownServerOptions : IOptions<MarkdownServerConfiguration>
     }
 
     public MarkdownServerOptions(
-        IServiceProvider services, 
+        IServiceProvider services,
         MarkdownServerConfiguration? config) : this(services)
     {
         if (config is not null)
@@ -19,7 +19,7 @@ public class MarkdownServerOptions : IOptions<MarkdownServerConfiguration>
     }
 
     public MarkdownServerOptions(
-        IServiceProvider services, 
+        IServiceProvider services,
         string json) : this(services)
     {
         if (json is null or "")
@@ -36,7 +36,10 @@ public class MarkdownServerOptions : IOptions<MarkdownServerConfiguration>
     }
     public MarkdownServerConfiguration Value { get; } = new();
 
-    public static MarkdownServerOptions? Current { get; private set; }
+    public static MarkdownServerOptions? Current
+    {
+        get; private set;
+    }
     private string? _serverRoot;
 
     public string? ServerRoot
@@ -45,5 +48,8 @@ public class MarkdownServerOptions : IOptions<MarkdownServerConfiguration>
         set => _serverRoot = value;
     }
 
-    public IServiceProvider Services { get; set; }
+    public IServiceProvider Services
+    {
+        get; set;
+    }
 }

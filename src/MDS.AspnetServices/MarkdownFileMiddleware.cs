@@ -3,7 +3,10 @@
 public class MarkdownFileMiddleware
 {
     private readonly RequestDelegate _next;
-    public MarkdownServerOptions Options { get; }
+    public MarkdownServerOptions Options
+    {
+        get;
+    }
 
     public MarkdownFileMiddleware(RequestDelegate next, MarkdownServerOptions options)
     {
@@ -16,7 +19,7 @@ public class MarkdownFileMiddleware
         try
         {
             var path = context.Request.Path;
-            if(path.Value?.EndsWith("/mdapp/", StringComparison.OrdinalIgnoreCase) ?? true)
+            if (path.Value?.EndsWith("/mdapp/", StringComparison.OrdinalIgnoreCase) ?? true)
             {
                 await _next.Invoke(context);
                 return;

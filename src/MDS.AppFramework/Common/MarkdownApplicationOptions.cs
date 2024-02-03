@@ -1,53 +1,59 @@
 ﻿using MDS.AspnetServices.Common;
+
 using Microsoft.Extensions.Options;
 
-namespace MDS.AppFramework.Common
+namespace MDS.AppFramework.Common;
+
+public class MarkdownApplicationOptions : IOptions<MarkdownApplicationConfiguration>
 {
-    public class MarkdownApplicationOptions : IOptions<MarkdownApplicationConfiguration>
+    public MarkdownApplicationOptions(IServiceProvider services)
     {
-        public MarkdownApplicationOptions(IServiceProvider services)
+        Services = services;
+        Current = this;
+    }
+
+    public MarkdownApplicationOptions(
+        IServiceProvider services,
+        MarkdownApplicationConfiguration? config) : this(services)
+    {
+        if (config is not null)
         {
-            Services = services;
-            Current = this;
+            Value = config;
+        }
+    }
+
+    public MarkdownApplicationOptions(
+        IServiceProvider services,
+        string json) : this(services)
+    {
+        if (json is null or "")
+        {
+            throw new AbandonedMutexException(nameof(json));
         }
 
-        public MarkdownApplicationOptions(
-            IServiceProvider services,
-            MarkdownApplicationConfiguration? config) : this(services)
+        MarkdownApplicationConfiguration? config = json.FromJson<MarkdownApplicationConfiguration>();
+
+        if (config is not null)
         {
-            if (config is not null)
-            {
-                Value = config;
-            }
+            Value = config;
         }
+    }
+    public MarkdownApplicationConfiguration Value { get; } = new();
 
-        public MarkdownApplicationOptions(
-            IServiceProvider services,
-            string json) : this(services)
-        {
-            if (json is null or "")
-            {
-                throw new AbandonedMutexException(nameof(json));
-            }
+    public static MarkdownApplicationOptions? Current
+    {
+        get; private set;
+    }
+    private string? _serverRoot;
 
-            MarkdownApplicationConfiguration? config = json.FromJson<MarkdownApplicationConfiguration>();
+    public string? ServerRoot
+    {
+        get => _serverRoot;
+        set => _serverRoot = value;
+    }
 
-            if (config is not null)
-            {
-                Value = config;
-            }
-        }
-        public MarkdownApplicationConfiguration Value { get; } = new();
-
-        public static MarkdownApplicationOptions? Current { get; private set; }
-        private string? _serverRoot;
-
-        public string? ServerRoot
-        {
-            get => _serverRoot;
-            set => _serverRoot = value;
-        }
-
-        public IServiceProvider Services { get; set; }
+    public IServiceProvider Services
+    {
+        get; set;
     }
 }

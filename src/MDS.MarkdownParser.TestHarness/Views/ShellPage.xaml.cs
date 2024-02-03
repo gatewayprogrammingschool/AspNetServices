@@ -55,7 +55,7 @@ public sealed partial class ShellPage : Page
 
     private static KeyboardAccelerator BuildKeyboardAccelerator(VirtualKey key, VirtualKeyModifiers? modifiers = null)
     {
-        var keyboardAccelerator = new KeyboardAccelerator() { Key = key,};
+        var keyboardAccelerator = new KeyboardAccelerator() { Key = key, };
 
         if (modifiers.HasValue)
         {

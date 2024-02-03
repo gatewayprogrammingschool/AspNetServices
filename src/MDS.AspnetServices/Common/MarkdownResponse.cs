@@ -13,13 +13,22 @@ public record MarkdownResponse
         ??= MarkdownServerOptions.Current!.Services.GetService<MarkdownPipeline>()!;
 
 
-    public MarkdownDocument Document { get; private set; }
+    public MarkdownDocument Document
+    {
+        get; private set;
+    }
     //private string? _layout = null;
     private static MarkdownPipeline? _pipeline;
 
     public MarkdownServerOptions? Options => MarkdownServerOptions.Current;
-    public Exception? Error { get; }
-    public HttpStatusCode StatusCode { get; }
+    public Exception? Error
+    {
+        get;
+    }
+    public HttpStatusCode StatusCode
+    {
+        get;
+    }
 
     public MarkdownResponse()
     {
@@ -80,8 +89,8 @@ public record MarkdownResponse
         object? layout = null;
         variables?.TryGetValue("Variables.Layout", out layout);
         layout ??= Options?.Value.LayoutFile ?? "./wwwroot/DefaultLayout.html";
-        
-        if (rootPath is {  Length: > 0})
+
+        if (rootPath is { Length: > 0 })
         {
             layout = Path.Combine(rootPath, layout!.ToString());
         }
@@ -90,7 +99,7 @@ public record MarkdownResponse
         {
             layout = await File.ReadAllTextAsync(layout.ToString() ?? string.Empty);
         }
-        else if(layout is null or "")
+        else if (layout is null or "")
         {
             layout = "<html><head>$(title)</head><body>$(MarkdownBody)</body></html>";
         }
@@ -132,19 +141,19 @@ public record MarkdownResponse
             switch (value)
             {
                 case string toInsert:
-                {
-                    if (toInsert.EndsWith(".md", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        if (File.Exists(toInsert))
+                        if (toInsert.EndsWith(".md", StringComparison.InvariantCultureIgnoreCase))
                         {
-                            toInsert = await File.ReadAllTextAsync(toInsert);
+                            if (File.Exists(toInsert))
+                            {
+                                toInsert = await File.ReadAllTextAsync(toInsert);
+                            }
                         }
+
+                        template = template.Replace($"$({key})", toInsert);
+
+                        break;
                     }
-
-                    template = template.Replace($"$({key})", toInsert);
-
-                    break;
-                }
 
                 default:
                     template = template.Replace($"$({key})", value.ToString());

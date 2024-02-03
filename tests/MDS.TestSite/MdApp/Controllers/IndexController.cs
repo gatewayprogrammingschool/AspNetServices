@@ -1,16 +1,15 @@
-﻿using System;
+﻿using System.Text;
+
+using MDS.AppFramework;
+
+using MDS.AspnetServices.Common;
+
+using MDS.TestSite.MdApp.ViewModels;
+
+using MDS.TestSite.MdApp.Views;
 
 namespace MDS.TestSite.MdApp.Controllers;
 
-using System.Text;
-
-using AppFramework;
-
-using AspnetServices.Common;
-
-using ViewModels;
-
-using Views;
 
 public record IndexController(IServiceProvider Services, string Id) : AppController(Services)
 {

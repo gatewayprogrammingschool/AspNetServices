@@ -16,7 +16,7 @@ public partial class SyntaxTreeViewModel : ObservableRecipient
     {
         get;
     }
-        = new(new[] { GetParseTree(FILENAME),});
+        = new(new[] { GetParseTree(FILENAME), });
 
     private static ParserRuleContextWrapper GetParseTree(string filename = FILENAME)
     {

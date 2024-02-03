@@ -4,7 +4,13 @@ namespace MDS.AppFramework;
 
 public interface IAppView
 {
-    string ViewKey { get; }
+    string ViewKey
+    {
+        get;
+    }
 
-    ControlViewModel? ViewModel {get; set; }
+    ControlViewModel? ViewModel
+    {
+        get; set;
+    }
 }
