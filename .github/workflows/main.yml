@@ -91,7 +91,7 @@ jobs:
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ outPath }}/MarkdownServer.ColorCodePortable.*.symbols.nupkg
+        nupkg-path: ${{ github.workspace }}/packages/MarkdownServer.ColorCodePortable.*.symbols.nupkg
         # pack -o $outPathage repository owner
         repo-owner: sharpninja
         # user account
@@ -106,7 +106,7 @@ jobs:
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ outPath }}/MarkdownServer.Markdig.SyntaxHighlighting.*.symbols.nupkg
+        nupkg-path: ${{ github.workspace }}/packages/MarkdownServer.Markdig.SyntaxHighlighting.*.symbols.nupkg
         # pack -o $outPathage repository owner
         repo-owner: sharpninja
         # user account
@@ -121,7 +121,7 @@ jobs:
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ outPath }}/MarkdownServer.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        nupkg-path: ${{ github.workspace }}/packages/MarkdownServer.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # pack -o $outPathage repository owner
         repo-owner: sharpninja
         # user account
@@ -136,7 +136,7 @@ jobs:
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ outPath }}/MarkdownServer.ApplicationFramework.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        nupkg-path: ${{ github.workspace }}/packages/MarkdownServer.ApplicationFramework.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # pack -o $outPathage repository owner
         repo-owner: sharpninja
         # user account
@@ -152,7 +152,7 @@ jobs:
       run: |
         echo "github.workspace: ${{ github.workspace }}"
         echo "secrets.NUGET_KEY: ${{ secrets.NUGET_KEY }}"
-        $symbolpackages = gci ${{ outPath }}/*.*.symbols.nupkg -ErrorAction Stop
+        $symbolpackages = gci ${{ github.workspace }}/packages/*.*.symbols.nupkg -ErrorAction Stop
 
         $symbolpackages | forEach-Object -process {
           dotnet nuget push $_ -k "${{ secrets.NUGET_KEY }}" -s https://api.nuget.org/v3/index.json --skip-duplicate
