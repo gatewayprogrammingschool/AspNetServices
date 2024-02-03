@@ -75,13 +75,13 @@ jobs:
 
         cd "${ws}/src/MDS.AspnetServices"
         rm "./bin" -r -f
-        dotnet restore --source "https://api.nuget.org/v3/index.json";
+        dotnet restore --source "https://api.nuget.org/v3/index.json" --source "${outPath}";
         dotnet build -c ${CONFIG} --no-restore
         dotnet pack -o $outPath -c ${CONFIG} --no-build --include-source --include-symbols --force
 
         cd "${ws}/src/MDS.AppFramework/"
         rm "./bin" -r -f
-        dotnet restore --source "https://api.nuget.org/v3/index.json";
+        dotnet restore --source "https://api.nuget.org/v3/index.json" --source "${outPath}";
         dotnet build -c ${CONFIG} --no-restore
         dotnet pack -o $outPath -c ${CONFIG} --no-build --include-source --include-symbols --force
         ls -al $outPath
@@ -91,7 +91,7 @@ jobs:
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}/packages/MarkdownServer.ColorCodePortable.*.symbols.nupkg
+        nupkg-path: ${{ outPath }}/MarkdownServer.ColorCodePortable.*.symbols.nupkg
         # pack -o $outPathage repository owner
         repo-owner: sharpninja
         # user account
@@ -106,7 +106,7 @@ jobs:
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}/packages/MarkdownServer.Markdig.SyntaxHighlighting.*.symbols.nupkg
+        nupkg-path: ${{ outPath }}/MarkdownServer.Markdig.SyntaxHighlighting.*.symbols.nupkg
         # pack -o $outPathage repository owner
         repo-owner: sharpninja
         # user account
@@ -121,7 +121,7 @@ jobs:
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}/packages/MarkdownServer.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        nupkg-path: ${{ outPath }}/MarkdownServer.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # pack -o $outPathage repository owner
         repo-owner: sharpninja
         # user account
@@ -136,7 +136,7 @@ jobs:
       uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
       with:
         # Path of NuPkg
-        nupkg-path: ${{ github.workspace }}/packages/MarkdownServer.ApplicationFramework.${{ env.GitVersion_SemVer }}.symbols.nupkg
+        nupkg-path: ${{ outPath }}/MarkdownServer.ApplicationFramework.${{ env.GitVersion_SemVer }}.symbols.nupkg
         # pack -o $outPathage repository owner
         repo-owner: sharpninja
         # user account
@@ -151,9 +151,8 @@ jobs:
       shell: pwsh
       run: |
         echo "github.workspace: ${{ github.workspace }}"
-        echo "env.GitVersion_SemVer: ${{ env.GitVersion_SemVer }}"
         echo "secrets.NUGET_KEY: ${{ secrets.NUGET_KEY }}"
-        $symbolpackages = gci ${{ github.workspace }}/packages/*.${{ env.GitVersion_SemVer }}.symbols.nupkg -ErrorAction Stop
+        $symbolpackages = gci ${{ outPath }}/*.*.symbols.nupkg -ErrorAction Stop
 
         $symbolpackages | forEach-Object -process {
           dotnet nuget push $_ -k "${{ secrets.NUGET_KEY }}" -s https://api.nuget.org/v3/index.json --skip-duplicate
