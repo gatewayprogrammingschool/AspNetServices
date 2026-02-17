@@ -37,11 +37,11 @@ public static class MarkdownServerExtensions
     )
     {
         var rootPath = options.ServerRoot ?? "./wwwroot";
-        rootPath = rootPath.Replace("/", "\\");
+        rootPath = rootPath.Replace('/', Path.DirectorySeparatorChar);
         rootPath = Path.GetFullPath(rootPath);
         filename ??= "index.md";
-        filename = filename.Replace("/", "\\")
-            .TrimStart('\\');
+        filename = filename.Replace('/', Path.DirectorySeparatorChar)
+            .TrimStart(Path.DirectorySeparatorChar);
         string markdownFilename = Path.Combine(rootPath, filename);
 
         var matrix = (markdownFilename,

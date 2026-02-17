@@ -173,8 +173,8 @@ internal static class MarkdownProcessor
                 continue;
             }
 
-            filename = filename.Replace("/", "\\")
-                .Trim('\\');
+            filename = filename.Replace('/', Path.DirectorySeparatorChar)
+                .Trim(Path.DirectorySeparatorChar);
 
             string root = MarkdownServerOptions.Current!.ServerRoot!;
             filename = Path.Combine(root, filename);
