@@ -34,7 +34,7 @@ REFACTOR:
   - id: REFAC-MIDDLEWARE-001
     title: Create TDD stubs and interfaces for DI-focused Markdown middleware
     estimate: 4 days
-    done: false
+    done: true
     description:
     - 'Strict TDD: Create interfaces and failing tests first. Do not modify MarkdownProcessor.cs or existing implementation until tests pass.'
     - 'Define: IMarkdownPipelineFactory, IMarkdownTagProcessor, IMarkdownRenderer, IMarkdownMiddleware'
@@ -52,9 +52,9 @@ REFACTOR:
     depends-on:
     - PLAN-REFAC-001
     functional-requirements:
-    - FR-MCP-049
+    - FR-MCP-PAGE-001
     technical-requirements:
-    - TR-MCP-ARCH-002
+    - TR-MCP-PAGE-RUNTIME-001
 TEST:
   high-priority:
   - id: TEST-INTEGRATION-001
