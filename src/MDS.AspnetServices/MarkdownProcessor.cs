@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
@@ -9,7 +9,6 @@ using ContentResult = MDS.AspnetServices.Common.ContentResult;
 using MD = Markdig.Markdown;
 
 // ReSharper disable RedundantAssignment
-
 // ReSharper disable IdentifierTypo
 // ReSharper disable ConvertTypeCheckPatternToNullCheck
 
@@ -479,13 +478,31 @@ internal static class MarkdownProcessor
         string filename,
         ConcurrentDictionary<string, object>? variables = null
     )
-        => File.Exists(filename)
-            ? (await options.ProcessMarkdown(
-                await File.ReadAllTextAsync(filename),
-                Path.GetDirectoryName(filename) ?? "",
-                variables
-            )).ToResult()
-            : new MarkdownResponse(HttpStatusCode.NotFound).ToMarkdownResult();
+    {
+        if (!File.Exists(filename))
+            return new MarkdownResponse(HttpStatusCode.NotFound).ToMarkdownResult();
+
+        // Load global.yaml defaults from the directory tree before processing per-file front-matter.
+        // Per-file front-matter will override these defaults.
+        if (variables == null)
+        {
+            variables = GlobalYamlDefaults.LoadDefaults(filename);
+        }
+        else
+        {
+            var defaults = GlobalYamlDefaults.LoadDefaults(filename);
+            foreach (var (key, value) in defaults)
+            {
+                variables.TryAdd(key, value);
+            }
+        }
+
+        return (await options.ProcessMarkdown(
+            await File.ReadAllTextAsync(filename),
+            Path.GetDirectoryName(filename) ?? "",
+            variables
+        )).ToResult();
+    }
 
     public static async Task<(string, ConcurrentDictionary<string, object>)>
         ProcessMarkdownIncludes(string markdown)
