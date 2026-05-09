@@ -1,2 +1,2 @@
-antlr4 -Dlanguage=CSharp markdown.g4
+antlr4 -Dlanguage=CSharp -visitor -no-listener MarkdownPageLexer.g4 MarkdownPageParser.g4
 
