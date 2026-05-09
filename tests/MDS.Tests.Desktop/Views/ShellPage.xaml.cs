@@ -24,7 +24,9 @@ public sealed partial class ShellPage : Page
         get;
     }
 
-    public ShellPage(ShellViewModel viewModel, NewDocumentViewModel newDocViewModel)
+    public ShellPage(ShellViewModel viewModel,
+                     NewDocumentViewModel newDocViewModel,
+                     SourceCode sourceCode)
     {
         ViewModel = viewModel;
         NewDocViewModel = newDocViewModel;
@@ -32,6 +34,7 @@ public sealed partial class ShellPage : Page
 
         Loaded += (_, _) =>
         {
+            SourceFrame.Content = App.GetService<SourceCode>();
             ViewModel.XamlRoot = App.MainWindow.Content.XamlRoot;
             ViewModel.Initialize();
             NewDocViewModel.Initialize();
@@ -39,6 +42,10 @@ public sealed partial class ShellPage : Page
 
         ViewModel.NavigationService.Frame = NavigationFrame;
         ViewModel.OpenNewDocDialog += ViewModel_OpenNewDocDialog;
+        ViewModel.DocumentChanged += navLink =>
+        {
+            sourceCode.ChangeViewModel(navLink.ViewModel);
+        };
 
         // TODO: Set the title bar icon by updating /Assets/WindowIcon.ico.
         // A custom title bar is required for full window theme and Mica support.
@@ -110,7 +117,7 @@ public sealed partial class ShellPage : Page
 
     private void NavigationView_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args) => ViewModel.BackCommand.Execute(null);
 
-    private void NavLinksList_ItemClick(object sender, ItemClickEventArgs e) 
+    private void NavLinksList_ItemClick(object sender, ItemClickEventArgs e)
         => ViewModel.DocumentSelected((NavLink)e.ClickedItem);
 
     private async void Button_Click(object sender, RoutedEventArgs e)

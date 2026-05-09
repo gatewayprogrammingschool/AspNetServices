@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Windows.Input;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -10,10 +9,6 @@ using MDS.Tests.Desktop.Models;
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-
-using Windows.UI.Popups;
 
 namespace MDS.Tests.Desktop.ViewModels;
 
@@ -37,6 +32,9 @@ public partial class ShellViewModel : ObservableRecipient
     }
 
     [ObservableProperty]
+    private int _selectedTabIndex = 0;
+
+    [ObservableProperty]
     private bool _isDialogOpen = false;
 
     [RelayCommand]
@@ -50,12 +48,12 @@ public partial class ShellViewModel : ObservableRecipient
             Content = content,
             CloseButtonText = "No",
             PrimaryButtonText = "Yes",
-            DefaultButton=ContentDialogButton.Primary,
+            DefaultButton = ContentDialogButton.Primary,
         };
 
         dlg.XamlRoot = XamlRoot;
 
-        var result = await dlg.ShowAsync(ContentDialogPlacement.UnconstrainedPopup);
+        var result = await dlg.ShowAsync(ContentDialogPlacement.InPlace);
 
         switch (result)
         {
@@ -223,16 +221,34 @@ public partial class ShellViewModel : ObservableRecipient
                 Margin = (segments.Length - 1) * 42,
             };
 
+            item.ViewModel.SourceCode = File.ReadAllText(item.FullPath);
+            item.ViewModel.Language = extension switch
+            {
+                ".md" => "markdown",
+                ".yml" or ".yaml" => "yaml",
+                ".css" => "css",
+                ".html" => "html",
+                ".json" => "json",
+                _ => "markdown"
+            };
+
             NavLinks.Insert(NavLinks.Count - 1, item);
         }
     }
 
     private void OnNavigated(object? sender, object? e) => IsBackEnabled = NavigationService.CanGoBack;
 
-    public void DocumentSelected(NavLink navLink)
+    public async void DocumentSelected(NavLink navLink)
     {
         if (navLink.Path is { Length: > 0 })
         {
+            SelectedTabIndex = 1;
+
+            while (!navLink.ViewModel.GetLoadedState())
+            {
+                await Task.Delay(100);
+            }
+
             if (File.Exists(navLink.FullPath))
             {
                 NavigationService.NavigateTo(typeof(MainViewModel).FullName);
@@ -240,6 +256,14 @@ public partial class ShellViewModel : ObservableRecipient
                 Uri uri = new($"http://localhost:5001/{navLink.Path.Trim('\\').Replace('\\', '/')}");
                 WebViewService.NavigateWebViewTo(uri);
             }
+
+            DocumentChanged?.Invoke(navLink);
+        }
+        else
+        {
+            SelectedTabIndex = 0;
         }
     }
+
+    public event Action<NavLink> DocumentChanged;
 }

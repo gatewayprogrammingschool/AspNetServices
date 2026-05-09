@@ -5,6 +5,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Style", "IDE0007:Use implicit type", 
-    Justification = "<Pending>", Scope = "module", 
+[assembly: SuppressMessage("Style", "IDE0007:Use implicit type",
+    Justification = "<Pending>", Scope = "module",
     Target = "~M:MDS.Tests.Desktop.Core")]

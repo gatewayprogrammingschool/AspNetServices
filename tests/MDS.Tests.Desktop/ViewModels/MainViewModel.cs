@@ -105,7 +105,7 @@ public partial class MainViewModel : ObservableRecipient, INavigationAware
     }
 
     private void OnStatusChanged(object? sender, string? e)
-        => WebpageTitle = e ?? "<null>"; 
+        => WebpageTitle = e ?? "<null>";
 
     public void OnNavigatedFrom()
     {

@@ -2,5 +2,5 @@
 
 public enum DocumentTypes
 {
-    Markdown, Data, Template, StyleSheet
+    Markdown, Data, Template, StyleSheet, Resume
 }

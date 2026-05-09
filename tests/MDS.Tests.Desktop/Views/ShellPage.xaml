@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     xmlns:viewmodels="using:MDS.Tests.Desktop.ViewModels"
+    xmlns:views="using:MDS.Tests.Desktop.Views"
     xmlns:dialogs="using:MDS.Tests.Desktop.Models"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:converters="using:MDS.Tests.Desktop.Converters"
@@ -260,8 +261,25 @@
                     </Grid>
                 </SplitView.Pane>
 
-                <Frame
-                    x:Name="NavigationFrame" />
+                <TwoPaneView 
+                    VerticalAlignment="Stretch" 
+                    HorizontalAlignment="Stretch"
+                    Pane1Length="*"
+                    Pane2Length="*">
+                    <TwoPaneView.Pane1>
+                        <Frame
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch"
+                            x:Name="NavigationFrame" />
+                    </TwoPaneView.Pane1>
+                    <TwoPaneView.Pane2>
+                        <Frame
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch"
+                            x:Name="SourceFrame" />
+
+                    </TwoPaneView.Pane2>
+                </TwoPaneView>
             </SplitView>
         </Grid>
         <SplitView.Pane>

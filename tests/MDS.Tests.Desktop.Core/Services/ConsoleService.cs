@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Text;
 using System.Timers;
+
 using MDS.Tests.Desktop.Core.Contracts.Services;
 
 using Timer = System.Timers.Timer;

@@ -6,7 +6,6 @@ using MDS.Tests.Desktop.Models;
 
 using Microsoft.Extensions.Options;
 
-using Windows.ApplicationModel;
 using Windows.Storage;
 
 namespace MDS.Tests.Desktop.Services;

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MDS.Tests.Desktop.Core.Contracts.Services;
+﻿using MDS.Tests.Desktop.Core.Contracts.Services;
 
 namespace MDS.Tests.Desktop.Services;
 public class BlazorService : IBlazorService

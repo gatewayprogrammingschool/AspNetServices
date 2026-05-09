@@ -1,0 +1,153 @@
+REFACTOR:
+  high-priority:
+  - id: PLAN-REFAC-001
+    title: 'Refactor MarkdownServer\AspNetServices (Priority: Middleware Cleanup → Lifecycle)'
+    estimate: 3 weeks
+    note: Audit complete + user clarifications incorporated. Isolated ANTLR4 refactor (REFAC-ANTLR-001) created. 'Requirements precede code' rule now enforced at the top of the plan.
+    done: false
+    description:
+    - 'CURRENT PRIORITY ORDER (Requirements Precede Code enforced):'
+    - 0. Update/Create FRs and TRs before any implementation or deep stubs (new rule per user).
+    - 1. Middleware cleanup + DI refactoring (REFAC-MIDDLEWARE-001)
+    - 2. Isolated ANTLR4 grammar refactor (REFAC-ANTLR-001 – newly isolated)
+    - 3. Page lifecycle runtime + parse-tree based page instantiation (FEATURE-LIFECYCLE-001) using Blazor lifecycle for 'Blazor in Markdown' pattern.
+    - 4. OIDC, Theme System (NuGet), PDF generation (current theme by default with override), integration tests, and Blazor template project.
+    - Strict TDD rule remains, but only after requirements are updated.
+    depends-on: []
+    functional-requirements:
+    - FR-MCP-029
+    technical-requirements:
+    - TR-MCP-ARCH-002
+    implementation-tasks:
+    - task: Disable all test projects from .sln
+      done: true
+    - task: Create new interfaces and TDD test stubs for middleware refactoring
+      done: false
+    - task: Design and test new ANTLR4 grammar
+      done: false
+    - task: Create integration test suite for middleware
+      done: false
+    - task: Create Blazor template test project using AppFramework
+      done: false
+    - task: Implement page lifecycle runtime + parse-tree instantiation
+      done: false
+  - id: REFAC-MIDDLEWARE-001
+    title: Create TDD stubs and interfaces for DI-focused Markdown middleware
+    estimate: 4 days
+    done: false
+    description:
+    - 'Strict TDD: Create interfaces and failing tests first. Do not modify MarkdownProcessor.cs or existing implementation until tests pass.'
+    - 'Define: IMarkdownPipelineFactory, IMarkdownTagProcessor, IMarkdownRenderer, IMarkdownMiddleware'
+    depends-on:
+    - PLAN-REFAC-001
+  - id: REFAC-ANTLR-001
+    title: Isolated ANTLR4 grammar refactor for rich page parsing
+    estimate: 5 days
+    done: false
+    description:
+    - Create a clean, maintainable ANTLR4 grammar specifically designed for the new 'Blazor in Markdown' page model.
+    - Output must support rich parse-tree visitor that can instantiate components with lifecycle events.
+    - This is an isolated refactoring task – separate from Lifecycle implementation.
+    - Requirements must be updated before any grammar or visitor code is written.
+    depends-on:
+    - PLAN-REFAC-001
+    functional-requirements:
+    - FR-MCP-049
+    technical-requirements:
+    - TR-MCP-ARCH-002
+TEST:
+  high-priority:
+  - id: TEST-INTEGRATION-001
+    title: Create integration test suite for refactored middleware
+    estimate: 3 days
+    done: false
+    description:
+    - Build comprehensive integration tests for the new DI-based middleware after stubs and unit tests are complete.
+    - Cover pipeline factory, tag processing, rendering, and middleware pipeline integration.
+    - Follow TDD (failing tests first).
+    depends-on:
+    - REFAC-MIDDLEWARE-001
+    - PLAN-REFAC-001
+  medium-priority:
+  - id: TEST-BLAZOR-001
+    title: Create Blazor template test project using Application Framework
+    estimate: 4 days
+    done: false
+    description:
+    - Create a new test project that implements the Blazor template/project structure using MDS.AppFramework.
+    - Demonstrate usage of the refactored middleware and application framework components.
+    - Follow TDD where applicable for new components.
+    depends-on:
+    - PLAN-REFAC-001
+FEATURE:
+  high-priority:
+  - id: FEATURE-THEME-001
+    title: Create distributable theme system with NuGet repository discovery and installation
+    estimate: 2 weeks
+    done: false
+    description:
+    - Build a reusable, distributable theme system that can search NuGet repositories for themes, download/install them, and apply them to the application framework / Blazor / Markdown renderer.
+    - Must be packaged as its own NuGet package.
+    - Support theme metadata, asset loading (CSS, JS, Razor, images), and runtime switching.
+    depends-on:
+    - PLAN-REFAC-001
+    functional-requirements:
+    - FR-MCP-049
+    technical-requirements:
+    - TR-MCP-ARCH-002
+    - TR-MCP-CFG-005
+  - id: FEATURE-PDF-001
+    title: Add PDF generation for a single page or all pages in a path
+    estimate: 1 week
+    note: 'Updated per user clarification: PDF uses current theme by default with override support.'
+    done: false
+    description:
+    - Add PDF generation for a single Markdown page or recursively for all pages in a directory path.
+    - PDF generation SHALL use the **current active theme by default**, but allow explicit theme specification via parameter or configuration.
+    - Support both on-demand HTTP generation and batch filesystem export.
+    - Integrate with middleware, theme system, and the new Blazor-in-Markdown lifecycle runtime.
+    depends-on:
+    - FEATURE-THEME-001
+    - PLAN-REFAC-001
+    functional-requirements:
+    - FR-MCP-041
+    technical-requirements:
+    - TR-MCP-ARCH-002
+  - id: FEATURE-OIDC-001
+    title: Add OIDC to the App Framework with attribute-driven permissions (Blazor-style)
+    estimate: 10 days
+    done: false
+    description:
+    - Add OpenID Connect (OIDC) authentication support to MDS.AppFramework.
+    - Implement attribute-driven authorization similar to Blazor ([Authorize], roles, policies, custom Permission attributes).
+    - Support both server-side and Blazor WebAssembly/Client.
+    - Integrate with existing middleware, DI system, and theme/PDF features.
+    depends-on:
+    - FEATURE-PDF-001
+    - FEATURE-THEME-001
+    - PLAN-REFAC-001
+    functional-requirements:
+    - FR-MCP-026
+    technical-requirements:
+    - TR-MCP-ARCH-002
+    - TR-MCP-CFG-006
+  - id: FEATURE-LIFECYCLE-001
+    title: Add page lifecycle runtime and parse-tree based page instantiation using ANTLR4 output
+    estimate: 2 weeks
+    note: "Clarified per user: Use Blazor lifecycle events. 'Blazor in Markdown' concept enthusiastically accepted."
+    done: false
+    description:
+    - Implement Blazor-compatible page lifecycle events (OnInitializedAsync, OnParametersSetAsync, OnAfterRenderAsync, etc.) for consistency.
+    - 'Build parse-tree based page instantiation: ANTLR4 Markdown parse tree → dynamic Blazor-style page components at runtime.'
+    - This enables 'Blazor in Markdown' pattern – user loves this direction.
+    - Integrate with OIDC permissions, theming, and PDF export.
+    depends-on:
+    - FEATURE-OIDC-001
+    - FEATURE-THEME-001
+    - FEATURE-PDF-001
+    - PLAN-REFAC-001
+    functional-requirements:
+    - FR-MCP-049
+    - FR-MCP-041
+    technical-requirements:
+    - TR-MCP-ARCH-002

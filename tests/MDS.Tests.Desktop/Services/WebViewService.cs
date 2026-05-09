@@ -1,18 +1,10 @@
-﻿using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-
-using CommunityToolkit.WinUI.Helpers;
+﻿using System.Diagnostics.CodeAnalysis;
 
 using MDS.Tests.Desktop.Contracts.Services;
 using MDS.Tests.Desktop.Core.Contracts.Services;
 
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
-
-using Windows.Graphics.Printing;
-
-using Windows.UI.Popups;
 
 namespace MDS.Tests.Desktop.Services;
 
@@ -51,9 +43,9 @@ public class WebViewService : IWebViewService
 
         _webView = webView;
         _webView.NavigationCompleted += OnWebViewNavigationCompleted;
-        _webView.CoreWebView2Initialized += (o,e) 
+        _webView.CoreWebView2Initialized += (o, e)
             => _webView.CoreWebView2.DocumentTitleChanged += DocumentTitleChanged;
-        
+
 
         BlazorService.Initialize();
 
@@ -76,7 +68,7 @@ public class WebViewService : IWebViewService
         }
     }
 
-    private void OnWebViewNavigationCompleted(WebView2 sender, CoreWebView2NavigationCompletedEventArgs args) 
+    private void OnWebViewNavigationCompleted(WebView2 sender, CoreWebView2NavigationCompletedEventArgs args)
         => NavigationCompleted?.Invoke(this, args);
 
     public void NavigateWebViewTo(Uri uri)

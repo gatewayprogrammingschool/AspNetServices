@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
 using System.Timers;
 
 using MDS.Tests.Desktop.Contracts.Services;
@@ -7,9 +6,6 @@ using MDS.Tests.Desktop.Contracts.ViewModels;
 using MDS.Tests.Desktop.Helpers;
 
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Navigation;
-
-using Windows.UI.Core;
 
 using Timer = System.Timers.Timer;
 

@@ -1,0 +1,10 @@
+{
+  "commands": {
+    "generate-typings": {
+        "fileName": "pwsh.exe",
+        "workingDirectory": "..\\..\\uno.monaco-editor-uwp\\GenerateMonacoTypings",
+        "arguments": "-ExecutionPolicy Bypass -NoProfile -NonInteractive -File .\\generate-typings.ps1"
+    }
+  }
+
+}

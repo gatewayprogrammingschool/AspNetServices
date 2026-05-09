@@ -1,14 +1,14 @@
 ﻿using System.Runtime.InteropServices; // For DllImport
-using WinRT; // required to support Window.As<ICompositionSupportsSystemBackdrop>()
+
 using MDS.Tests.Desktop.Helpers;
 
 using Microsoft.UI.Composition.SystemBackdrops;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 
 using Windows.UI.ViewManagement;
 
-using WinRT;
-using Microsoft.UI.Dispatching;
+using WinRT; // required to support Window.As<ICompositionSupportsSystemBackdrop>()
 
 namespace MDS.Tests.Desktop;
 
@@ -116,7 +116,7 @@ public sealed partial class MainWindow : WindowEx
         return false; // Mica is not supported on this system
     }
 
-    private void Window_Activated(object sender, WindowActivatedEventArgs args) 
+    private void Window_Activated(object sender, WindowActivatedEventArgs args)
         => _configurationSource.IsInputActive = args.WindowActivationState != WindowActivationState.Deactivated;
 
     private void Window_Closed(object sender, WindowEventArgs args)

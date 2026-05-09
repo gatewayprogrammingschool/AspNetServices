@@ -46,4 +46,8 @@ Layout: Shared/layout.html
 * Code-behind for C# to handle form posts.
 * Object model and opinionated application design patterns.
 
+## Supported Data Types
+
+* JSON Resume - https://raw.githubusercontent.com/jsonresume/resume-schema/master/schema.json
+
 Join the discussion to share your thoughts.

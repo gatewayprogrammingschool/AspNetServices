@@ -355,3 +355,5 @@ MigrationBackup/
 /tests/MDS.TestSite/wwwroot/
 /tests/MDS.Tests.WWWROOT/wwwroot/legal/
 tests/MDS.TestSite/wwwroot/css/
+AGENTS-README-FIRST.yaml
+.mcpServer/

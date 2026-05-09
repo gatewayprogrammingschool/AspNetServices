@@ -3,14 +3,11 @@ using MDS.Tests.Desktop.Contracts.Services;
 using MDS.Tests.Desktop.Core.Contracts.Services;
 using MDS.Tests.Desktop.Core.Services;
 using MDS.Tests.Desktop.Dialogs;
-using MDS.Tests.Desktop.Helpers;
 using MDS.Tests.Desktop.Models;
 using MDS.Tests.Desktop.Services;
 using MDS.Tests.Desktop.ViewModels;
 using MDS.Tests.Desktop.Views;
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -65,11 +62,11 @@ public partial class App : Application
         Host = Microsoft.Extensions.Hosting.Host.
             CreateDefaultBuilder().
             UseContentRoot(AppContext.BaseDirectory).
-            ConfigureAppConfiguration(configBuilder => 
+            ConfigureAppConfiguration(configBuilder =>
             {
                 configBuilder.AddJsonFile("appsettings.Desktop.json", false);
             }).
-            ConfigureLogging(loggingBuilder=>
+            ConfigureLogging(loggingBuilder =>
             {
                 loggingBuilder.AddSimpleConsole();
             }).
@@ -94,6 +91,8 @@ public partial class App : Application
                 services.AddSingleton<IFileService, FileService>();
 
                 // Views and ViewModels
+                services.AddTransient<SourceCodeViewModel>();
+                services.AddSingleton<SourceCode>();
                 services.AddSingleton<SettingsViewModel>();
                 services.AddSingleton<SettingsPage>();
                 services.AddSingleton<MainViewModel>();
@@ -133,7 +132,7 @@ public partial class App : Application
         {
             DispatcherQueueHandler handler = new(action);
             MainWindow.DispatcherQueue.TryEnqueue(
-                DispatcherQueuePriority.High, 
+                DispatcherQueuePriority.High,
                 handler);
         }
     }

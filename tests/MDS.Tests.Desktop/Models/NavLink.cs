@@ -1,5 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 
+using MDS.Tests.Desktop.ViewModels;
+
 using Microsoft.UI.Xaml.Controls;
 
 namespace MDS.Tests.Desktop.Models;
@@ -22,12 +24,12 @@ public class NavLink
 
     public string Path
     {
-        get;set;
+        get; set;
     }
 
     public string FullPath
     {
-        get;set;
+        get; set;
     }
 
     public double Margin
@@ -42,4 +44,9 @@ public class NavLink
     {
         get; set;
     } = true;
+
+    public SourceCodeViewModel ViewModel
+    {
+        get;
+    } = new();
 }

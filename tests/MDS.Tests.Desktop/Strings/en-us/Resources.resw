@@ -214,4 +214,11 @@
   <data name="ShellMenuItem_File_SaveAs.Text" xml:space="preserve">
     <value>Save As ...</value>
   </data>
+  <data name="ShellMenuItem_Views_Blank.Text" xml:space="preserve">
+    <value>Blank</value>
+  </data>
+  <data name="Blank_Title.Text" xml:space="preserve">
+    <value>Blank</value>
+    <comment>Page title for BlankPage</comment>
+  </data>
 </root>

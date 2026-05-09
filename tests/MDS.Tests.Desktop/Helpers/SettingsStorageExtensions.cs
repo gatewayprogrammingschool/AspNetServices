@@ -9,7 +9,7 @@ namespace MDS.Tests.Desktop.Helpers;
 // More details regarding storing and retrieving app data at https://docs.microsoft.com/windows/apps/design/app-settings/store-and-retrieve-app-data
 public static class SettingsStorageExtensions
 {
-    private const string FileExtension = ".json";
+    private const string FILE_EXTENSION = ".json";
 
     public static bool IsRoamingStorageAvailable(this ApplicationData appData) => appData.RoamingStorageQuota == 0;
 
@@ -96,5 +96,5 @@ public static class SettingsStorageExtensions
         return null;
     }
 
-    private static string GetFileName(string name) => string.Concat(name, FileExtension);
+    private static string GetFileName(string name) => string.Concat(name, FILE_EXTENSION);
 }
