@@ -1,4 +1,7 @@
-﻿namespace MDS.AspnetServices;
+using MDS.AspnetServices.Theme;
+using Microsoft.Extensions.Options;
+
+namespace MDS.AspnetServices;
 
 public static class MarkdownServerExtensions
 {
@@ -120,5 +123,14 @@ public static class MarkdownServerExtensions
         options.ServerRoot = app.Environment.WebRootPath;
 
         return (WebApplication)app.UseMiddleware<MarkdownFileMiddleware>();
+    }
+
+    public static WebApplicationBuilder AddTheme(this WebApplicationBuilder builder, Action<ThemeOptions>? configure = null)
+    {
+        builder.Services.Configure<ThemeOptions>(builder.Configuration.GetSection("Theme"));
+        builder.Services.AddSingleton<ThemeManager>();
+        var sp = builder.Services.BuildServiceProvider();
+        configure?.Invoke(sp.GetRequiredService<IOptions<ThemeOptions>>().Value);
+        return builder;
     }
 }
