@@ -30,11 +30,11 @@ Workspace: `F:\GitHub\MarkdownServer\AspNetServices`
 ### Execution TODOs
 | ID | Title | Status | Next Action |
 |----|-------|--------|-------------|
-| EXEC-TODO-001 | Publish Markdown Server as dotnet Tool | TestReady | Implement dotnet tool flow |
-| EXEC-TODO-002 | Add support for tree-level global.yaml defaults | TestReady | Depends on EXEC-TODO-001 |
+| EXEC-TODO-001 | Publish Markdown Server as dotnet Tool | Complete |  |
+| EXEC-TODO-002 | Add support for tree-level global.yaml defaults | Complete |  |
 
 ### Phase
-- **PHASE-001**: `MDS-PLAN-MARKDOWN-TOOL` — `Implementing`
+- **PHASE-001**: `MDS-PLAN-MARKDOWN-TOOL` — `Complete`
 
 ---
 

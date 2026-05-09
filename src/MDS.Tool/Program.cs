@@ -1,5 +1,13 @@
 using MDS.AspnetServices;
 
+if (args.Contains("--help"))
+{
+    Console.WriteLine("Usage: mds [--port <port>] [--root <path>]");
+    Console.WriteLine("  --port <port>  Port to listen on (default 5000)");
+    Console.WriteLine("  --root <path>  Root directory (default current)");
+    return;
+}
+
 var rootDirectory = args.Length > 0 ? args[0] : Directory.GetCurrentDirectory();
 var port = 5000;
 var wwwroot = Path.Combine(rootDirectory, "wwwroot");

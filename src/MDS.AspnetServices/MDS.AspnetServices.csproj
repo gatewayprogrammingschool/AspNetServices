@@ -56,6 +56,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.13.1" />
     <PackageReference Include="MarkdownServer.ColorCodePortable" Version="$(Version)" />
     <PackageReference Include="MarkdownServer.Markdig.SyntaxHighlighting" Version="$(Version)" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
