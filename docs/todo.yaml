@@ -22,13 +22,13 @@ REFACTOR:
     - task: Disable all test projects from .sln
       done: true
     - task: Create new interfaces and TDD test stubs for middleware refactoring
-      done: false
+      done: true
     - task: Design and test new ANTLR4 grammar
-      done: false
+      done: true
     - task: Create integration test suite for middleware
-      done: false
+      done: true
     - task: Create Blazor template test project using AppFramework
-      done: false
+      done: true
     - task: Implement page lifecycle runtime + parse-tree instantiation
       done: false
   - id: REFAC-MIDDLEWARE-001
@@ -60,7 +60,7 @@ TEST:
   - id: TEST-INTEGRATION-001
     title: Create integration test suite for refactored middleware
     estimate: 3 days
-    done: false
+    done: true
     description:
     - Build comprehensive integration tests for the new DI-based middleware after stubs and unit tests are complete.
     - Cover pipeline factory, tag processing, rendering, and middleware pipeline integration.
